@@ -13,14 +13,11 @@ exports.release = async function release (cds) {
     process.exit()
   }
   if (Array.isArray(cds)) {
-    await callCds(cds)
+    await callCds(cds, version)
   }
-  execSync('git add .', { stdio: 'inherit' })
-  execSync(`git commit -m "chore: release v${version}"`, { stdio: 'inherit' })
-  execSync(`git tag -a v${version} -m "v${version}"`, { stdio: 'inherit' })
 }
-async function callCds (cds) {
+async function callCds (cds, version) {
   for (let i = 0; i < cds.length; i++) {
-    await cds[i]()
+    await cds[i](version)
   }
 }
