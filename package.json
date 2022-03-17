@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/hengshanMWC/pkgs#readme",
   "dependencies": {
+    "@abmao/forb": "^0.0.1",
     "bumpp": "^7.1.1",
     "commander": "^9.0.0",
     "fs-extra": "^10.0.1"

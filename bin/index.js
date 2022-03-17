@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { updatePackageVersion, release, gitSave, publish } = require('../scripts')
+const { binVersion, binPublish } = require('../scripts')
 const { program } = require('commander');
 const pkg = require("../package.json");
 program
@@ -9,16 +9,12 @@ program
   .command('version')
   .option('--no-git', 'Remove recursively')
   .action((cmd) => {
-    console.log(cmd)
-    const arr = [updatePackageVersion]
-    if (cmd.git) arr.push(gitSave)
-    release(arr)
+    binVersion(cmd)
   })
 program
   .command('publish')
   .option('--no-git', 'Remove recursively')
   .action((cmd) => {
-    console.log(cmd)
-    publish()
+    binPublish()
   })
 program.parse(process.argv);

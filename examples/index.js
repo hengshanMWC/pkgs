@@ -1,2 +1,2 @@
-const { updatePackageVersion } = require('../utils')
-updatePackageVersion('examples/packages/*', 'package.json')
+const { updatePackageVersion } = require('../scripts')
+updatePackageVersion()

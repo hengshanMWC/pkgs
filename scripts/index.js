@@ -19,7 +19,7 @@ async function updatePackageVersion (version, packagesPath) {
     await fs.writeJSON(filesPath[i], packageJSON, { spaces: 2 })
   }
 }
-async function publish (packagesPath) {
+async function binPublish (packagesPath) {
   const { dirs, filesPath } = await getPackagesDir(packagesPath)
   const packagesJSON = await getPackagesJSON(filesPath)
   for (let i = 0; i < packagesJSON.length; i++) {
@@ -30,10 +30,16 @@ async function publish (packagesPath) {
     }
   }
 }
+function binVersion (cmd) {
+  const arr = [updatePackageVersion]
+  if (cmd.git) arr.push(gitSave)
+  release(arr)
+}
 module.exports = {
   getPackagesJSON,
   updatePackageVersion,
   release,
   gitSave,
-  publish
+  binPublish,
+  binVersion
 }
