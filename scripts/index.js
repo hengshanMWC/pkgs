@@ -1,7 +1,6 @@
 const fs = require('fs-extra')
-const { join } = require('path')
 const { execSync } = require('child_process')
-const { getPackagesDir } = require('@mwc/forb')
+const { getPackagesDir } = require('@abmao/forb')
 const { release } = require('./release')
 const { gitSave } = require('./gitSave')
 async function getPackagesJSON (dirs) {

@@ -1,5 +1,5 @@
 {
-  "name": "@mwc/index",
+  "name": "@abmao/index",
   "version": "0.0.2",
   "description": "Sync packages version number",
   "main": "index.js",
