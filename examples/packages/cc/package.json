@@ -1,0 +1,27 @@
+{
+  "name": "@mwc/c",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "forb": "index.js"
+  },
+  "scripts": {
+    "test": "cd ./examples && node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hengshanMWC/forb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hengshanMWC/forb/issues"
+  },
+  "homepage": "https://github.com/hengshanMWC/forb#readme",
+  "dependencies": {
+    "fs-extra": "^10.0.1",
+    "glob": "^7.2.0"
+  }
+}

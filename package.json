@@ -1,0 +1,28 @@
+{
+  "name": "@mwc/pkgs",
+  "version": "0.0.1",
+  "description": "Sync packages version number",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd ./examples && node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hengshanMWC/pkgs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hengshanMWC/pkgs/issues"
+  },
+  "homepage": "https://github.com/hengshanMWC/pkgs#readme",
+  "dependencies": {
+    "bumpp": "^7.1.1",
+    "commander": "^9.0.0",
+    "fs-extra": "^10.0.1"
+  },
+  "bin": {
+    "pkgs": "bin/index.js"
+  }
+}
