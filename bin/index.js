@@ -15,6 +15,6 @@ program
   .command('publish')
   .option('--no-git', 'Remove recursively')
   .action((cmd) => {
-    binPublish()
+    binPublish(cmd)
   })
 program.parse(process.argv);

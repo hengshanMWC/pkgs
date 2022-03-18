@@ -3,6 +3,7 @@ const { execSync } = require('child_process')
 const { getPackagesDir } = require('@abmao/forb')
 const { release } = require('./release')
 const { gitSave } = require('./gitSave')
+
 async function getPackagesJSON (dirs) {
   const result = []
   for (let i = 0; i < dirs.length; i++) {
