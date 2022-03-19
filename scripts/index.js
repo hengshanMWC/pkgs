@@ -1,5 +1,5 @@
-const fs = require('fs-extra')
 const { execSync } = require('child_process')
+const fs = require('fs-extra')
 const { getPackagesDir } = require('@abmao/forb')
 const { release } = require('./release')
 const { gitSave } = require('./gitSave')
@@ -42,5 +42,5 @@ module.exports = {
   release,
   gitSave,
   binPublish,
-  binVersion
+  binVersion,
 }

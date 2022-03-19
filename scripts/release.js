@@ -1,7 +1,6 @@
 const { execSync } = require('child_process')
 const { readJSONSync } = require('fs-extra')
 exports.release = async function release (cds) {
-
   const { version: oldVersion } = readJSONSync('package.json')
 
   execSync('npx bumpp', { stdio: 'inherit' })

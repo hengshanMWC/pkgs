@@ -7,7 +7,10 @@ async function getPackagesJSON (dirs) {
   }
   return result
 }
-async function updatePackageVersion (packagesPath, rootPackage = 'package.json') {
+async function updatePackageVersion (
+  packagesPath,
+  rootPackage = 'package.json',
+) {
   const dirs = await getPackagesDir(packagesPath)
   const packagesJSON = await getPackagesJSON(dirs)
   const { version } = await fs.readJSON(rootPackage)
@@ -19,5 +22,5 @@ async function updatePackageVersion (packagesPath, rootPackage = 'package.json')
 }
 module.exports = {
   getPackagesJSON,
-  updatePackageVersion
+  updatePackageVersion,
 }
