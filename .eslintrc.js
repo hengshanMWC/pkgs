@@ -23,55 +23,25 @@ module.exports = {
     'import/no-mutable-exports': 'error',
     'import/no-unresolved': 'off',
     'import/no-absolute-path': 'off',
+    // Possible Errors
+    'no-constant-condition': 'warn',
 
-    // format
-    'semi': ['error', 'never'],
-    'quotes': ['error', 'single'],
-    'eqeqeq': 'error',
-    'no-extra-bind': 'error',
-    'no-invalid-this': 'error',
-    'no-loop-func': 'error',
+    // Stylistic Issues
+    'block-spacing': ['error', 'always'],
+    'brace-style': ['error', 'stroustrup'],
+    'comma-dangle': ['error', 'always-multiline'],
+    'comma-spacing': ['error', { before: false, after: true }],
+    'comma-style': ['error', 'last'],
+    'func-call-spacing': ['error', 'never'],
+    'key-spacing': ['error', { beforeColon: false, afterColon: true }],
     'max-len': ['error', {
       code: 80,
       tabWidth: 2,
     }],
     'new-cap': 'error',
-    'comma-dangle': ['error', 'always-multiline'],
-    'quote-props': ['error', 'consistent-as-needed'],
-    'no-unused-vars': 'warn',
-    'no-constant-condition': 'warn',
-    'brace-style': ['error', 'stroustrup'],
-    'block-spacing': ['error', 'always'],
-    'comma-spacing': ['error', { before: false, after: true }],
-    'comma-style': ['error', 'last'],
-    'no-debugger': 'error',
-    'no-cond-assign': ['error', 'always'],
-    'func-call-spacing': ['error', 'never'],
-    'key-spacing': ['error', { beforeColon: false, afterColon: true }],
     'object-curly-spacing': ['error', 'always'],
-
-    // es+
-    'no-return-await': 'error',
-    'no-var': 'error',
-    'prefer-const': [
-      'error',
-      {
-        destructuring: 'any',
-        ignoreReadBeforeAssign: true,
-      },
-    ],
-    'object-shorthand': [
-      'error',
-      'always',
-      {
-        ignoreConstructors: false,
-        avoidQuotes: true,
-      },
-    ],
-    'prefer-rest-params': 'error',
-    'prefer-spread': 'error',
-    'prefer-template': 'error',
-    'arrow-parens': ['error', 'as-needed'],
+    quotes: ['error', 'single'],
+    semi: ['error', 'never'],
     'spaced-comment': ['error', 'always', {
       line: {
         markers: ['/'],
@@ -83,6 +53,42 @@ module.exports = {
         balanced: true,
       },
     }],
+
+    // Best Practices
+    'array-callback-return': 'error',
+    eqeqeq: 'error',
+    'no-cond-assign': ['error', 'always'],
+    'no-debugger': 'error',
+    'no-extra-bind': 'error',
+    'no-loop-func': 'error',
+    'no-invalid-this': 'error',
+    'no-return-await': 'error',
+
+    // Variables
+    'no-unused-vars': 'warn',
+    'no-undef': 'error',
+
+    // ECMAScript 6
+    'arrow-parens': ['error', 'as-needed'],
+    'object-shorthand': [
+      'error',
+      'always',
+      {
+        ignoreConstructors: false,
+        avoidQuotes: true,
+      },
+    ],
+    'no-var': 'error',
+    'prefer-const': [
+      'error',
+      {
+        destructuring: 'any',
+        ignoreReadBeforeAssign: true,
+      },
+    ],
+    'prefer-rest-params': 'error',
+    'prefer-spread': 'error',
+    'prefer-template': 'error',
   },
   parserOptions: {
     ecmaVersion: 8,
