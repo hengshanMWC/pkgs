@@ -1,0 +1,18 @@
+{
+  "exclude": ["node_modules", "**/dist"],
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "esnext",
+    "lib": ["ESNext"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "declaration": true,
+    "declarationDir": "./types",
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "noUnusedLocals": true,
+  },
+}

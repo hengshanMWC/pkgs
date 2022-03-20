@@ -2,17 +2,6 @@
   "name": "@abmao/pkgs",
   "version": "0.0.1",
   "description": "Sync packages version number",
-  "main": "index.js",
-  "scripts": {
-    "test": "cd ./examples && node index.js",
-    "prepare": "husky install",
-    "lint": "eslint --ext=js,ts,json,md .",
-    "lint:fix": "eslint --fix --ext=js,ts,json,md ."
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hengshanMWC/pkgs.git"
-  },
   "keywords": [
     "monorepo",
     "packages",
@@ -21,29 +10,39 @@
     "publish",
     "version"
   ],
-  "author": "mawencan",
   "license": "MIT",
+  "author": "mawencan",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hengshanMWC/pkgs.git"
+  },
+  "main": "index.js",
+  "bin": {
+    "pkgs": "bin/index.js"
+  },
+  "scripts": {
+    "test": "cd ./examples && node index.js",
+    "prepare": "husky install",
+    "lint": "eslint --ext=js,ts,json,md .",
+    "lint:fix": "eslint --fix --ext=js,ts,json,md ."
+  },
   "bugs": {
     "url": "https://github.com/hengshanMWC/pkgs/issues"
   },
   "homepage": "https://github.com/hengshanMWC/pkgs#readme",
   "dependencies": {
-    "@abmao/forb": "^0.0.1",
+    "@abmao/forb": "^0.0.4",
     "bumpp": "^7.1.1",
     "commander": "^9.0.0",
     "fs-extra": "^10.0.1"
   },
-  "bin": {
-    "pkgs": "bin/index.js"
-  },
   "devDependencies": {
+    "@abmao/eslint-config-ts": "^0.0.1",
     "@commitlint/cli": "^16.2.3",
     "@commitlint/config-conventional": "^16.2.1",
+    "@ts-type/package-dts": "^1.0.60",
+    "@types/fs-extra": "^9.0.13",
     "eslint": "^8.11.0",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jsonc": "^2.2.1",
-    "eslint-plugin-markdown": "^2.2.1",
-    "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.4"
   }
 }

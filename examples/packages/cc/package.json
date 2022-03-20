@@ -2,6 +2,13 @@
   "name": "@abmao/c",
   "version": "0.0.1",
   "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hengshanMWC/forb.git"
+  },
   "main": "index.js",
   "bin": {
     "forb": "index.js"
@@ -9,13 +16,6 @@
   "scripts": {
     "test": "cd ./examples && node index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hengshanMWC/forb.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/hengshanMWC/forb/issues"
   },
