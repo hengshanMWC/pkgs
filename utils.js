@@ -2,7 +2,9 @@ const fs = require('fs-extra')
 const { getPackagesDir } = require('@abmao/forb')
 async function getPackagesJSON (dirs) {
   const result = []
-  for (let i = 0; i < dirs.length; i++) { result.push(await fs.readJSON(dirs[i])) }
+  for (let i = 0; i < dirs.length; i++) {
+    result.push(await fs.readJSON(dirs[i]))
+  }
 
   return result
 }
