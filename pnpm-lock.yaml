@@ -2,7 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@abmao/eslint-config-ts': ^0.0.1
-  '@abmao/forb': ^1.0.2
+  '@abmao/forb': ^1.0.3
   '@commitlint/cli': ^16.2.3
   '@commitlint/config-conventional': ^16.2.1
   '@rollup/plugin-commonjs': ^21.0.2
@@ -24,7 +24,7 @@ specifiers:
   validate-npm-package-name: ^3.0.0
 
 dependencies:
-  '@abmao/forb': 1.0.2
+  '@abmao/forb': 1.0.3
   commander: 9.0.0
   fs-extra: 10.0.1
 
@@ -87,10 +87,21 @@ packages:
       - supports-color
     dev: true
 
-  /@abmao/forb/1.0.2:
-    resolution: {integrity: sha512-0JKiBTuUS/tYRYcSWX5FV3Gv+Nt92tzXb3pnkhwpe8HAbEY5AZXxRAgsYuF6RGjeOEEIyIxZ4RhODqBPWuWEfw==}
+  /@abmao/forb/1.0.3:
+    resolution: {integrity: sha512-9jVqTl2VBpQxt+NoxQGOSqMgifAMYrsEsXBHOHOLZhXxyKBnIUMfv3rZOXZtQ0BjBt8GlHKqDXLPKhFUQ8j9HA==}
     dependencies:
-      glob: 7.2.0
+      '@abmao/glob': 0.0.1
+    dev: false
+
+  /@abmao/glob/0.0.1:
+    resolution: {integrity: sha512-E1Zlk6uKch5aUCoqQlY6fz6GdwPFH5RSv6ppXsLZ27LhAO12lRIU2N115jHRGLlwxN4VdYfRyTxThoi9+6Nbmw==}
+    dependencies:
+      fs.realpath: 1.0.0
+      inflight: 1.0.6
+      inherits: 2.0.4
+      minimatch: 3.1.2
+      once: 1.4.0
+      path-is-absolute: 1.0.1
     dev: false
 
   /@babel/code-frame/7.16.7:
@@ -1842,6 +1853,7 @@ packages:
       minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
+    dev: true
 
   /global-dirs/0.1.1:
     resolution: {integrity: sha1-sxnA3UYH81PzvpzKTHL8FIxJ9EU=}

@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/hengshanMWC/pkgs#readme",
   "dependencies": {
-    "@abmao/forb": "^1.0.2",
+    "@abmao/forb": "^1.0.3",
     "commander": "^9.0.0",
     "fs-extra": "^10.0.1"
   },
