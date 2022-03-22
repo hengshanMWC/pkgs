@@ -8,7 +8,6 @@ import { minify } from 'terser' // 用于Javascript代码压缩和美化
 import validateNpmPackageName from 'validate-npm-package-name'
 import camelcase from 'camelcase' // 转驼峰拼写
 import typescript from 'rollup-plugin-typescript2'
-import tscompile from 'typescript'
 // 解析 node_modules 中的模块
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
@@ -65,9 +64,7 @@ const genConfig = (key: keyof Builds): RollupOptions => {
     plugins: [
       nodeResolve(),
       commonjs(),
-      typescript({
-        typescript: tscompile,
-      }),
+      typescript(),
       ...plugins,
     ],
     external: ['globby'],
