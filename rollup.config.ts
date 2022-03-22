@@ -1,9 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-import zlib from 'zlib' // 用于使用gzip算法进行文件压缩
+import zlib from 'zlib'
 import { rollup } from 'rollup'
 import type { RollupOptions, InternalModuleFormat, OutputOptions } from 'rollup'
-import { minify } from 'terser' // 用于Javascript代码压缩和美化
 // 判断是否合法的npm包
 import validateNpmPackageName from 'validate-npm-package-name'
 import camelcase from 'camelcase' // 转驼峰拼写
@@ -30,7 +29,9 @@ moduleName = camelcase(moduleName)
 // 头信息
 const banner = '// * Released under the MIT License.\n'
 
-const esbuildPlugin = esbuild()
+const esbuildPlugin = esbuild({
+  minify: true,
+})
 
 type Builds = Partial<Record<InternalModuleFormat, RollupOptions>>
 // rollup 配置
@@ -107,37 +108,17 @@ function build (builds: RollupOptions[]) {
 function buildEntry (config: RollupOptions) {
   const output = config.output as OutputOptions
   const { file, banner } = output
-  const isProd = file ? /(min|prod)\.js$/.test(file) : false
   return rollup(config)
     .then(bundle => bundle.generate(output))
     .then(code => {
-      if (isProd) {
-        return minify(code.output[0].code, {
-          toplevel: true,
-          output: {
-            ascii_only: true,
-          },
-          compress: {
-            pure_funcs: ['makeMap'],
-          },
-        }).then(({ code }) => {
-          return write(
-            file as string,
-            (banner ? `${banner}\n` : '') + code,
-            true,
-          )
-        })
-      }
-      else {
-        return write(
-          file as string,
-          (banner ? `${banner}\n` : '') + code.output[0].code,
-        )
-      }
+      return write(
+        file as string,
+        (banner ? `${banner}\n` : '') + code.output[0].code,
+      )
     })
 }
 
-function write (dest: string, code: Buffer | string, zip?: boolean) {
+function write (dest: string, code: Buffer | string) {
   return new Promise((resolve, reject) => {
     function report (extra?: string) {
       const destPath = blue(path.relative(process.cwd(), dest))
@@ -148,15 +129,10 @@ function write (dest: string, code: Buffer | string, zip?: boolean) {
 
     fs.writeFile(dest, code, err => {
       if (err) return reject(err)
-      if (zip) {
-        zlib.gzip(code, (err, zipped) => {
-          if (err) return reject(err)
-          report(` (gzipped: ${getSize(zipped)})`)
-        })
-      }
-      else {
-        report()
-      }
+      zlib.gzip(code, (err, zipped) => {
+        if (err) return reject(err)
+        report(` (gzipped: ${getSize(zipped)})`)
+      })
     })
   })
 }
