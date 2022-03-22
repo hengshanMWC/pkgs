@@ -25,7 +25,7 @@
     "prepare": "husky install",
     "lint": "eslint --ext=js,ts,json,md .",
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",
-    "build": "node rollup.config.js"
+    "build": "esno rollup.config.ts"
   },
   "bugs": {
     "url": "https://github.com/hengshanMWC/pkgs/issues"
@@ -45,8 +45,10 @@
     "@rollup/plugin-node-resolve": "^13.1.3",
     "@ts-type/package-dts": "^1.0.60",
     "@types/fs-extra": "^9.0.13",
+    "@types/validate-npm-package-name": "^3.0.3",
     "camelcase": "^6.3.0",
     "eslint": "^8.11.0",
+    "esno": "^0.14.1",
     "husky": "^7.0.4",
     "rollup": "^2.70.1",
     "rollup-plugin-typescript2": "^0.31.2",
