@@ -10,8 +10,10 @@ import camelcase from 'camelcase' // 转驼峰拼写
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import esbuild from 'rollup-plugin-esbuild'
+import chalk from 'chalk'
 import { name } from './package.json'
-console.time('build')
+const timeTag = chalk.cyan('build')
+console.time(timeTag)
 let moduleName = name
 // 检查是否是合法的 npm 包名
 if (!validateNpmPackageName(moduleName)) {
@@ -72,9 +74,9 @@ const genConfig = (key: keyof Builds): RollupOptions => {
       ...plugins,
     ],
     // 监听
-    watch: {
-      include: 'src/**',
-    },
+    // watch: {
+    //   include: 'scripts/**',
+    // },
   }
   return config
 }
@@ -98,7 +100,7 @@ function build (builds: RollupOptions[]) {
         next()
       }
       else {
-        console.timeEnd('build')
+        console.timeEnd(timeTag)
       }
     }).catch(logError)
   }
@@ -120,10 +122,10 @@ function buildEntry (config: RollupOptions) {
 
 function write (dest: string, code: Buffer | string) {
   return new Promise((resolve, reject) => {
-    function report (extra?: string) {
-      const destPath = blue(path.relative(process.cwd(), dest))
-      const size = getSize(code)
-      console.log(`${destPath} ${size}${extra || ''}`)
+    function report (extra: string) {
+      const destPath = chalk.green(path.relative(process.cwd(), dest))
+      const size = chalk.yellow(getSize(code) + extra)
+      console.log(`${destPath} ${size}`)
       resolve(size)
     }
 
@@ -143,8 +145,4 @@ function getSize (code: Buffer | string) {
 
 function logError (e: Error) {
   console.error(e)
-}
-
-function blue (str: string) {
-  return `\x1b[1m\x1b[34m${str}\x1b[39m\x1b[22m`
 }

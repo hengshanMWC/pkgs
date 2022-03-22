@@ -11,6 +11,7 @@ specifiers:
   '@types/fs-extra': ^9.0.13
   '@types/validate-npm-package-name': ^3.0.3
   camelcase: ^6.3.0
+  chalk: ^5.0.1
   commander: ^9.0.0
   esbuild-register: ^3.3.2
   eslint: ^8.11.0
@@ -37,6 +38,7 @@ devDependencies:
   '@types/fs-extra': 9.0.13
   '@types/validate-npm-package-name': 3.0.3
   camelcase: 6.3.0
+  chalk: 5.0.1
   esbuild-register: 3.3.2
   eslint: 8.11.0
   esno: 0.14.1
@@ -776,6 +778,11 @@ packages:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
+    dev: true
+
+  /chalk/5.0.1:
+    resolution: {integrity: sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
     dev: true
 
   /character-entities-legacy/1.1.4:
