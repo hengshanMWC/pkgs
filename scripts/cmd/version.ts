@@ -14,7 +14,7 @@ export async function cmdVersion (context: Context) {
     console.log('canceled: The version has not changed')
     process.exit()
   }
-  context.forPack(async function (packageJSON, index, context) {
+  await context.forPack(async function (packageJSON, index, context) {
     packageJSON.version = version
     await writeFile(context.filesPath[index], packageJSON, { spaces: 2 })
   })
