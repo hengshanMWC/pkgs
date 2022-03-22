@@ -7,11 +7,12 @@ import { minify } from 'terser' // 用于Javascript代码压缩和美化
 // 判断是否合法的npm包
 import validateNpmPackageName from 'validate-npm-package-name'
 import camelcase from 'camelcase' // 转驼峰拼写
-import typescript from 'rollup-plugin-typescript2'
 // 解析 node_modules 中的模块
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
+import esbuild from 'rollup-plugin-esbuild'
 import { name } from './package.json'
+console.time('build')
 let moduleName = name
 // 检查是否是合法的 npm 包名
 if (!validateNpmPackageName(moduleName)) {
@@ -29,11 +30,13 @@ moduleName = camelcase(moduleName)
 // 头信息
 const banner = '// * Released under the MIT License.\n'
 
+const esbuildPlugin = esbuild()
+
 type Builds = Partial<Record<InternalModuleFormat, RollupOptions>>
 // rollup 配置
 const builds: Builds = {
   es: {
-    input: 'scripts/index.ts',
+    input: 'index.ts',
     output: {
       // 当文件名包含 .min 时将会自动启用 terser 进行压缩
       file: `dist/${moduleName}.esm.min.js`,
@@ -42,7 +45,7 @@ const builds: Builds = {
     },
   },
   cjs: {
-    input: 'scripts/index.ts',
+    input: 'index.ts',
     output: {
       // 当文件名包含 .min 时将会自动启用 terser 进行压缩
       file: `dist/${moduleName}.cjs.min.js`,
@@ -62,12 +65,11 @@ const genConfig = (key: keyof Builds): RollupOptions => {
     input,
     output,
     plugins: [
+      esbuildPlugin,
       nodeResolve(),
       commonjs(),
-      typescript(),
       ...plugins,
     ],
-    external: ['globby'],
     // 监听
     watch: {
       include: 'src/**',
@@ -76,8 +78,6 @@ const genConfig = (key: keyof Builds): RollupOptions => {
   return config
 }
 
-// 以下代码取自 vue 官方仓库
-// 通过 rollup api 打包所有 builds 中的配置
 const getAllBuilds = Object.keys(builds)
   .map(key => genConfig(key as keyof Builds))
 
@@ -95,6 +95,9 @@ function build (builds: RollupOptions[]) {
       built++
       if (built < total) {
         next()
+      }
+      else {
+        console.timeEnd('build')
       }
     }).catch(logError)
   }
@@ -126,7 +129,10 @@ function buildEntry (config: RollupOptions) {
         })
       }
       else {
-        return write(file as string, code.output[0].code)
+        return write(
+          file as string,
+          (banner ? `${banner}\n` : '') + code.output[0].code,
+        )
       }
     })
 }

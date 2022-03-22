@@ -22,19 +22,18 @@
     "pkgs": "bin/index.js"
   },
   "scripts": {
-    "test": "cd ./examples && node index.js",
+    "test": "cd ./examples && esno index.ts",
     "prepare": "husky install",
     "lint": "eslint --ext=js,ts,json,md .",
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",
-    "build": "esno rollup.config.ts"
+    "build": "node rollup.config.js"
   },
   "bugs": {
     "url": "https://github.com/hengshanMWC/pkgs/issues"
   },
   "homepage": "https://github.com/hengshanMWC/pkgs#readme",
   "dependencies": {
-    "@abmao/forb": "^1.0.1",
-    "bumpp": "^7.1.1",
+    "@abmao/forb": "^1.0.2",
     "commander": "^9.0.0",
     "fs-extra": "^10.0.1"
   },
@@ -48,11 +47,12 @@
     "@types/fs-extra": "^9.0.13",
     "@types/validate-npm-package-name": "^3.0.3",
     "camelcase": "^6.3.0",
+    "esbuild-register": "^3.3.2",
     "eslint": "^8.11.0",
     "esno": "^0.14.1",
     "husky": "^7.0.4",
     "rollup": "^2.70.1",
-    "rollup-plugin-typescript2": "^0.31.2",
+    "rollup-plugin-esbuild": "^4.8.2",
     "terser": "^5.12.1",
     "typescript": "^4.6.2",
     "validate-npm-package-name": "^3.0.0"

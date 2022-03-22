@@ -3,36 +3,22 @@ import { getPackagesDir } from '@abmao/forb'
 import { getPackagesJSON } from './utils'
 import { cmdVersion, cmdPublish } from './cmd'
 export class Context {
-  packagesPath: string
-  cmd: CMD
-  cmdArgs: CMDArgs
   rootPackage!: IPackageJson
   dirs!: string[]
   filesPath!: string[]
   packagesJSON!: IPackageJson[]
-  constructor (packagesPath: string, cmd: CMD, cmdArgs: CMDArgs) {
-    this.packagesPath = packagesPath
-    this.cmd = cmd
-    this.cmdArgs = cmdArgs
-    this.init()
-  }
 
-  async init () {
-    await this.initData()
-    this.cmdAnalysis()
-  }
-
-  async initData () {
+  async initData (packagesPath?: string) {
     const [rootPackage] = await getPackagesJSON(['package.json'])
     this.rootPackage = rootPackage
-    const { dirs, filesPath } = await getPackagesDir(this.packagesPath)
+    const { dirs, filesPath } = await getPackagesDir(packagesPath)
     this.dirs = dirs
     this.filesPath = filesPath
     this.packagesJSON = await getPackagesJSON(filesPath)
   }
 
-  cmdAnalysis () {
-    switch (this.cmd) {
+  cmdAnalysis (cmd: CMD) {
+    switch (cmd) {
       case 'version':
         cmdVersion(this)
         return
