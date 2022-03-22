@@ -46,4 +46,4 @@ export type ForPackCallback = (
   packageJSON: IPackageJson,
   index: number,
   ctx: Context
-) => Promise<any>
+) => Promise<any> | void

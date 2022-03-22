@@ -1,15 +1,22 @@
 import { execSync } from 'child_process'
+import type { IPackageJson } from '@ts-type/package-dts'
 import type { Context } from '../index'
-export async function cmdPublish (context: Context) {
-  await context.forPack(async function (packageJSON, index, context) {
+export function cmdPublish (context: Context) {
+  handlePublish(context.rootPackage)
+  context.forPack(function (packageJSON, index, context) {
+    handlePublish(packageJSON, context.dirs[index])
+  })
+}
+export async function handlePublish (
+  packageJSON: IPackageJson<any>,
+  cwd?: string,
+) {
+  if (!packageJSON.private) {
     let command = 'npm publish --access public'
     if (packageJSON.version?.includes('beta')) { command += ' --tag beta' }
-
-    if (!packageJSON.private) {
-      execSync(command, {
-        stdio: 'inherit',
-        cwd: context.dirs[index],
-      })
-    }
-  })
+    execSync(command, {
+      stdio: 'inherit',
+      cwd,
+    })
+  }
 }
