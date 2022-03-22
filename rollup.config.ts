@@ -31,9 +31,7 @@ moduleName = camelcase(moduleName)
 // 头信息
 const banner = '// * Released under the MIT License.\n'
 
-const esbuildPlugin = esbuild({
-  minify: true,
-})
+const esbuildPlugin = esbuild()
 
 type Builds = Partial<Record<InternalModuleFormat, RollupOptions>>
 // rollup 配置

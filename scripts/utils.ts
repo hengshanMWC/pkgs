@@ -1,5 +1,5 @@
 import { execSync } from 'child_process'
-import fs from 'fs-extra'
+import { readFile } from 'jsonfile'
 import type { IPackageJson } from '@ts-type/package-dts'
 export function gitSave (version: IPackageJson['version']) {
   execSync('git add .', { stdio: 'inherit' })
@@ -9,7 +9,7 @@ export function gitSave (version: IPackageJson['version']) {
 export async function getPackagesJSON (dirs: string[]) {
   const result: IPackageJson[] = []
   for (let i = 0; i < dirs.length; i++) {
-    result.push(await fs.readJSON(dirs[i]))
+    result.push(await readFile(dirs[i]))
   }
 
   return result
