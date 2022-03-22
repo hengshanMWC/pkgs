@@ -16,7 +16,8 @@
     "type": "git",
     "url": "git+https://github.com/hengshanMWC/pkgs.git"
   },
-  "main": "index.js",
+  "main": "dist/pkgs.cjs.min.js",
+  "module": "dist/pkgs.esm.min.js",
   "bin": {
     "pkgs": "bin/index.js"
   },
