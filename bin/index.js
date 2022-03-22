@@ -7,16 +7,12 @@ program
   .description('Simple and easy to use monorepos')
 program
   .command('version')
-  .option('--no-git', 'Remove recursively')
-  .action(cmd => {
-    console.log(cmd)
+  .action(() => {
     executeCommand('version')
   })
 program
   .command('publish')
-  .option('--no-git', 'Remove recursively')
-  .action(cmd => {
-    console.log(cmd)
+  .action(() => {
     executeCommand('publish')
   })
 program.parse(process.argv)
