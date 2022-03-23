@@ -46,6 +46,7 @@
     "@ts-type/package-dts": "^1.0.60",
     "@types/jsonfile": "^6.1.0",
     "@types/validate-npm-package-name": "^3.0.3",
+    "bumpp": "^7.1.1",
     "camelcase": "^6.3.0",
     "chalk": "^5.0.1",
     "esbuild-register": "^3.3.2",
