@@ -1,7 +1,7 @@
 import { execSync } from 'child_process'
 import { readFile, writeFile } from 'jsonfile'
 import type { IPackageJson } from '@ts-type/package-dts'
-import { gitSave } from '../utils'
+import { gitSave } from '../git'
 import type { Context } from '../index'
 export async function cmdVersion (context: Context) {
   const { version: oldVersion } = await readFile('package.json')

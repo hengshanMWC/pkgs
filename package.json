@@ -23,6 +23,7 @@
   },
   "scripts": {
     "test": "cd ./examples && esno index.ts",
+    "git": "cd ./scripts && esno git.ts",
     "prepare": "husky install",
     "lint": "eslint --ext=js,ts,json,md .",
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",
@@ -35,7 +36,8 @@
   "dependencies": {
     "@abmao/forb": "^1.0.3",
     "commander": "^9.0.0",
-    "jsonfile": "^6.1.0"
+    "jsonfile": "^6.1.0",
+    "simple-git": "^3.4.0"
   },
   "devDependencies": {
     "@abmao/eslint-config-ts": "^0.0.1",
