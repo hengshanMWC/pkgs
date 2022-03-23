@@ -1,7 +1,12 @@
 import { Context } from './scripts'
 import type { CMD } from './scripts'
-export async function executeCommand (cmd: CMD, packagesPath?: string) {
-  const context = new Context()
-  await context.initData(packagesPath)
+import type { ExecuteCommandOptions } from './scripts/defaultOptions'
+
+export async function executeCommand (
+  cmd: CMD,
+  options?: ExecuteCommandOptions,
+) {
+  const context = new Context(options)
+  await context.initData()
   context.cmdAnalysis(cmd)
 }
