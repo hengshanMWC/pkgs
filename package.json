@@ -1,7 +1,7 @@
 {
   "name": "@abmao/pkgs",
   "version": "0.0.1",
-  "description": "Sync packages version number",
+  "description": "simple monorepo",
   "keywords": [
     "monorepo",
     "packages",
