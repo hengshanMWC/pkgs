@@ -1,7 +1,7 @@
 import { execSync } from 'child_process'
 import { readFile, writeFile } from 'jsonfile'
 import type { IPackageJson } from '@ts-type/package-dts'
-import { gitSave } from '../git'
+import { gitSyncSave } from '../git'
 import type { Context } from '../index'
 export function cmdVersion (context: Context) {
   if (context.options.mode === 'sync') {
@@ -12,25 +12,25 @@ export function cmdVersion (context: Context) {
   }
 }
 export async function handleSyncVersion (context: Context) {
-  const { version: oldVersion } = await readFile('package.json')
-
-  execSync('npx bumpp', { stdio: 'inherit' })
-
-  const { version } = await readFile('package.json') as IPackageJson
-
+  const { version, oldVersion } = await changeVersion('package.json')
   if (oldVersion === version) {
     console.log('canceled: The version has not changed')
     process.exit()
   }
-  await context.forPack(async function (packageJSON, index, context) {
+  await context.forSyncPack(async function (packageJSON, index, context) {
     packageJSON.version = version
     await writeFile(context.filesPath[index], packageJSON, { spaces: 2 })
   })
-  await gitSave(version)
+  await gitSyncSave(
+    version as string,
+    context.options.version.commitMessage,
+  )
 }
 export async function handleDiffVersion (context: Context) {
   const files = await context.getChangeFiles('v')
-  console.log(files)
+  console.log(files,
+    context.contextAnalysisDiagram)
+  // await gitDiffSave()
   // const { version: oldVersion } = await readFile('package.json')
 
   // execSync('npx bumpp', { stdio: 'inherit' })
@@ -41,9 +41,17 @@ export async function handleDiffVersion (context: Context) {
   //   console.log('canceled: The version has not changed')
   //   process.exit()
   // }
-  // await context.forPack(async function (packageJSON, index, context) {
+  // await context.forSyncPack(async function (packageJSON, index, context) {
   //   packageJSON.version = version
   //   await writeFile(context.filesPath[index], packageJSON, { spaces: 2 })
   // })
-  // await gitSave(version)
+  // await gitSyncSave(version)
+}
+export async function changeVersion (packagePath: string) {
+  const { version: oldVersion } = await readFile(packagePath) as IPackageJson
+
+  execSync('npx bumpp', { stdio: 'inherit' })
+
+  const { version } = await readFile(packagePath) as IPackageJson
+  return { version, oldVersion }
 }

@@ -4,7 +4,7 @@ import type { ExecuteCommandOptions } from './scripts/defaultOptions'
 
 export async function executeCommand (
   cmd: CMD,
-  options?: ExecuteCommandOptions,
+  options?: Partial<ExecuteCommandOptions>,
 ) {
   const context = new Context(options)
   await context.initData()

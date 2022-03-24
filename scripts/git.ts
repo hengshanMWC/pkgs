@@ -1,25 +1,67 @@
 import { execSync } from 'child_process'
-import type { IPackageJson } from '@ts-type/package-dts'
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
+import type { ExecuteCommandOptions } from './defaultOptions'
 export type TagType = 'p' | 'v'
-export function gitSave (version: IPackageJson['version']) {
+const _tagMessage = 'pkgs update tag'
+export function gitSyncSave (
+  version: string,
+  message: string,
+) {
   execSync('git add .', { stdio: 'inherit' })
-  execSync(`git commit -m 'chore: release v${version}'`, { stdio: 'inherit' })
-  execSync(`git tag -a v${version} -m 'v${version}'`, { stdio: 'inherit' })
+  execSync(`git commit -m '${message}v${version}'`, { stdio: 'inherit' })
+  gitSyncTag('v', version)
 }
-
-export async function getTag (type: TagType, git: SimpleGit = simpleGit()) {
+export function gitSyncTag (
+  type: TagType,
+  version: string,
+) {
+  const tagMessage = version ? `v${version}` : _tagMessage
+  execSync(
+    `git tag -a v${version}-${type} -m ${tagMessage}`,
+    { stdio: 'inherit' },
+  )
+}
+export function gitDiffSave (
+  nameAntVersionPackages: string[],
+  message: string,
+) {
+  const packagesMessage = nameAntVersionPackages
+    .reduce((total, text) => `${total}\n-${text}`, '\n')
+  // execSync('git add .', { stdio: 'inherit' })
+  execSync(
+    `git commit -m '${message}${packagesMessage || _tagMessage}'`,
+    { stdio: 'inherit' },
+  )
+  gitDiffTag('v', packagesMessage)
+}
+export function gitDiffTag (
+  type: TagType,
+  packagesMessage = _tagMessage,
+) {
+  execSync(
+    `git tag -a diff${Date.now()}-${type} -m '${packagesMessage}'`,
+    { stdio: 'inherit' },
+  )
+}
+export async function getTag (
+  type: TagType,
+  mode: ExecuteCommandOptions['mode'],
+  git: SimpleGit = simpleGit(),
+) {
+  const modeCondition = mode === 'sync' ? 'v' : 'diff'
   const tags = await git.tag([
     '-l',
-    `v*-${type}`,
+    `${modeCondition}*-${type}`,
     '-n',
     '--sort=taggerdate',
     '--format',
     '%(refname:short)',
   ])
-  // v1.0.0-p,-p证明是publish过的节点
-  const versionRegExp = new RegExp(`^(v\\d+\\.\\d+\\.\\d+)(.+)?(-${type}$)`)
+  // 获取gittag
+  const versionRegExp = new RegExp(
+    `^(${modeCondition}\\d+\\.\\d+\\.\\d+)(.+)?(-${type}$)`,
+  )
   const tagArr = tags.trim().split('\n').reverse()
   return tagArr.find(item => versionRegExp.test(item))
 }

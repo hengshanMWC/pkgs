@@ -1,2 +1,4 @@
 import { executeCommand } from '../index'
-executeCommand('version')
+executeCommand('publish', {
+  mode: 'diff',
+})

@@ -12,13 +12,22 @@ import {
   getTagCommitId,
   getChangeFiles,
 } from './git'
+
+export interface AnalysisDiagramObject {
+  packageJSON: IPackageJson
+  filePath: string
+  relyMy: string[]
+  myRely: string[]
+}
+export type ContextAnalysisDiagram = Record<string, AnalysisDiagramObject>
 export class Context {
   options: ExecuteCommandOptions
   rootPackage!: IPackageJson
   dirs!: string[]
   filesPath!: string[]
   packagesJSON!: IPackageJson[]
-  constructor (options: ExecuteCommandOptions = {}) {
+  contextAnalysisDiagram!: ContextAnalysisDiagram
+  constructor (options: Partial<ExecuteCommandOptions> = {}) {
     this.options = Object.assign(defaultOptions, options)
   }
 
@@ -29,6 +38,79 @@ export class Context {
     this.dirs = dirs
     this.filesPath = filesPath
     this.packagesJSON = await getPackagesJSON(filesPath)
+    this.createContextAnalysisDiagram(dirs, filesPath, this.packagesJSON)
+  }
+
+  createContextAnalysisDiagram (
+    dirs: string[],
+    filesPath: string[],
+    packagesJSON: IPackageJson[],
+  ) {
+    const packagesName = this.getPackagesName(packagesJSON)
+    const relyMyMap = this.createRelyMyMap(packagesName)
+    this.contextAnalysisDiagram = {}
+    dirs.forEach((dir, index) => {
+      const packageJSON = packagesJSON[index]
+      this.setRelyMyhMap(dir, packageJSON, relyMyMap)
+      this.contextAnalysisDiagram[dir] = {
+        packageJSON,
+        filePath: filesPath[index],
+        relyMy: relyMyMap[packageJSON.name as string],
+        myRely: this.getMyRely(packagesName, packageJSON),
+      }
+    })
+  }
+
+  getPackagesName (packagesJSON: IPackageJson[]): string[] {
+    return packagesJSON
+      .map(item => item.name)
+      .filter(item => item !== undefined) as string []
+  }
+
+  createRelyMyMap (packagesName: string[]) {
+    const result: Record<string, string[]> = {}
+    packagesName.forEach(item => {
+      result[item] = []
+    })
+    return result
+  }
+
+  setRelyMyhMap (
+    dir: string,
+    packageJSON: IPackageJson,
+    relyMyMp: Record<string, string[]>,
+  ) {
+    const dependencies = this.getRely(packageJSON)
+    if (!Object.keys(dependencies).length) {
+      // 没有依赖直接跳过
+      return
+    }
+    Object.keys(relyMyMp)
+      .forEach(key => {
+        const dependenciesValue = dependencies[key]
+        if (dependenciesValue && !dependenciesValue.includes('workspace:*')) {
+          relyMyMp[key].push(dir)
+        }
+      })
+  }
+
+  getMyRely (packagesName: string[], packageJSON: IPackageJson) {
+    const result: string[] = []
+    const dependencies = this.getRely(packageJSON)
+    packagesName.forEach(key => {
+      const dependenciesValue = dependencies[key]
+      if (dependenciesValue && !dependenciesValue.includes('workspace:*')) {
+        result.push(key)
+      }
+    })
+    return result
+  }
+
+  getRely (packageJSON: IPackageJson) {
+    return {
+      ...packageJSON.devDependencies,
+      ...packageJSON.dependencies,
+    }
   }
 
   cmdAnalysis (cmd: CMD) {
@@ -41,7 +123,7 @@ export class Context {
     }
   }
 
-  async forPack (callback: ForPackCallback) {
+  async forSyncPack (callback: ForPackCallback) {
     for (let index = 0; index < this.packagesJSON.length; index++) {
       await callback(
         this.packagesJSON[index],
@@ -51,10 +133,21 @@ export class Context {
     }
   }
 
+  // async forDiffPack (callback: ForPackCallback, type: TagType) {
+  //   const files = await this.getChangeFiles(type)
+  //   for (let index = 0; index < this.packagesJSON.length; index++) {
+  //     await callback(
+  //       this.packagesJSON[index],
+  //       index,
+  //       this,
+  //     )
+  //   }
+  // }
+
   async getChangeFiles
   (type: TagType): Promise<string[] | boolean | undefined> {
     const git = simpleGit()
-    const tag = await getTag(type, git)
+    const tag = await getTag(type, this.options.mode, git)
     // 没有打过标记
     if (!tag) {
       return true
@@ -62,6 +155,11 @@ export class Context {
     const tagCommitId = await getTagCommitId(tag, git)
     const newestCommitId = await getNewestCommitId(git)
     return getChangeFiles(newestCommitId, tagCommitId as string, git)
+  }
+
+  getNameAntVersionPackages (dir: string) {
+    const packageJSON = this.contextAnalysisDiagram[dir].packageJSON
+    return `${packageJSON.name}@${packageJSON.version}`
   }
 }
 export type CMD = 'version' | 'publish'
