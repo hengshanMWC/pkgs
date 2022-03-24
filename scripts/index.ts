@@ -2,6 +2,12 @@ import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
 import simpleGit from 'simple-git'
 import { getPackagesJSON } from './utils'
+import {
+  getPackagesName,
+  createRelyMyMap,
+  setRelyMyhMap,
+  getMyRely,
+} from './utils/analysisDiagram'
 import { cmdVersion, cmdPublish } from './cmd'
 import type { ExecuteCommandOptions } from './defaultOptions'
 import { defaultOptions } from './defaultOptions'
@@ -46,71 +52,19 @@ export class Context {
     filesPath: string[],
     packagesJSON: IPackageJson[],
   ) {
-    const packagesName = this.getPackagesName(packagesJSON)
-    const relyMyMap = this.createRelyMyMap(packagesName)
+    const packagesName = getPackagesName(packagesJSON)
+    const relyMyMap = createRelyMyMap(packagesName)
     this.contextAnalysisDiagram = {}
     dirs.forEach((dir, index) => {
       const packageJSON = packagesJSON[index]
-      this.setRelyMyhMap(dir, packageJSON, relyMyMap)
+      setRelyMyhMap(dir, packageJSON, relyMyMap)
       this.contextAnalysisDiagram[dir] = {
         packageJSON,
         filePath: filesPath[index],
         relyMy: relyMyMap[packageJSON.name as string],
-        myRely: this.getMyRely(packagesName, packageJSON),
+        myRely: getMyRely(packagesName, packageJSON),
       }
     })
-  }
-
-  getPackagesName (packagesJSON: IPackageJson[]): string[] {
-    return packagesJSON
-      .map(item => item.name)
-      .filter(item => item !== undefined) as string []
-  }
-
-  createRelyMyMap (packagesName: string[]) {
-    const result: Record<string, string[]> = {}
-    packagesName.forEach(item => {
-      result[item] = []
-    })
-    return result
-  }
-
-  setRelyMyhMap (
-    dir: string,
-    packageJSON: IPackageJson,
-    relyMyMp: Record<string, string[]>,
-  ) {
-    const dependencies = this.getRely(packageJSON)
-    if (!Object.keys(dependencies).length) {
-      // 没有依赖直接跳过
-      return
-    }
-    Object.keys(relyMyMp)
-      .forEach(key => {
-        const dependenciesValue = dependencies[key]
-        if (dependenciesValue && !dependenciesValue.includes('workspace:*')) {
-          relyMyMp[key].push(dir)
-        }
-      })
-  }
-
-  getMyRely (packagesName: string[], packageJSON: IPackageJson) {
-    const result: string[] = []
-    const dependencies = this.getRely(packageJSON)
-    packagesName.forEach(key => {
-      const dependenciesValue = dependencies[key]
-      if (dependenciesValue && !dependenciesValue.includes('workspace:*')) {
-        result.push(key)
-      }
-    })
-    return result
-  }
-
-  getRely (packageJSON: IPackageJson) {
-    return {
-      ...packageJSON.devDependencies,
-      ...packageJSON.dependencies,
-    }
   }
 
   cmdAnalysis (cmd: CMD) {
