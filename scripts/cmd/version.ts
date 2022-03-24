@@ -17,10 +17,11 @@ export async function handleSyncVersion (context: Context) {
     console.log('canceled: The version has not changed')
     process.exit()
   }
-  await context.forSyncPack(async function (packageJSON, index, context) {
+  for (let index = 0; index < context.packagesJSON.length; index++) {
+    const packageJSON = context.packagesJSON[index]
     packageJSON.version = version
     await writeFile(context.filesPath[index], packageJSON, { spaces: 2 })
-  })
+  }
   await gitSyncSave(
     version as string,
     context.options.version.commitMessage,

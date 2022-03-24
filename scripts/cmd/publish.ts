@@ -10,18 +10,16 @@ export function cmdPublish (context: Context) {
   }
 }
 export async function handleSyncPublish (context: Context) {
-  implementPublish(context.rootPackage)
-  return context.forSyncPack(async function (packageJSON, index, context) {
-    await implementPublish(packageJSON, context.dirs[index])
-  })
+  for (let index = 0; index < context.allPackagesJSON.length; index++) {
+    await implementPublish(
+      context.allPackagesJSON[index],
+      context.allDirs[index],
+    )
+  }
 }
 export async function handleDiffPublish (context: Context) {
   const files = await context.getChangeFiles('p')
   console.log(files)
-  // implementPublish(context.rootPackage)
-  // context.forSyncPack(function (packageJSON, index, context) {
-  //   implementPublish(packageJSON, context.dirs[index])
-  // })
 }
 export async function implementPublish (
   packageJSON: IPackageJson<any>,

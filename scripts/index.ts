@@ -28,7 +28,6 @@ export interface AnalysisDiagramObject {
 export type ContextAnalysisDiagram = Record<string, AnalysisDiagramObject>
 export class Context {
   options: ExecuteCommandOptions
-  rootPackage!: IPackageJson
   contextAnalysisDiagram!: ContextAnalysisDiagram
   constructor (options: Partial<ExecuteCommandOptions> = {}) {
     this.options = Object.assign(defaultOptions, options)
@@ -37,19 +36,53 @@ export class Context {
   async initData () {
     const rootFIle = 'package.json'
     const [rootPackage] = await getPackagesJSON([rootFIle])
-    this.rootPackage = rootPackage
     const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
     const packagesJSON = await getPackagesJSON(filesPath)
     this.createContextAnalysisDiagram(
-      dirs,
-      filesPath,
-      packagesJSON,
+      ['', ...dirs],
+      [rootFIle, ...filesPath],
+      [rootPackage, ...packagesJSON],
     )
+  }
+
+  get rootPackage () {
+    return this.contextAnalysisDiagram?.[''] || {}
+  }
+
+  get allDirs () {
+    if (this.contextAnalysisDiagram) {
+      return Object.keys(this.contextAnalysisDiagram).map(key => key)
+    }
+    else {
+      return []
+    }
+  }
+
+  get allFilesPath () {
+    if (this.contextAnalysisDiagram) {
+      return Object.keys(this.contextAnalysisDiagram)
+        .map(key => this.contextAnalysisDiagram[key].filePath)
+    }
+    else {
+      return []
+    }
+  }
+
+  get allPackagesJSON () {
+    if (this.contextAnalysisDiagram) {
+      return Object.keys(this.contextAnalysisDiagram)
+        .map(key => this.contextAnalysisDiagram[key].packageJSON)
+    }
+    else {
+      return []
+    }
   }
 
   get dirs () {
     if (this.contextAnalysisDiagram) {
-      return Object.keys(this.contextAnalysisDiagram).map(key => key)
+      return Object.keys(this.contextAnalysisDiagram)
+        .filter(item => item)
+        .map(key => key)
     }
     else {
       return []
@@ -59,6 +92,7 @@ export class Context {
   get filesPath () {
     if (this.contextAnalysisDiagram) {
       return Object.keys(this.contextAnalysisDiagram)
+        .filter(item => item)
         .map(key => this.contextAnalysisDiagram[key].filePath)
     }
     else {
@@ -69,6 +103,7 @@ export class Context {
   get packagesJSON () {
     if (this.contextAnalysisDiagram) {
       return Object.keys(this.contextAnalysisDiagram)
+        .filter(item => item)
         .map(key => this.contextAnalysisDiagram[key].packageJSON)
     }
     else {
@@ -106,18 +141,9 @@ export class Context {
     }
   }
 
-  async forSyncPack (callback: ForPackCallback) {
-    for (let index = 0; index < this.packagesJSON.length; index++) {
-      await callback(
-        this.packagesJSON[index],
-        index,
-        this,
-      )
-    }
-  }
-
   // async forDiffPack (callback: ForPackCallback, type: TagType) {
   //   const files = await this.getChangeFiles(type)
+  //   const dirtyPackagesDir = this.getDirtyPackagesDir(files)
   //   for (let index = 0; index < this.packagesJSON.length; index++) {
   //     await callback(
   //       this.packagesJSON[index],
@@ -138,6 +164,20 @@ export class Context {
     const tagCommitId = await getTagCommitId(tag, git)
     const newestCommitId = await getNewestCommitId(git)
     return getChangeFiles(newestCommitId, tagCommitId as string, git)
+  }
+
+  getDirtyPackagesDir (files: string[] | boolean | undefined) {
+    if (files === true) {
+      return Object.keys(this.contextAnalysisDiagram)
+    }
+    else if (Array.isArray(files)) {
+      return Object
+        .keys(this.contextAnalysisDiagram)
+        .filter(key => files.some(file => file.includes(key)))
+    }
+    else {
+      return []
+    }
   }
 
   getNameAntVersionPackages (dir: string) {
