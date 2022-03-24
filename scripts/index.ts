@@ -29,22 +29,51 @@ export type ContextAnalysisDiagram = Record<string, AnalysisDiagramObject>
 export class Context {
   options: ExecuteCommandOptions
   rootPackage!: IPackageJson
-  dirs!: string[]
-  filesPath!: string[]
-  packagesJSON!: IPackageJson[]
   contextAnalysisDiagram!: ContextAnalysisDiagram
   constructor (options: Partial<ExecuteCommandOptions> = {}) {
     this.options = Object.assign(defaultOptions, options)
   }
 
   async initData () {
-    const [rootPackage] = await getPackagesJSON(['package.json'])
+    const rootFIle = 'package.json'
+    const [rootPackage] = await getPackagesJSON([rootFIle])
     this.rootPackage = rootPackage
     const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
-    this.dirs = dirs
-    this.filesPath = filesPath
-    this.packagesJSON = await getPackagesJSON(filesPath)
-    this.createContextAnalysisDiagram(dirs, filesPath, this.packagesJSON)
+    const packagesJSON = await getPackagesJSON(filesPath)
+    this.createContextAnalysisDiagram(
+      dirs,
+      filesPath,
+      packagesJSON,
+    )
+  }
+
+  get dirs () {
+    if (this.contextAnalysisDiagram) {
+      return Object.keys(this.contextAnalysisDiagram).map(key => key)
+    }
+    else {
+      return []
+    }
+  }
+
+  get filesPath () {
+    if (this.contextAnalysisDiagram) {
+      return Object.keys(this.contextAnalysisDiagram)
+        .map(key => this.contextAnalysisDiagram[key].filePath)
+    }
+    else {
+      return []
+    }
+  }
+
+  get packagesJSON () {
+    if (this.contextAnalysisDiagram) {
+      return Object.keys(this.contextAnalysisDiagram)
+        .map(key => this.contextAnalysisDiagram[key].packageJSON)
+    }
+    else {
+      return []
+    }
   }
 
   createContextAnalysisDiagram (
