@@ -141,17 +141,17 @@ export class Context {
     }
   }
 
-  // async forDiffPack (callback: ForPackCallback, type: TagType) {
-  //   const files = await this.getChangeFiles(type)
-  //   const dirtyPackagesDir = this.getDirtyPackagesDir(files)
-  //   for (let index = 0; index < this.packagesJSON.length; index++) {
-  //     await callback(
-  //       this.packagesJSON[index],
-  //       index,
-  //       this,
-  //     )
-  //   }
-  // }
+  async forDiffPack (callback: ForPackCallback, type: TagType) {
+    const files = await this.getChangeFiles(type)
+    const dirtyPackagesDir = this.getDirtyPackagesDir(files)
+    for (let index = 0; index < dirtyPackagesDir.length; index++) {
+      await callback(
+        this.contextAnalysisDiagram[dirtyPackagesDir[index]],
+        index,
+        this,
+      )
+    }
+  }
 
   async getChangeFiles
   (type: TagType): Promise<string[] | boolean | undefined> {

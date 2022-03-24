@@ -28,9 +28,9 @@ export async function handleSyncVersion (context: Context) {
   )
 }
 export async function handleDiffVersion (context: Context) {
-  const files = await context.getChangeFiles('v')
-  console.log(files,
-    context.contextAnalysisDiagram)
+  await context.forDiffPack(await function (analysisDiagram, index) {
+    console.log(analysisDiagram, index)
+  }, 'v')
   // await gitDiffSave()
   // const { version: oldVersion } = await readFile('package.json')
 
@@ -42,10 +42,6 @@ export async function handleDiffVersion (context: Context) {
   //   console.log('canceled: The version has not changed')
   //   process.exit()
   // }
-  // await context.forSyncPack(async function (packageJSON, index, context) {
-  //   packageJSON.version = version
-  //   await writeFile(context.filesPath[index], packageJSON, { spaces: 2 })
-  // })
   // await gitSyncSave(version)
 }
 export async function changeVersion (packagePath: string) {
