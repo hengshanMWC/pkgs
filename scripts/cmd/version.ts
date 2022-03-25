@@ -3,10 +3,10 @@ import { readFile, writeFile } from 'jsonfile'
 import type { IPackageJson } from '@ts-type/package-dts'
 import colors from 'colors'
 import { gitSyncSave, gitDiffSave } from '../git'
-import type { Context, AnalysisDiagramObject } from '../index'
+import type { Context, AnalysisBlockamObject } from '../index'
 import { versionText } from '../utils/regExp'
 import { getRelyAttrs } from '../utils/analysisDiagram'
-export type SetAnalysisDiagramObject = Set<AnalysisDiagramObject>
+export type SetAnalysisBlockamObject = Set<AnalysisBlockamObject>
 export function cmdVersion (context: Context) {
   if (context.options.mode === 'sync') {
     return handleSyncVersion(context)
@@ -36,7 +36,7 @@ export async function handleSyncVersion (context: Context) {
   )
 }
 export async function handleDiffVersion (context: Context) {
-  const triggerSign: SetAnalysisDiagramObject = new Set()
+  const triggerSign: SetAnalysisBlockamObject = new Set()
   await changeVersionResult(context, triggerSign)
   await writeJSONs(triggerSign)
   await gitDiffSave(
@@ -48,22 +48,22 @@ export async function handleDiffVersion (context: Context) {
 }
 export async function changeVersionResult (
   context: Context,
-  triggerSign: SetAnalysisDiagramObject,
+  triggerSign: SetAnalysisBlockamObject,
 ) {
-  await context.forDiffPack(async function (analysisDiagram, dir) {
-    await changeVersionResultItem(context, analysisDiagram, dir, triggerSign)
+  await context.forDiffPack(async function (analysisBlockam, dir) {
+    await changeVersionResultItem(context, analysisBlockam, dir, triggerSign)
   }, 'v')
 }
 export async function changeVersionResultItem (
   context: Context,
-  analysisDiagram: AnalysisDiagramObject,
+  analysisBlockam: AnalysisBlockamObject,
   dir: string,
-  triggerSign: SetAnalysisDiagramObject,
+  triggerSign: SetAnalysisBlockamObject,
 ) {
-  const { packageJSON, filePath } = analysisDiagram
+  const { packageJSON, filePath } = analysisBlockam
 
-  if (triggerSign.has(analysisDiagram)) return
-  triggerSign.add(analysisDiagram)
+  if (triggerSign.has(analysisBlockam)) return
+  triggerSign.add(analysisBlockam)
 
   const oldVersion = packageJSON.version
   console.log(colors.white.bold(`package: ${packageJSON.name}`))
@@ -71,42 +71,42 @@ export async function changeVersionResultItem (
 
   if (version !== oldVersion) {
     packageJSON.version = version
-    await changeDiffRelyMyDirItem(context, analysisDiagram, triggerSign)
+    await changeDiffRelyMyDirItem(context, analysisBlockam, triggerSign)
   }
 }
 // export async function changeDiffRelyMyDir (
 //   context: Context,
-//   changePackages: AnalysisDiagramObject[],
-//   triggerSign: SetAnalysisDiagramObject,
+//   changePackages: AnalysisBlockamObject[],
+//   triggerSign: SetAnalysisBlockamObject,
 // ) {
-//   changePackages.forEach(async analysisDiagram => {
-//     await changeDiffRelyMyDirItem(context, analysisDiagram, triggerSign)
+//   changePackages.forEach(async analysisBlockam => {
+//     await changeDiffRelyMyDirItem(context, analysisBlockam, triggerSign)
 //   })
 // }
 export async function changeDiffRelyMyDirItem (
   context: Context,
-  analysisDiagram: AnalysisDiagramObject,
-  triggerSign: SetAnalysisDiagramObject,
+  analysisBlockam: AnalysisBlockamObject,
+  triggerSign: SetAnalysisBlockamObject,
 ) {
   const versionRegExp = new RegExp(versionText)
   const relyAttrs = getRelyAttrs().reverse()
-  const name = analysisDiagram.packageJSON.name as string
-  const relyMyDir = analysisDiagram.relyMyDir
+  const name = analysisBlockam.packageJSON.name as string
+  const relyMyDir = analysisBlockam.relyMyDir
 
   for (let i = 0; i < relyMyDir.length; i++) {
     const relyDir = relyMyDir[i]
-    const analysisDiagramRelyMyDir = context.contextAnalysisDiagram[relyDir]
-    const packageJSON = analysisDiagramRelyMyDir.packageJSON
+    const analysisBlockamRelyMyDir = context.contextAnalysisDiagram[relyDir]
+    const packageJSON = analysisBlockamRelyMyDir.packageJSON
     const relyAttr = relyAttrs.find(key => packageJSON[key][name]) as string
 
     packageJSON[relyAttr][name] =
       packageJSON[relyAttr][name]
-        .replace(versionRegExp, analysisDiagram.packageJSON.version)
+        .replace(versionRegExp, analysisBlockam.packageJSON.version)
 
-    if (!triggerSign.has(analysisDiagramRelyMyDir)) {
+    if (!triggerSign.has(analysisBlockamRelyMyDir)) {
       await changeVersionResultItem(
         context,
-        analysisDiagramRelyMyDir,
+        analysisBlockamRelyMyDir,
         relyDir,
         triggerSign,
       )
@@ -114,7 +114,7 @@ export async function changeDiffRelyMyDirItem (
   }
 }
 export function writeJSONs (
-  triggerSign: SetAnalysisDiagramObject,
+  triggerSign: SetAnalysisBlockamObject,
 ) {
   return Promise.all([...triggerSign].map(({ filePath, packageJSON }) => {
     return writeFile(filePath, packageJSON, { spaces: 2 })
