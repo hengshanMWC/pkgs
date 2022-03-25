@@ -12,7 +12,7 @@ specifiers:
   '@types/validate-npm-package-name': ^3.0.3
   bumpp: ^7.1.1
   camelcase: ^6.3.0
-  chalk: ^5.0.1
+  colors: ^1.4.0
   commander: ^9.0.0
   esbuild-register: ^3.3.2
   eslint: ^8.11.0
@@ -27,6 +27,7 @@ specifiers:
 
 dependencies:
   '@abmao/forb': 1.0.3
+  colors: 1.4.0
   commander: 9.0.0
   jsonfile: 6.1.0
   simple-git: 3.4.0
@@ -42,7 +43,6 @@ devDependencies:
   '@types/validate-npm-package-name': 3.0.3
   bumpp: 7.1.1
   camelcase: 6.3.0
-  chalk: 5.0.1
   esbuild-register: 3.3.2
   eslint: 8.11.0
   esno: 0.14.1
@@ -845,11 +845,6 @@ packages:
       supports-color: 7.2.0
     dev: true
 
-  /chalk/5.0.1:
-    resolution: {integrity: sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==}
-    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
-    dev: true
-
   /character-entities-legacy/1.1.4:
     resolution: {integrity: sha512-3Xnr+7ZFS1uxeiUDvV02wQ+QDbc55o97tIV5zHScSPJpcLm/r0DFPcoY3tYRp+VZukxuMeKgXYmsXQHO05zQeA==}
     dev: true
@@ -901,6 +896,11 @@ packages:
   /color-name/1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
     dev: true
+
+  /colors/1.4.0:
+    resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==}
+    engines: {node: '>=0.1.90'}
+    dev: false
 
   /command-line-args/5.2.1:
     resolution: {integrity: sha512-H4UfQhZyakIjC74I9d34fGYDwk3XpSr17QhEd0Q3I9Xq1CETHo4Hcuo87WyWHpAF1aSLjLRf5lD9ZGX2qStUvg==}

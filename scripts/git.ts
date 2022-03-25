@@ -2,6 +2,7 @@ import { execSync } from 'child_process'
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import type { ExecuteCommandOptions } from './defaultOptions'
+import { versionNumberText } from './utils/regExp'
 export type TagType = 'p' | 'v'
 const _tagMessage = 'pkgs update tag'
 export function gitSyncSave (
@@ -60,7 +61,7 @@ export async function getTag (
   ])
   // 获取gittag
   const versionRegExp = new RegExp(
-    `^(${modeCondition}\\d+\\.\\d+\\.\\d+)(.+)?(-${type}$)`,
+    `^(${modeCondition}${versionNumberText})(.+)?(-${type}$)`,
   )
   const tagArr = tags.trim().split('\n').reverse()
   return tagArr.find(item => versionRegExp.test(item))

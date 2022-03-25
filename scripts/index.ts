@@ -145,8 +145,10 @@ export class Context {
     const files = await this.getChangeFiles(type)
     const dirtyPackagesDir = this.getDirtyPackagesDir(files)
     for (let index = 0; index < dirtyPackagesDir.length; index++) {
+      const dir = dirtyPackagesDir[index]
       await callback(
-        this.contextAnalysisDiagram[dirtyPackagesDir[index]],
+        this.contextAnalysisDiagram[dir],
+        dir,
         index,
         this,
       )
@@ -191,7 +193,8 @@ export interface CMDArgs {
   cache: boolean
 }
 export type ForPackCallback = (
-  packageJSON: IPackageJson,
+  analysisDiagram: AnalysisDiagramObject,
+  dir: string,
   index: number,
-  ctx: Context
+  context: Context
 ) => Promise<any> | void

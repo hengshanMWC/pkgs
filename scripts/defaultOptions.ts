@@ -14,9 +14,9 @@ export const defaultOptions: ExecuteCommandOptions = {
   rootPackageIgnore: false,
   mode: 'sync',
   version: {
-    commitMessage: 'chore: upgrade version',
+    commitMessage: 'chore: version',
   },
   publish: {
-    commitMessage: 'chore: release publish',
+    commitMessage: 'chore: publish',
   },
 }

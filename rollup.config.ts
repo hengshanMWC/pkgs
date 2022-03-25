@@ -10,9 +10,9 @@ import camelcase from 'camelcase' // 转驼峰拼写
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import esbuild from 'rollup-plugin-esbuild'
-import chalk from 'chalk'
+import colors from 'colors'
 import { name } from './package.json'
-const timeTag = chalk.cyan('build')
+const timeTag = colors.cyan('build')
 console.time(timeTag)
 let moduleName = name
 // 检查是否是合法的 npm 包名
@@ -121,8 +121,8 @@ function buildEntry (config: RollupOptions) {
 function write (dest: string, code: Buffer | string) {
   return new Promise((resolve, reject) => {
     function report (extra: string) {
-      const destPath = chalk.green(path.relative(process.cwd(), dest))
-      const size = chalk.yellow(getSize(code) + extra)
+      const destPath = colors.green(path.relative(process.cwd(), dest))
+      const size = colors.yellow(getSize(code) + extra)
       console.log(`${destPath} ${size}`)
       resolve(size)
     }

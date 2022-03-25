@@ -35,6 +35,7 @@
   "homepage": "https://github.com/hengshanMWC/pkgs#readme",
   "dependencies": {
     "@abmao/forb": "^1.0.3",
+    "colors": "^1.4.0",
     "commander": "^9.0.0",
     "jsonfile": "^6.1.0",
     "simple-git": "^3.4.0"
@@ -50,7 +51,6 @@
     "@types/validate-npm-package-name": "^3.0.3",
     "bumpp": "^7.1.1",
     "camelcase": "^6.3.0",
-    "chalk": "^5.0.1",
     "esbuild-register": "^3.3.2",
     "eslint": "^8.11.0",
     "esno": "^0.14.1",

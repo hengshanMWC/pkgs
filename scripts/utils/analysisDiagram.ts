@@ -41,8 +41,14 @@ export function getMyRely (packagesName: string[], packageJSON: IPackageJson) {
   return result
 }
 export function getRely (packageJSON: IPackageJson) {
-  return {
-    ...packageJSON.devDependencies,
-    ...packageJSON.dependencies,
-  }
+  const result: IPackageJson['dependencies'] = {}
+  const relyAttrs = getRelyAttrs()
+  relyAttrs.forEach(attr => Object.assign(result, packageJSON[attr]))
+  return result
+}
+export function getRelyAttrs () {
+  return [
+    'devDependencies',
+    'dependencies',
+  ]
 }
