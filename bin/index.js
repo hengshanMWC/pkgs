@@ -14,12 +14,14 @@ program
 program
   .command('version')
   .option('-m, --mode [type]', 'sync || diff', 'sync')
+  .description('mode: sync | diff')
   .action(cmd => {
     handleExecuteCommand('version', cmd)
   })
 program
   .command('publish')
   .option('-m, --mode [type]', 'sync || diff', 'sync')
+  .description('mode: sync | diff')
   .action(cmd => {
     handleExecuteCommand('publish', cmd)
   })

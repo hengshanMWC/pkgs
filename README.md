@@ -1,5 +1,5 @@
 # Overview
-simple monorepo，Only `version` and `publish` commands are provided
+配合`pnpm`的一个简单`monorepo`，提供了`version`和`publish`命令
 # Usage
 ```shell
 npm i -g @abmao/pkgs
@@ -8,8 +8,41 @@ pkgs publish
 ```
 
 ## Commands
-- versoin: Upgrade the `version` of all `package.json`
-- publish: `Publish` all non private `package.json`
+```
+pkgs -h
+------------
+Usage: pkgs [options] [command]
+
+Simple and easy to use monorepos
+
+Options:
+  -V, --version      output the version number
+  -h, --help         display help for command
+
+Commands:
+  version [options]  mode: sync | diff
+  publish [options]  mode: sync | diff
+  help [command]     display help for command
+```
+### versoin
+pkgs versoin
+
+升级package版本号
+#### options
+-m --mode: 默认sync
+- sync: 升级所有package版本号
+- diff: 升级修改过的package版本号
+
+### publish
+pkgs publish
+
+升级package版本号
+#### options
+-m --mode: 默认sync
+- sync: 发布所有package
+- diff: 发布修改过的package
+
+
 
 # Function list
 - [x] mode：sync
