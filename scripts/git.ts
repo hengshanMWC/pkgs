@@ -31,7 +31,7 @@ export function gitDiffSave (
     .reduce((total, text) => `${total}\n-${text}`, '\n')
   // execSync('git add .', { stdio: 'inherit' })
   execSync(
-    `git commit -m '${message}${packagesMessage || _tagMessage}'`,
+    `git commit -am '${message}${packagesMessage || _tagMessage}'`,
     { stdio: 'inherit' },
   )
   gitDiffTag('v', packagesMessage)
