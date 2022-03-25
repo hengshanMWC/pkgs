@@ -17,3 +17,10 @@ pkgs publish
 - [ ] Supplementary test
 - [ ] Add cache
 - [ ] Add config
+
+# Features
+使用`version`和`publish`会打上不同的gittag
+- pkgs version: v`${version}`-v-pkg
+- pkgs publish: sync`${Date.now()}`-p-pkg
+- pkgs version -m diff: sync`${Date.now()}`-v-pkg
+- pkgs publish -m diff: sync`${Date.now()}`-p-pkg
