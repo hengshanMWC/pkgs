@@ -51,6 +51,10 @@ export function getRely (packageJSON: IPackageJson) {
 }
 export function getRelyAttrs () {
   return [
+    'bundleDependencies',
+    'bundledDependencies',
+    'optionalDependencies',
+    'peerDependencies',
     'devDependencies',
     'dependencies',
   ]
