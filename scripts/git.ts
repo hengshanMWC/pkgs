@@ -1,6 +1,7 @@
 import { execSync } from 'child_process'
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
+import colors from 'colors'
 import type { ExecuteCommandOptions } from './defaultOptions'
 import { versionNumberText } from './utils/regExp'
 export type TagType = 'p' | 'v'
@@ -110,7 +111,7 @@ export async function getChangeFiles (
     .map(item => item.split('|')[0].trim())
   arr.pop()
   if (!arr.length) {
-    console.warn('No new commit')
+    console.warn(colors.yellow.bold('No new commit'))
     process.exit()
   }
   return arr
