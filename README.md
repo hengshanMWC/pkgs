@@ -1,5 +1,5 @@
 # Overview
-配合`pnpm`的一个简单`monorepo`，提供了`version`和`publish`命令
+结合`pnpm`的`monorepo`工具，提供了`version`和`publish`命令
 # Usage
 ```shell
 npm i -g @abmao/pkgs
