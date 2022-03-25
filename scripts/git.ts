@@ -2,7 +2,6 @@ import { execSync } from 'child_process'
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import colors from 'colors'
-import { versionNumberText } from './utils/regExp'
 export type TagType = 'p' | 'v'
 const _tagMessage = 'pkgs update tag'
 export function gitSyncSave (
@@ -16,7 +15,7 @@ export function gitSyncTag (
   version?: string,
 ) {
   execSync(
-    `git tag -a v${version}-v -m '${version}'`,
+    `git tag -a v${version}-v-pkg -m '${version}'`,
     { stdio: 'inherit' },
   )
 }
@@ -24,7 +23,7 @@ export function gitSyncPublishTag (
   tagMessage: string = _tagMessage,
 ) {
   execSync(
-    `git tag -a sync${Date.now()}-p -m '${tagMessage}'`,
+    `git tag -a sync${Date.now()}-p-pkg -m '${tagMessage}'`,
     { stdio: 'inherit' },
   )
 }
@@ -45,7 +44,7 @@ export function gitDiffTag (
   packagesMessage = _tagMessage,
 ) {
   execSync(
-    `git tag -a diff${Date.now()}-${type} -m '${packagesMessage}'`,
+    `git tag -a diff${Date.now()}-${type}-pkg -m '${packagesMessage}'`,
     { stdio: 'inherit' },
   )
 }
@@ -53,10 +52,9 @@ export async function getTag (
   type: TagType,
   git: SimpleGit = simpleGit(),
 ) {
-  const modeCondition = `(${versionNumberText} | v | sync)`
   const tags = await git.tag([
     '-l',
-    `${modeCondition}*-${type}`,
+    `*-${type}-pkg`,
     '-n',
     '--sort=taggerdate',
     '--format',
@@ -64,7 +62,7 @@ export async function getTag (
   ])
   // 获取gittag
   const versionRegExp = new RegExp(
-    `^(${modeCondition}\\d+)(.+)?(-${type}$)`,
+    `-${type}-pkg$`,
   )
   const tagArr = tags.trim().split('\n').reverse()
   return tagArr.find(item => versionRegExp.test(item))
