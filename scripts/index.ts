@@ -4,9 +4,9 @@ import simpleGit from 'simple-git'
 import { getPackagesJSON } from './utils'
 import {
   getPackagesName,
-  createRelyMyMap,
-  setRelyMyhMap,
-  getMyRely,
+  createRelyMyDirMap,
+  setRelyMyDirhMap,
+  getMyRelyPackageName,
 } from './utils/analysisDiagram'
 import { cmdVersion, cmdPublish } from './cmd'
 import type { ExecuteCommandOptions } from './defaultOptions'
@@ -22,8 +22,8 @@ import {
 export interface AnalysisDiagramObject {
   packageJSON: IPackageJson
   filePath: string
-  relyMy: string[]
-  myRely: string[]
+  relyMyDir: string[]
+  myRelyPackageName: string[]
 }
 export type ContextAnalysisDiagram = Record<string, AnalysisDiagramObject>
 export class Context {
@@ -117,16 +117,16 @@ export class Context {
     packagesJSON: IPackageJson[],
   ) {
     const packagesName = getPackagesName(packagesJSON)
-    const relyMyMap = createRelyMyMap(packagesName)
+    const relyMyMap = createRelyMyDirMap(packagesName)
     this.contextAnalysisDiagram = {}
     dirs.forEach((dir, index) => {
       const packageJSON = packagesJSON[index]
-      setRelyMyhMap(dir, packageJSON, relyMyMap)
+      setRelyMyDirhMap(dir, packageJSON, relyMyMap)
       this.contextAnalysisDiagram[dir] = {
         packageJSON,
         filePath: filesPath[index],
-        relyMy: relyMyMap[packageJSON.name as string],
-        myRely: getMyRely(packagesName, packageJSON),
+        relyMyDir: relyMyMap[packageJSON.name as string],
+        myRelyPackageName: getMyRelyPackageName(packagesName, packageJSON),
       }
     })
   }

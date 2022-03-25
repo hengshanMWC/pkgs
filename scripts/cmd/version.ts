@@ -71,19 +71,19 @@ export async function changeVersionResultItem (
 
   if (version !== oldVersion) {
     packageJSON.version = version
-    await changeDiffRelyMyItem(context, analysisDiagram, triggerSign)
+    await changeDiffRelyMyDirItem(context, analysisDiagram, triggerSign)
   }
 }
-// export async function changeDiffRelyMy (
+// export async function changeDiffRelyMyDir (
 //   context: Context,
 //   changePackages: AnalysisDiagramObject[],
 //   triggerSign: SetAnalysisDiagramObject,
 // ) {
 //   changePackages.forEach(async analysisDiagram => {
-//     await changeDiffRelyMyItem(context, analysisDiagram, triggerSign)
+//     await changeDiffRelyMyDirItem(context, analysisDiagram, triggerSign)
 //   })
 // }
-export async function changeDiffRelyMyItem (
+export async function changeDiffRelyMyDirItem (
   context: Context,
   analysisDiagram: AnalysisDiagramObject,
   triggerSign: SetAnalysisDiagramObject,
@@ -91,22 +91,22 @@ export async function changeDiffRelyMyItem (
   const versionRegExp = new RegExp(versionText)
   const relyAttrs = getRelyAttrs().reverse()
   const name = analysisDiagram.packageJSON.name as string
-  const relyMy = analysisDiagram.relyMy
+  const relyMyDir = analysisDiagram.relyMyDir
 
-  for (let i = 0; i < relyMy.length; i++) {
-    const relyDir = relyMy[i]
-    const analysisDiagramRelyMy = context.contextAnalysisDiagram[relyDir]
-    const packageJSON = analysisDiagramRelyMy.packageJSON
+  for (let i = 0; i < relyMyDir.length; i++) {
+    const relyDir = relyMyDir[i]
+    const analysisDiagramRelyMyDir = context.contextAnalysisDiagram[relyDir]
+    const packageJSON = analysisDiagramRelyMyDir.packageJSON
     const relyAttr = relyAttrs.find(key => packageJSON[key][name]) as string
 
     packageJSON[relyAttr][name] =
       packageJSON[relyAttr][name]
         .replace(versionRegExp, analysisDiagram.packageJSON.version)
 
-    if (!triggerSign.has(analysisDiagramRelyMy)) {
+    if (!triggerSign.has(analysisDiagramRelyMyDir)) {
       await changeVersionResultItem(
         context,
-        analysisDiagramRelyMy,
+        analysisDiagramRelyMyDir,
         relyDir,
         triggerSign,
       )

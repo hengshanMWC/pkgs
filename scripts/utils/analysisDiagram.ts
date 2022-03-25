@@ -4,14 +4,14 @@ export function getPackagesName (packagesJSON: IPackageJson[]): string[] {
     .map(item => item.name)
     .filter(item => item !== undefined) as string []
 }
-export function createRelyMyMap (packagesName: string[]) {
+export function createRelyMyDirMap (packagesName: string[]) {
   const result: Record<string, string[]> = {}
   packagesName.forEach(item => {
     result[item] = []
   })
   return result
 }
-export function setRelyMyhMap (
+export function setRelyMyDirhMap (
   dir: string,
   packageJSON: IPackageJson,
   relyMyMp: Record<string, string[]>,
@@ -29,7 +29,10 @@ export function setRelyMyhMap (
       }
     })
 }
-export function getMyRely (packagesName: string[], packageJSON: IPackageJson) {
+export function getMyRelyPackageName (
+  packagesName: string[],
+  packageJSON: IPackageJson,
+) {
   const result: string[] = []
   const dependencies = getRely(packageJSON)
   packagesName.forEach(key => {
