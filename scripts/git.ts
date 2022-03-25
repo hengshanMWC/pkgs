@@ -9,8 +9,7 @@ export function gitSyncSave (
   version: string,
   message: string,
 ) {
-  execSync('git add .', { stdio: 'inherit' })
-  execSync(`git commit -m '${message}v${version}'`, { stdio: 'inherit' })
+  execSync(`git commit -am '${message}v${version}'`, { stdio: 'inherit' })
   gitSyncTag('v', version)
 }
 export function gitSyncTag (
@@ -29,7 +28,6 @@ export function gitDiffSave (
 ) {
   const packagesMessage = nameAntVersionPackages
     .reduce((total, text) => `${total}\n- ${text}`, '\n')
-  // execSync('git add .', { stdio: 'inherit' })
   execSync(
     `git commit -am '${message}${packagesMessage || _tagMessage}'`,
     { stdio: 'inherit' },
