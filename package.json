@@ -17,6 +17,10 @@
   },
   "main": "dist/pkgs.cjs.min.js",
   "module": "dist/pkgs.esm.min.js",
+  "files": [
+    "bin",
+    "dist"
+  ],
   "bin": {
     "pkgs": "bin/index.js"
   },
