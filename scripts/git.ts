@@ -48,7 +48,16 @@ export async function getTag (
   mode: ExecuteCommandOptions['mode'],
   git: SimpleGit = simpleGit(),
 ) {
-  const modeCondition = mode === 'sync' ? 'v' : 'diff'
+  let modeCondition: string
+  let modeNumber: string
+  if (mode === 'sync') {
+    modeCondition = 'v'
+    modeNumber = versionNumberText
+  }
+  else {
+    modeCondition = 'diff'
+    modeNumber = '\\d+'
+  }
   const tags = await git.tag([
     '-l',
     `${modeCondition}*-${type}`,
@@ -59,7 +68,7 @@ export async function getTag (
   ])
   // 获取gittag
   const versionRegExp = new RegExp(
-    `^(${modeCondition}${versionNumberText})(.+)?(-${type}$)`,
+    `^(${modeCondition}${modeNumber})(.+)?(-${type}$)`,
   )
   const tagArr = tags.trim().split('\n').reverse()
   return tagArr.find(item => versionRegExp.test(item))
@@ -100,5 +109,9 @@ export async function getChangeFiles (
     .split('\n')
     .map(item => item.split('|')[0].trim())
   arr.pop()
+  if (!arr.length) {
+    console.warn('No new commit')
+    process.exit()
+  }
   return arr
 }
