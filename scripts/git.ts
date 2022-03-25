@@ -28,7 +28,7 @@ export function gitDiffSave (
   message: string,
 ) {
   const packagesMessage = nameAntVersionPackages
-    .reduce((total, text) => `${total}\n-${text}`, '\n')
+    .reduce((total, text) => `${total}\n- ${text}`, '\n')
   // execSync('git add .', { stdio: 'inherit' })
   execSync(
     `git commit -am '${message}${packagesMessage || _tagMessage}'`,
