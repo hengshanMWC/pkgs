@@ -13,7 +13,7 @@ pkgs publish
 
 # Function list
 - [x] mode：sync
-- [ ] mode：diff
+- [x] mode：diff
 - [ ] Supplementary test
 - [ ] Add cache
 - [ ] Add config
