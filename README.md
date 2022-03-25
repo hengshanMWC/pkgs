@@ -15,7 +15,6 @@ pkgs publish
 - [x] mode：sync
 - [x] mode：diff
 - [ ] Supplementary test
-- [ ] Add cache
 - [ ] Add config
 
 # Features
