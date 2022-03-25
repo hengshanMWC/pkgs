@@ -19,13 +19,14 @@ import {
   getChangeFiles,
 } from './git'
 
-export interface AnalysisBlockamObject {
+export interface AnalysisBlockObject {
   packageJSON: IPackageJson
   filePath: string
   relyMyDir: string[]
   myRelyPackageName: string[]
 }
-export type ContextAnalysisDiagram = Record<string, AnalysisBlockamObject>
+export type ContextAnalysisDiagram = Record<string, AnalysisBlockObject>
+export type SetAnalysisBlockObject = Set<AnalysisBlockObject>
 export class Context {
   options: ExecuteCommandOptions
   contextAnalysisDiagram!: ContextAnalysisDiagram
@@ -193,7 +194,7 @@ export interface CMDArgs {
   cache: boolean
 }
 export type ForPackCallback = (
-  analysisBlockam: AnalysisBlockamObject,
+  analysisBlock: AnalysisBlockObject,
   dir: string,
   index: number,
   context: Context

@@ -8,3 +8,6 @@ export async function getPackagesJSON (dirs: string[]) {
 
   return result
 }
+export function fixCWD (cwd?: string) {
+  return cwd || '/'
+}

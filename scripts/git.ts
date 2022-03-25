@@ -33,7 +33,7 @@ export function gitDiffSave (
     `git commit -am '${message}${packagesMessage || _tagMessage}'`,
     { stdio: 'inherit' },
   )
-  gitDiffTag('v', packagesMessage)
+  gitDiffTag('v')
 }
 export function gitDiffTag (
   type: TagType,

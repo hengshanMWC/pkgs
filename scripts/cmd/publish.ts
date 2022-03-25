@@ -1,6 +1,8 @@
 import { execSync } from 'child_process'
 import type { IPackageJson } from '@ts-type/package-dts'
 import type { Context } from '../index'
+import { gitDiffTag } from '../git'
+import { fixCWD } from '../utils'
 export function cmdPublish (context: Context) {
   if (context.options.mode === 'sync') {
     return handleSyncPublish(context)
@@ -16,10 +18,13 @@ export async function handleSyncPublish (context: Context) {
       context.allDirs[index],
     )
   }
+  gitDiffTag('p')
 }
 export async function handleDiffPublish (context: Context) {
-  const files = await context.getChangeFiles('p')
-  console.log(files)
+  await context.forDiffPack(async function (analysisBlock, dir) {
+    await implementPublish(analysisBlock.packageJSON, dir)
+  }, 'p')
+  gitDiffTag('p')
 }
 export async function implementPublish (
   packageJSON: IPackageJson<any>,
@@ -30,7 +35,7 @@ export async function implementPublish (
     if (packageJSON.version?.includes('beta')) { command += ' --tag beta' }
     execSync(command, {
       stdio: 'inherit',
-      cwd,
+      cwd: fixCWD(cwd),
     })
   }
 }
