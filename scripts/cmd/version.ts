@@ -8,7 +8,7 @@ import type {
   AnalysisBlockObject,
   SetAnalysisBlockObject,
 } from '../index'
-import { fixCWD } from '../utils'
+import { cdDir } from '../utils'
 import { versionText } from '../utils/regExp'
 import { getRelyAttrs } from '../utils/analysisDiagram'
 
@@ -110,12 +110,10 @@ export function writeJSONs (
     return writeFile(filePath, packageJSON, { spaces: 2 })
   }))
 }
-export async function changeVersion (packagePath: string, cwd?: string) {
-  const command = 'npx bumpp'
-  execSync(command, {
-    stdio: 'inherit',
-    cwd: fixCWD(cwd),
-  })
+
+export async function changeVersion (packagePath: string, dir?: string) {
+  const command = `${cdDir(dir)}npx bumpp`
+  execSync(command, { stdio: 'inherit' })
 
   const { version } = await readFile(packagePath) as IPackageJson
   return version

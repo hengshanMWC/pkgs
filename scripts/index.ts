@@ -159,7 +159,7 @@ export class Context {
   async getChangeFiles
   (type: TagType): Promise<string[] | boolean | undefined> {
     const git = simpleGit()
-    const tag = await getTag(type, this.options.mode, git)
+    const tag = await getTag(type, git)
     // 没有打过标记
     if (!tag) {
       return true
