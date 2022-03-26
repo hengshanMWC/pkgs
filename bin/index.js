@@ -3,25 +3,27 @@ const { program } = require('commander')
 const { executeCommand } = require('../dist/pkgs.cjs.min')
 const pkg = require('../package.json')
 function handleExecuteCommand (type, cmd) {
-  const mode = cmd.mode !== true ? cmd.mode : 'sync'
   executeCommand(type, {
-    mode,
+    [type]: cmd,
   })
 }
 program
   .version(pkg.version)
-  .description('Simple and easy to use monorepos')
+  .description('Simple monorepo combined with pnpm')
 program
   .command('version')
-  .option('-m, --mode [type]', 'sync || diff', 'sync')
-  .description('mode: sync | diff')
+  .description('version package')
+  .option('--mode <type>', 'sync | diff')
+  .option('-m, --message <message>', 'commit message')
   .action(cmd => {
     handleExecuteCommand('version', cmd)
   })
 program
   .command('publish')
-  .option('-m, --mode [type]', 'sync || diff', 'sync')
-  .description('mode: sync | diff')
+  .description('publish package')
+  .option('--mode <type>', 'sync | diff')
+  .option('--tag <type>', 'npm publish --tag <type>')
+  .option('-m, --message <message>', 'commit message')
   .action(cmd => {
     handleExecuteCommand('publish', cmd)
   })

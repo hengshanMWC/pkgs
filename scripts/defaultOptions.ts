@@ -1,22 +1,29 @@
+export type Type = 'sync' | 'diff'
 export interface ExecuteCommandOptions {
   packagesPath: string
   rootPackageIgnore: boolean
-  mode: 'sync' | 'diff'
+  mode: Type
   version: {
-    commitMessage: string
+    message: string
+    mode: Type
   }
   publish: {
-    commitMessage: string
+    message: string
+    mode: Type
+    tag: string
   }
 }
 export const defaultOptions: ExecuteCommandOptions = {
   packagesPath: 'packages/*',
-  rootPackageIgnore: false,
+  rootPackageIgnore: true,
   mode: 'sync',
   version: {
-    commitMessage: 'chore: version',
+    message: 'chore: version',
+    mode: 'sync',
   },
   publish: {
-    commitMessage: 'chore: publish',
+    message: 'chore: publish',
+    mode: 'sync',
+    tag: '',
   },
 }

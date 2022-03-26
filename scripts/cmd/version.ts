@@ -37,7 +37,7 @@ export async function handleSyncVersion (context: Context) {
 
   await gitSyncSave(
     version as string,
-    context.options.version.commitMessage,
+    context.options.version.message,
   )
 }
 export async function handleDiffVersion (context: Context) {
@@ -50,7 +50,7 @@ export async function handleDiffVersion (context: Context) {
     [...triggerSign].map(({ packageJSON }) => {
       return `${packageJSON.name as string}@${packageJSON.version}`
     }),
-    context.options.version.commitMessage,
+    context.options.version.message,
   )
 }
 export async function changeVersionResultItem (

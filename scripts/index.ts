@@ -10,7 +10,6 @@ import {
 } from './utils/analysisDiagram'
 import { cmdVersion, cmdPublish } from './cmd'
 import type { ExecuteCommandOptions } from './defaultOptions'
-import { defaultOptions } from './defaultOptions'
 import type { TagType } from './git'
 import {
   getTag,
@@ -30,8 +29,8 @@ export type SetAnalysisBlockObject = Set<AnalysisBlockObject>
 export class Context {
   options: ExecuteCommandOptions
   contextAnalysisDiagram!: ContextAnalysisDiagram
-  constructor (options: Partial<ExecuteCommandOptions> = {}) {
-    this.options = Object.assign(defaultOptions, options)
+  constructor (options: ExecuteCommandOptions) {
+    this.options = options
   }
 
   async initData () {
