@@ -30,16 +30,16 @@ export async function handleSyncVersion (context: Context) {
     process.exit()
   }
   for (let index = 0; index < context.packagesJSON.length; index++) {
-    const packageJSON = context.packagesJSON[index]
-    const analysisBlock = context.packageJSONToAnalysisBlock(packageJSON)
-    packageJSON.version = version
+    const packageJson = context.packagesJSON[index]
+    const analysisBlock = context.packageJsonToAnalysisBlock(packageJson)
+    packageJson.version = version
     if (analysisBlock) {
       await changeRelyMyVersion(
         context,
         analysisBlock,
       )
     }
-    await writeFile(context.filesPath[index], packageJSON, { spaces: 2 })
+    await writeFile(context.filesPath[index], packageJson, { spaces: 2 })
   }
 
   await gitSyncSave(
@@ -54,8 +54,8 @@ export async function handleDiffVersion (context: Context) {
   }, 'v')
   await writeJSONs(triggerSign)
   await gitDiffSave(
-    [...triggerSign].map(({ packageJSON }) => {
-      return `${packageJSON.name as string}@${packageJSON.version}`
+    [...triggerSign].map(({ packageJson }) => {
+      return `${packageJson.name as string}@${packageJson.version}`
     }),
     context.options.version.message,
   )
@@ -66,17 +66,17 @@ export async function changeVersionResultItem (
   dir: string,
   triggerSign: SetAnalysisBlockObject,
 ) {
-  const { packageJSON, filePath } = analysisBlock
+  const { packageJson, filePath } = analysisBlock
 
   if (triggerSign.has(analysisBlock)) return
   triggerSign.add(analysisBlock)
 
-  const oldVersion = packageJSON.version
-  console.log(colors.white.bold(`package: ${packageJSON.name}`))
+  const oldVersion = packageJson.version
+  console.log(colors.white.bold(`package: ${packageJson.name}`))
   const version = await changeVersion(filePath, dir)
 
   if (version !== oldVersion) {
-    packageJSON.version = version
+    packageJson.version = version
     await changeRelyMyVersion(context, analysisBlock, triggerSign)
   }
 }
@@ -87,18 +87,18 @@ export async function changeRelyMyVersion (
 ) {
   const versionRegExp = new RegExp(versionText)
   const relyAttrs = getRelyAttrs().reverse()
-  const name = analysisBlock.packageJSON.name as string
+  const name = analysisBlock.packageJson.name as string
   const relyMyDir = analysisBlock.relyMyDir
 
   for (let i = 0; i < relyMyDir.length; i++) {
     const relyDir = relyMyDir[i]
     const analysisBlockRelyMyDir = context.contextAnalysisDiagram[relyDir]
-    const packageJSON = analysisBlockRelyMyDir.packageJSON
-    const relyAttr = relyAttrs.find(key => packageJSON[key][name]) as string
+    const packageJson = analysisBlockRelyMyDir.packageJson
+    const relyAttr = relyAttrs.find(key => packageJson[key][name]) as string
 
-    packageJSON[relyAttr][name] =
-      packageJSON[relyAttr][name]
-        .replace(versionRegExp, analysisBlock.packageJSON.version)
+    packageJson[relyAttr][name] =
+      packageJson[relyAttr][name]
+        .replace(versionRegExp, analysisBlock.packageJson.version)
 
     if (triggerSign && !triggerSign.has(analysisBlockRelyMyDir)) {
       await changeVersionResultItem(
@@ -113,8 +113,8 @@ export async function changeRelyMyVersion (
 export function writeJSONs (
   triggerSign: SetAnalysisBlockObject,
 ) {
-  return Promise.all([...triggerSign].map(({ filePath, packageJSON }) => {
-    return writeFile(filePath, packageJSON, { spaces: 2 })
+  return Promise.all([...triggerSign].map(({ filePath, packageJson }) => {
+    return writeFile(filePath, packageJson, { spaces: 2 })
   }))
 }
 

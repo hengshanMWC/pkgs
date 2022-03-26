@@ -20,7 +20,7 @@ import {
 } from './git'
 
 export interface AnalysisBlockObject {
-  packageJSON: IPackageJson
+  packageJson: IPackageJson
   filePath: string
   relyMyDir: string[]
   myRelyPackageName: string[]
@@ -68,7 +68,7 @@ export class Context {
   get allPackagesJSON () {
     if (this.contextAnalysisDiagram) {
       return Object.keys(this.contextAnalysisDiagram)
-        .map(key => this.contextAnalysisDiagram[key].packageJSON)
+        .map(key => this.contextAnalysisDiagram[key].packageJson)
     }
     else {
       return []
@@ -101,7 +101,7 @@ export class Context {
     if (this.contextAnalysisDiagram) {
       return Object.keys(this.contextAnalysisDiagram)
         .filter(item => item)
-        .map(key => this.contextAnalysisDiagram[key].packageJSON)
+        .map(key => this.contextAnalysisDiagram[key].packageJson)
     }
     else {
       return []
@@ -141,10 +141,10 @@ export class Context {
     }
   }
 
-  packageJSONToAnalysisBlock (packageJSON: IPackageJson) {
+  packageJsonToAnalysisBlock (packageJson: IPackageJson) {
     for (const key in this.contextAnalysisDiagram) {
       const analysisBlock = this.contextAnalysisDiagram[key]
-      if (analysisBlock.packageJSON === packageJSON) {
+      if (analysisBlock.packageJson === packageJson) {
         return analysisBlock
       }
     }
@@ -159,13 +159,13 @@ export class Context {
     const relyMyMap = createRelyMyDirMap(packagesName)
     this.contextAnalysisDiagram = {}
     dirs.forEach((dir, index) => {
-      const packageJSON = packagesJSON[index]
-      setRelyMyDirhMap(dir, packageJSON, relyMyMap)
+      const packageJson = packagesJSON[index]
+      setRelyMyDirhMap(dir, packageJson, relyMyMap)
       this.contextAnalysisDiagram[dir] = {
-        packageJSON,
+        packageJson,
         filePath: filesPath[index],
-        relyMyDir: relyMyMap[packageJSON.name as string],
-        myRelyPackageName: getMyRelyPackageName(packagesName, packageJSON),
+        relyMyDir: relyMyMap[packageJson.name as string],
+        myRelyPackageName: getMyRelyPackageName(packagesName, packageJson),
       }
     })
   }
@@ -212,8 +212,8 @@ export class Context {
   }
 
   getNameAntVersionPackages (dir: string) {
-    const packageJSON = this.contextAnalysisDiagram[dir].packageJSON
-    return `${packageJSON.name}@${packageJSON.version}`
+    const packageJson = this.contextAnalysisDiagram[dir].packageJson
+    return `${packageJson.name}@${packageJson.version}`
   }
 }
 export type CMD = 'version' | 'publish'

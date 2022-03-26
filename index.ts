@@ -7,12 +7,12 @@ export async function executeCommand (
   cmd: CMD,
   options: Partial<ExecuteCommandOptions> = {},
 ) {
-  const packageJSON =
+  const packageJson =
     await readJSON('pkgs.json') as Partial<ExecuteCommandOptions>
   // const fixOptions =
   //   cmdOptions<ExecuteCommandOptions, CMD>(cmd, options, defaultOptions)
   const context = new Context(
-    assign<ExecuteCommandOptions>(defaultOptions, packageJSON, options),
+    assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
   )
   // console.log(context.options)
   await context.initData()

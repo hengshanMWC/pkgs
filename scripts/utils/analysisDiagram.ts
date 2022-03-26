@@ -13,10 +13,10 @@ export function createRelyMyDirMap (packagesName: string[]) {
 }
 export function setRelyMyDirhMap (
   dir: string,
-  packageJSON: IPackageJson,
+  packageJson: IPackageJson,
   relyMyMp: Record<string, string[]>,
 ) {
-  const dependencies = getRely(packageJSON)
+  const dependencies = getRely(packageJson)
   if (!Object.keys(dependencies).length) {
     // 没有依赖直接跳过
     return
@@ -31,10 +31,10 @@ export function setRelyMyDirhMap (
 }
 export function getMyRelyPackageName (
   packagesName: string[],
-  packageJSON: IPackageJson,
+  packageJson: IPackageJson,
 ) {
   const result: string[] = []
-  const dependencies = getRely(packageJSON)
+  const dependencies = getRely(packageJson)
   packagesName.forEach(key => {
     const dependenciesValue = dependencies[key]
     if (dependenciesValue && !dependenciesValue.includes('workspace:*')) {
@@ -43,10 +43,10 @@ export function getMyRelyPackageName (
   })
   return result
 }
-export function getRely (packageJSON: IPackageJson) {
+export function getRely (packageJson: IPackageJson) {
   const result: IPackageJson['dependencies'] = {}
   const relyAttrs = getRelyAttrs()
-  relyAttrs.forEach(attr => Object.assign(result, packageJSON[attr]))
+  relyAttrs.forEach(attr => Object.assign(result, packageJson[attr]))
   return result
 }
 export function getRelyAttrs () {
