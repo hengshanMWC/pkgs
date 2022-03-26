@@ -30,7 +30,7 @@ program
 
 program
   .command('tag')
-  .description('Tag identified by Pkgs on tag')
+  .description('pkgs tag, diff mode: Compare according to tag')
   .option('-p', 'publish tag')
   .option('-v', 'version tag')
   .action(cmd => {
