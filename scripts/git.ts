@@ -10,7 +10,7 @@ export function gitSyncSave (
   version: string,
   message: string,
 ) {
-  execSync(`git commit -am '${message}v${version}'`, { stdio: 'inherit' })
+  execSync(`git commit -am '${message} v${version}'`, { stdio: 'inherit' })
   gitSyncTag(version)
 }
 export function gitSyncTag (
