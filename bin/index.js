@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const { program } = require('commander')
-const { executeCommand } = require('../dist/pkgs.cjs.min')
+const { executeCommand, executeCommandTag } = require('../dist/pkgs.cjs.min')
 const pkg = require('../package.json')
 function handleExecuteCommand (type, cmd) {
   executeCommand(type, {
@@ -26,5 +26,14 @@ program
   .option('-m, --message <message>', 'commit message')
   .action(cmd => {
     handleExecuteCommand('publish', cmd)
+  })
+
+program
+  .command('tag')
+  .description('Tag identified by Pkgs on tag')
+  .option('-p', 'publish tag')
+  .option('-v', 'version tag')
+  .action(cmd => {
+    executeCommandTag(cmd.p ? 'p' : 'v')
   })
 program.parse(process.argv)
