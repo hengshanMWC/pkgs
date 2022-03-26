@@ -141,6 +141,15 @@ export class Context {
     }
   }
 
+  packageJSONToAnalysisBlock (packageJSON: IPackageJson) {
+    for (const key in this.contextAnalysisDiagram) {
+      const analysisBlock = this.contextAnalysisDiagram[key]
+      if (analysisBlock.packageJSON === packageJSON) {
+        return analysisBlock
+      }
+    }
+  }
+
   createContextAnalysisDiagram (
     dirs: string[],
     filesPath: string[],

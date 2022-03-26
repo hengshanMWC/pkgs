@@ -29,10 +29,16 @@ export async function handleSyncVersion (context: Context) {
     console.log('canceled: The version has not changed')
     process.exit()
   }
-
   for (let index = 0; index < context.packagesJSON.length; index++) {
     const packageJSON = context.packagesJSON[index]
+    const analysisBlock = context.packageJSONToAnalysisBlock(packageJSON)
     packageJSON.version = version
+    if (analysisBlock) {
+      await changeRelyMyVersion(
+        context,
+        analysisBlock,
+      )
+    }
     await writeFile(context.filesPath[index], packageJSON, { spaces: 2 })
   }
 
@@ -71,13 +77,13 @@ export async function changeVersionResultItem (
 
   if (version !== oldVersion) {
     packageJSON.version = version
-    await changeDiffRelyMyDirItem(context, analysisBlock, triggerSign)
+    await changeRelyMyVersion(context, analysisBlock, triggerSign)
   }
 }
-export async function changeDiffRelyMyDirItem (
+export async function changeRelyMyVersion (
   context: Context,
   analysisBlock: AnalysisBlockObject,
-  triggerSign: SetAnalysisBlockObject,
+  triggerSign?: SetAnalysisBlockObject,
 ) {
   const versionRegExp = new RegExp(versionText)
   const relyAttrs = getRelyAttrs().reverse()
@@ -94,7 +100,7 @@ export async function changeDiffRelyMyDirItem (
       packageJSON[relyAttr][name]
         .replace(versionRegExp, analysisBlock.packageJSON.version)
 
-    if (!triggerSign.has(analysisBlockRelyMyDir)) {
+    if (triggerSign && !triggerSign.has(analysisBlockRelyMyDir)) {
       await changeVersionResultItem(
         context,
         analysisBlockRelyMyDir,
