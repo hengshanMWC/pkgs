@@ -22,17 +22,27 @@ export async function handleSyncPublish (context: Context) {
 }
 export async function handleDiffPublish (context: Context) {
   await context.forDiffPack(async function (analysisBlock, dir) {
-    await implementPublish(analysisBlock.packageJSON, dir)
+    await implementPublish(
+      analysisBlock.packageJSON,
+      dir,
+      context.options.publish.tag,
+    )
   }, 'p')
   gitDiffTag('p')
 }
 export async function implementPublish (
   packageJSON: IPackageJson<any>,
   dir?: string,
+  tag?: string,
 ) {
   if (!packageJSON.private) {
     let command = `${cdDir(dir)}npm publish --access public`
-    if (packageJSON.version?.includes('beta')) { command += ' --tag beta' }
+    if (tag) {
+      command += ` --tag ${tag}`
+    }
+    else if (packageJSON.version?.includes('beta')) {
+      command += ' --tag beta'
+    }
     execSync(command)
   }
 }
