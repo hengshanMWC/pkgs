@@ -11,6 +11,7 @@ import type {
 import { cdDir, warn } from '../utils'
 import { versionText } from '../utils/regExp'
 import { getRelyAttrs } from '../utils/analysisDiagram'
+import { WARN_NOW_VERSION } from '../constant'
 
 export function cmdVersion (context: Context) {
   const mode = context.getCorrectOptionValue<'mode'>('version', 'mode')
@@ -26,7 +27,7 @@ export async function handleSyncVersion (context: Context) {
   const version = await changeVersion('package.json')
 
   if (oldVersion === version) {
-    warn('canceled: The version has not changed')
+    warn(WARN_NOW_VERSION)
     process.exit()
   }
   for (let index = 0; index < context.packagesJSON.length; index++) {

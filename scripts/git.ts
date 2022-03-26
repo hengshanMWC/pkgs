@@ -1,6 +1,7 @@
 import { execSync } from 'child_process'
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
+import { WARN_NOW_CHANGE } from './constant'
 import { warn } from './utils'
 
 export type TagType = 'p' | 'v'
@@ -105,7 +106,7 @@ export async function getChangeFiles (
     .map(item => item.split('|')[0].trim())
   arr.pop()
   if (!arr.length) {
-    warn('No new commit')
+    warn(WARN_NOW_CHANGE)
     process.exit()
   }
   return arr
