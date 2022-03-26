@@ -91,7 +91,8 @@ diff模式是基于git tag进行文件更改分析。场景：当monorepo项目�
 - [x] mode：sync
 - [x] mode：diff
 - [x] Add config
+- [x] publish tag perf
+- [ ] bumpp perf
 - [ ] 语义化
-- [ ] publish tag perf
 - [ ] Supplementary test
 - [ ] Supplementary examples
