@@ -8,7 +8,7 @@ import type {
   AnalysisBlockObject,
   SetAnalysisBlockObject,
 } from '../index'
-import { cdDir } from '../utils'
+import { cdDir, warn } from '../utils'
 import { versionText } from '../utils/regExp'
 import { getRelyAttrs } from '../utils/analysisDiagram'
 
@@ -26,7 +26,7 @@ export async function handleSyncVersion (context: Context) {
   const version = await changeVersion('package.json')
 
   if (oldVersion === version) {
-    console.warn(colors.yellow.bold('canceled: The version has not changed'))
+    warn('canceled: The version has not changed')
     process.exit()
   }
   for (let index = 0; index < context.packagesJSON.length; index++) {

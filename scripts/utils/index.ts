@@ -1,4 +1,5 @@
 import { readFile } from 'jsonfile'
+import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 export async function readJSON (dir: string): Promise<IPackageJson> {
   try {
@@ -66,4 +67,7 @@ export function getAssign<T> (templateObject: any, object: any): T {
   else {
     return object === undefined ? templateObject : object
   }
+}
+export function warn (text: string) {
+  console.warn(colors.yellow.bold(text))
 }

@@ -1,7 +1,8 @@
 import { execSync } from 'child_process'
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
-import colors from 'colors'
+import { warn } from './utils'
+
 export type TagType = 'p' | 'v'
 const _tagMessage = 'pkgs update tag'
 export function gitSyncSave (
@@ -104,7 +105,7 @@ export async function getChangeFiles (
     .map(item => item.split('|')[0].trim())
   arr.pop()
   if (!arr.length) {
-    console.warn(colors.yellow.bold('No new commit'))
+    warn('No new commit')
     process.exit()
   }
   return arr
