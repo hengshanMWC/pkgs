@@ -26,7 +26,7 @@ export async function handleSyncVersion (context: Context) {
   const version = await changeVersion('package.json')
 
   if (oldVersion === version) {
-    console.log('canceled: The version has not changed')
+    console.warn(colors.yellow.bold('canceled: The version has not changed'))
     process.exit()
   }
   for (let index = 0; index < context.packagesJSON.length; index++) {
