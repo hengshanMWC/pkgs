@@ -108,6 +108,26 @@ export class Context {
     }
   }
 
+  createContextAnalysisDiagram (
+    dirs: string[],
+    filesPath: string[],
+    packagesJSON: IPackageJson[],
+  ) {
+    const packagesName = getPackagesName(packagesJSON)
+    const relyMyMap = createRelyMyDirMap(packagesName)
+    this.contextAnalysisDiagram = {}
+    dirs.forEach((dir, index) => {
+      const packageJson = packagesJSON[index]
+      setRelyMyDirhMap(dir, packageJson, relyMyMap)
+      this.contextAnalysisDiagram[dir] = {
+        packageJson,
+        filePath: filesPath[index],
+        relyMyDir: relyMyMap[packageJson.name as string],
+        myRelyPackageName: getMyRelyPackageName(packagesName, packageJson),
+      }
+    })
+  }
+
   getCorrectOptionValue<K extends keyof ExecuteCommandOptions['version']>(
     cmd: 'version', key: keyof ExecuteCommandOptions['version']
   ): ExecuteCommandOptions['version'][K]
@@ -148,26 +168,6 @@ export class Context {
         return analysisBlock
       }
     }
-  }
-
-  createContextAnalysisDiagram (
-    dirs: string[],
-    filesPath: string[],
-    packagesJSON: IPackageJson[],
-  ) {
-    const packagesName = getPackagesName(packagesJSON)
-    const relyMyMap = createRelyMyDirMap(packagesName)
-    this.contextAnalysisDiagram = {}
-    dirs.forEach((dir, index) => {
-      const packageJson = packagesJSON[index]
-      setRelyMyDirhMap(dir, packageJson, relyMyMap)
-      this.contextAnalysisDiagram[dir] = {
-        packageJson,
-        filePath: filesPath[index],
-        relyMyDir: relyMyMap[packageJson.name as string],
-        myRelyPackageName: getMyRelyPackageName(packagesName, packageJson),
-      }
-    })
   }
 
   async forDiffPack (callback: ForPackCallback, type: TagType) {
