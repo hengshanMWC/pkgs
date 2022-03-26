@@ -3,6 +3,7 @@ import type { IPackageJson } from '@ts-type/package-dts'
 import type { Context } from '../index'
 import { gitDiffTag, gitSyncPublishTag } from '../git'
 import { cdDir } from '../utils'
+import { organization } from '../utils/regExp'
 export function cmdPublish (context: Context) {
   const mode = context.getCorrectOptionValue<'mode'>('publish', 'mode')
   if (mode === 'sync') {
@@ -38,7 +39,10 @@ export async function implementPublish (
   tag?: string,
 ) {
   if (!packageJson.private) {
-    let command = `${cdDir(dir)}npm publish --access public`
+    let command = `${cdDir(dir)}npm publish`
+    if (new RegExp(organization).test(packageJson.name as string)) {
+      command += ' --access public'
+    }
     if (tag) {
       command += ` --tag ${tag}`
     }
