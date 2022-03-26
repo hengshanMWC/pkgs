@@ -13,10 +13,11 @@ import { versionText } from '../utils/regExp'
 import { getRelyAttrs } from '../utils/analysisDiagram'
 
 export function cmdVersion (context: Context) {
-  if (context.options.mode === 'sync') {
+  const mode = context.getCorrectOptionValue<'mode'>('version', 'mode')
+  if (mode === 'sync') {
     return handleSyncVersion(context)
   }
-  else if (context.options.mode === 'diff') {
+  else if (mode === 'diff') {
     return handleDiffVersion(context)
   }
 }

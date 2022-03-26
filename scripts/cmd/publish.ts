@@ -4,10 +4,11 @@ import type { Context } from '../index'
 import { gitDiffTag, gitSyncPublishTag } from '../git'
 import { cdDir } from '../utils'
 export function cmdPublish (context: Context) {
-  if (context.options.mode === 'sync') {
+  const mode = context.getCorrectOptionValue<'mode'>('publish', 'mode')
+  if (mode === 'sync') {
     return handleSyncPublish(context)
   }
-  else if (context.options.mode === 'diff') {
+  else if (mode === 'diff') {
     return handleDiffPublish(context)
   }
 }
@@ -16,6 +17,7 @@ export async function handleSyncPublish (context: Context) {
     await implementPublish(
       context.allPackagesJSON[index],
       context.allDirs[index],
+      context.options.publish.tag,
     )
   }
   gitSyncPublishTag()

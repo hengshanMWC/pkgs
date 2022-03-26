@@ -14,6 +14,7 @@ export async function executeCommand (
   const context = new Context(
     assign<ExecuteCommandOptions>(defaultOptions, packageJSON, options),
   )
+  // console.log(context.options)
   await context.initData()
   context.cmdAnalysis(cmd)
 }

@@ -1,3 +1,4 @@
+import { readFile } from 'jsonfile'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
 import simpleGit from 'simple-git'
@@ -35,7 +36,7 @@ export class Context {
 
   async initData () {
     const rootFIle = 'package.json'
-    const [rootPackage] = await getPackagesJSON([rootFIle])
+    const rootPackage = await readFile(rootFIle)
     const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
     const packagesJSON = await getPackagesJSON(filesPath)
     this.createContextAnalysisDiagram(
@@ -43,10 +44,6 @@ export class Context {
       [rootFIle, ...filesPath],
       [rootPackage, ...packagesJSON],
     )
-  }
-
-  get rootPackage () {
-    return this.contextAnalysisDiagram?.[''] || {}
   }
 
   get allDirs () {
@@ -111,6 +108,39 @@ export class Context {
     }
   }
 
+  getCorrectOptionValue<K extends keyof ExecuteCommandOptions['version']>(
+    cmd: 'version', key: keyof ExecuteCommandOptions['version']
+  ): ExecuteCommandOptions['version'][K]
+
+  getCorrectOptionValue<K extends keyof ExecuteCommandOptions['publish']>(
+    cmd: 'publish', key: keyof ExecuteCommandOptions['publish']
+  ): ExecuteCommandOptions['publish'][K]
+
+  getCorrectOptionValue<U extends CMD, K extends keyof ExecuteCommandOptions[U]>
+  (
+    cmd: CMD,
+    key: keyof ExecuteCommandOptions[U],
+  ): ExecuteCommandOptions[U][K] {
+    const options: any = this.options
+    const cmdObject = options[cmd] as ExecuteCommandOptions[U]
+    if (typeof cmdObject === 'object') {
+      return cmdObject[key] === undefined ? options[key] : cmdObject[key]
+    }
+    else {
+      return options[key]
+    }
+  }
+
+  cmdAnalysis (cmd: CMD) {
+    switch (cmd) {
+      case 'version':
+        cmdVersion(this)
+        return
+      case 'publish':
+        cmdPublish(this)
+    }
+  }
+
   createContextAnalysisDiagram (
     dirs: string[],
     filesPath: string[],
@@ -129,16 +159,6 @@ export class Context {
         myRelyPackageName: getMyRelyPackageName(packagesName, packageJSON),
       }
     })
-  }
-
-  cmdAnalysis (cmd: CMD) {
-    switch (cmd) {
-      case 'version':
-        cmdVersion(this)
-        return
-      case 'publish':
-        cmdPublish(this)
-    }
   }
 
   async forDiffPack (callback: ForPackCallback, type: TagType) {
@@ -169,12 +189,12 @@ export class Context {
   }
 
   getDirtyPackagesDir (files: string[] | boolean | undefined) {
+    const keys = Object.keys(this.contextAnalysisDiagram)
     if (files === true) {
-      return Object.keys(this.contextAnalysisDiagram)
+      return keys
     }
     else if (Array.isArray(files)) {
-      return Object
-        .keys(this.contextAnalysisDiagram)
+      return keys
         .filter(key => files.some(file => file.includes(key)))
     }
     else {
