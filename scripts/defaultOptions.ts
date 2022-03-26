@@ -7,7 +7,7 @@ export interface ExecuteCommandVersionOption extends
   message: string
 }
 export interface ExecuteCommandPublishOption extends
-  ExecuteCommandVersionOption {
+  Partial<ExecuteCommandOption> {
   tag: string
 }
 export interface ExecuteCommandOptions extends ExecuteCommandOption {
@@ -24,7 +24,6 @@ export const defaultOptions: ExecuteCommandOptions = {
   },
   publish: {
     mode: undefined,
-    message: 'chore: publish',
     tag: '',
   },
 }
