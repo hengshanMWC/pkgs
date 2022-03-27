@@ -6,6 +6,7 @@ import { cdDir } from '../utils'
 import { organization } from '../utils/regExp'
 export function cmdPublish (context: Context) {
   const mode = context.getCorrectOptionValue<'mode'>('publish', 'mode')
+
   if (mode === 'sync') {
     return handleSyncPublish(context)
   }
@@ -40,15 +41,18 @@ export async function implementPublish (
 ) {
   if (!packageJson.private) {
     let command = `${cdDir(dir)}npm publish`
+
     if (new RegExp(organization).test(packageJson.name as string)) {
       command += ' --access public'
     }
+
     if (tag) {
       command += ` --tag ${tag}`
     }
     else if (packageJson.version?.includes('beta')) {
       command += ' --tag beta'
     }
+
     execSync(command)
   }
 }

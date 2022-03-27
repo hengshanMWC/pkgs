@@ -14,6 +14,7 @@ import { WARN_NOW_VERSION } from '../constant'
 
 export function cmdVersion (context: Context) {
   const mode = context.getCorrectOptionValue<'mode'>('version', 'mode')
+
   if (mode === 'sync') {
     return handleSyncVersion(context)
   }
@@ -29,10 +30,12 @@ export async function handleSyncVersion (context: Context) {
     warn(WARN_NOW_VERSION)
     process.exit()
   }
+
   for (let index = 0; index < context.packagesJSON.length; index++) {
     const packageJson = context.packagesJSON[index]
     const analysisBlock = context.packageJsonToAnalysisBlock(packageJson)
     packageJson.version = version
+
     if (analysisBlock) {
       await changeRelyMyVersion(
         context,
@@ -49,6 +52,7 @@ export async function handleSyncVersion (context: Context) {
 }
 export async function handleDiffVersion (context: Context) {
   const triggerSign: SetAnalysisBlockObject = new Set()
+
   await context.forDiffPack(async function (analysisBlock, dir) {
     await changeVersionResultItem(context, analysisBlock, dir, triggerSign)
   }, 'v')
@@ -113,8 +117,10 @@ export function writeJSONs (
 
 export async function changeVersion (packagePath: string, dir?: string) {
   const command = `${cdDir(dir)}npx bumpp`
+
   execSync(command, { stdio: 'inherit' })
 
   const { version } = await readFile(packagePath) as IPackageJson
+
   return version
 }

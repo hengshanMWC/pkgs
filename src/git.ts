@@ -104,7 +104,9 @@ export async function getChangeFiles (
     .trim()
     .split('\n')
     .map(item => item.split('|')[0].trim())
+
   arr.pop()
+
   if (!arr.length) {
     warn(WARN_NOW_CHANGE)
     process.exit()

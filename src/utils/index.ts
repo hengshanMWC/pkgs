@@ -22,8 +22,8 @@ export function cmdOptions<T extends Object, U extends keyof T> (
   defaultOptions: T,
 ): T {
   const defaultOption = defaultOptions[cmd]
-  // const option = options[cmd] as Partial<Record<keyof T[U], true | string>>
   const option: any = options[cmd]
+
   if (typeof defaultOption === 'object') {
     const result: any = {
       [cmd]: {},

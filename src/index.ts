@@ -2,7 +2,7 @@ import { readFile } from 'jsonfile'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
 import simpleGit from 'simple-git'
-import { getPackagesJSON, warn } from './utils'
+import { getPackagesJSON } from './utils'
 import {
   getPackagesName,
   createRelyMyDirMap,
@@ -39,9 +39,7 @@ export class Context {
     const rootPackage = await readFile(rootFIle)
     const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
     const packagesJSON = await getPackagesJSON(filesPath)
-    if (!packagesJSON.length) {
-      warn('没找到packages')
-    }
+
     this.createContextAnalysisDiagram(
       ['', ...dirs],
       [rootFIle, ...filesPath],
@@ -119,6 +117,7 @@ export class Context {
     const packagesName = getPackagesName(packagesJSON)
     const relyMyMap = createRelyMyDirMap(packagesName)
     this.contextAnalysisDiagram = {}
+
     dirs.forEach((dir, index) => {
       const packageJson = packagesJSON[index]
       setRelyMyDirhMap(dir, packageJson, relyMyMap)
@@ -146,6 +145,7 @@ export class Context {
   ): ExecuteCommandOptions[U][K] {
     const options: any = this.options
     const cmdObject = options[cmd] as ExecuteCommandOptions[U]
+
     if (typeof cmdObject === 'object') {
       return cmdObject[key] === undefined ? options[key] : cmdObject[key]
     }
@@ -167,6 +167,7 @@ export class Context {
   packageJsonToAnalysisBlock (packageJson: IPackageJson) {
     for (const key in this.contextAnalysisDiagram) {
       const analysisBlock = this.contextAnalysisDiagram[key]
+
       if (analysisBlock.packageJson === packageJson) {
         return analysisBlock
       }
@@ -176,8 +177,10 @@ export class Context {
   async forDiffPack (callback: ForPackCallback, type: TagType) {
     const files = await this.getChangeFiles(type)
     const dirtyPackagesDir = this.getDirtyPackagesDir(files)
+
     for (let index = 0; index < dirtyPackagesDir.length; index++) {
       const dir = dirtyPackagesDir[index]
+
       await callback(
         this.contextAnalysisDiagram[dir],
         dir,
@@ -191,12 +194,15 @@ export class Context {
   (type: TagType): Promise<string[] | boolean | undefined> {
     const git = simpleGit()
     const tag = await getTag(type, git)
+
     // 没有打过标记
     if (!tag) {
       return true
     }
+
     const tagCommitId = await getTagCommitId(tag, git)
     const newestCommitId = await getNewestCommitId(git)
+
     return getChangeFiles(newestCommitId, tagCommitId as string, git)
   }
 
