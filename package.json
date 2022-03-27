@@ -6,6 +6,7 @@
     "monorepo",
     "packages",
     "pnpm",
+    "pnpm-workspace",
     "publish",
     "version"
   ],
