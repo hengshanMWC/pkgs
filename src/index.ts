@@ -154,13 +154,13 @@ export class Context {
     }
   }
 
-  cmdAnalysis (cmd: CMD) {
+  async cmdAnalysis (cmd: CMD) {
     switch (cmd) {
       case 'version':
-        cmdVersion(this)
+        await cmdVersion(this)
         return
       case 'publish':
-        cmdPublish(this)
+        await cmdPublish(this)
     }
   }
 

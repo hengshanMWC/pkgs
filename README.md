@@ -82,6 +82,7 @@ Commands:
 
 diff模式是基于git tag进行文件更改分析。场景：当monorepo项目切换成`pkgs`，为了防止错误的`version`和`publish`，请先打上tag
 
+不带参数则相当于打上两种一下tag
 - -p: pkgs tag -p(打上publish标签)
 - -v: pkgs tag -v(打上version标签)
 # Features

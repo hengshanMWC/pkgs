@@ -34,6 +34,6 @@ program
   .option('-p', 'publish tag')
   .option('-v', 'version tag')
   .action(cmd => {
-    executeCommandTag(cmd.p ? 'p' : 'v')
+    executeCommandTag(cmd)
   })
 program.parse(process.argv)
