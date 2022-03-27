@@ -91,9 +91,9 @@ export async function changeRelyMyVersion (
     const relyDir = relyMyDir[i]
     const analysisBlockRelyMy = context.contextAnalysisDiagram[relyDir]
 
-    dependentSearch(analysisBlock, analysisBlockRelyMy)
+    const isChange = dependentSearch(analysisBlock, analysisBlockRelyMy)
 
-    if (triggerSign && !triggerSign.has(analysisBlockRelyMy)) {
+    if (isChange && triggerSign && !triggerSign.has(analysisBlockRelyMy)) {
       await changeVersionResultItem(
         context,
         analysisBlockRelyMy,

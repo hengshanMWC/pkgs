@@ -1,6 +1,7 @@
 import { readFile } from 'jsonfile'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
+import { DEPENDENCY_PREFIX } from '../constant'
 export async function readJSON (dir: string): Promise<IPackageJson> {
   try {
     return await readFile(dir)
@@ -70,4 +71,7 @@ export function getAssign<T> (templateObject: any, object: any): T {
 }
 export function warn (text: string) {
   console.warn(colors.yellow.bold(text))
+}
+export function isVersionStar (version: string) {
+  return version.includes(DEPENDENCY_PREFIX)
 }

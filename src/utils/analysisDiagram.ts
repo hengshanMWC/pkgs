@@ -1,5 +1,5 @@
 import type { IPackageJson } from '@ts-type/package-dts'
-import { RELY_KEYS, DEPENDENCY_PREFIX } from '../constant'
+import { RELY_KEYS } from '../constant'
 export function getPackagesName (packagesJSON: IPackageJson[]): string[] {
   return packagesJSON
     .map(item => item.name)
@@ -25,7 +25,7 @@ export function setRelyMyDirhMap (
   Object.keys(relyMyMp)
     .forEach(key => {
       const dependenciesValue = dependencies[key]
-      if (dependenciesValue && !dependenciesValue.includes(DEPENDENCY_PREFIX)) {
+      if (dependenciesValue) {
         relyMyMp[key].push(dir)
       }
     })
@@ -38,7 +38,7 @@ export function getMyRelyPackageName (
   const dependencies = getRely(packageJson)
   packagesName.forEach(key => {
     const dependenciesValue = dependencies[key]
-    if (dependenciesValue && !dependenciesValue.includes(DEPENDENCY_PREFIX)) {
+    if (dependenciesValue) {
       result.push(key)
     }
   })
