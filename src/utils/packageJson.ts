@@ -67,9 +67,6 @@ export function isVersionLegalUpdate (
     else if (oldVersionMatchArray[1] === '^') {
       return +versionMatchArray[2] > +oldVersionMatchArray[2]
     }
-    else {
-      return true
-    }
   }
   return false
 }
