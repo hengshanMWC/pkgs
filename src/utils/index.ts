@@ -11,12 +11,7 @@ export async function readJSON (dir: string): Promise<IPackageJson> {
   }
 }
 export async function getPackagesJSON (dirs: string[]) {
-  const result: IPackageJson[] = []
-  for (let i = 0; i < dirs.length; i++) {
-    result.push(await readFile(dirs[i]))
-  }
-
-  return result
+  return Promise.all(dirs.map(dir => readFile(dir)))
 }
 export function cdDir (dir?: string) {
   return dir ? `cd ${dir} && ` : ''
