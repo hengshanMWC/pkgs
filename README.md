@@ -1,18 +1,33 @@
 # Overview
-结合`pnpm`的`monorepo`工具，提供了基本的`version`升级和`publish`发布功能
+结合`pnpm`的`monorepo`工具，提供了基本的`version`升级和`publish`发布功能。
 
-# Semantic
-
-对`packages.json`进行版本分析，对于`workspace`的`*`、`^`、`~`都有对应的语意化处理
 # Usage
 ```
 npm i -g @abmao/pkgs
 pkgs versoin
 pkgs publish
 ```
+monorepo项目切换成pkgs，应该先运行`pkgs tag`，防止错误的`version`和`publish`
+
+# Features
+
+## mode
+- **sync**: 命令将同步所有包
+- **diff**: 命令只会对修过过和要修过的触发
+
+## Semantic
+
+对`packages.json`进行版本分析，对于`workspace`的`*`、`^`、`~`都有对应的语意化处理
+## CreateTag
+使用`version`和`publish`会打上不同的`git tag`，而`diff mode`则是根据这些`git tag`进行分析。（👇🏻是运行命令cli打上的tag
+- pkgs version: v`${version}`-v-pkg
+- pkgs publish: sync`${Date.now()}`-p-pkg
+- pkgs version -m diff: sync`${Date.now()}`-v-pkg
+- pkgs publish -m diff: sync`${Date.now()}`-p-pkg
+
 
 # Config
-根目录下定义`pkgs.json`，pkgs运行的时候会读取其配置
+根目录下定义`pkgs.json`，pkgs运行时会读取其配置
 
 ## Default
 以下是代码中的默认配置
@@ -31,14 +46,14 @@ pkgs publish
 }
 ```
 ## Options
-- packagesPath: 多包的目录路径
-- mode: `sync` | `diff`。决定`version`和`publish`的模式
-- version: `pksg version`命令配置
-  - mode: `sync` | `diff`。决定命令模式
-  - message: `chore: version`。运行\``git commit -m '${message} v${version}'`\`的message
-- publish: `pksg version`命令配置
-  - mode: `sync` | `diff`。决定命令模式
-  - tag: 运行\``npm publish --tag ${tag}`\`的tag
+- **packagesPath**: 多包的目录路径
+- **mode**: `sync` | `diff`。决定`version`和`publish`的模式
+- **version**: `pkgs version`命令配置
+  - **mode**: `sync` | `diff`。决定命令模式
+  - **message**: `chore: version`。运行\``git commit -m '${message} v${version}'`\`的message
+- **publish**: `pkgs version`命令配置
+  - **mode**: `sync` | `diff`。决定命令模式
+  - **tag**: 运行\``npm publish --tag ${tag}`\`的tag
 # Commands
 ```
 pkgs -h
@@ -65,7 +80,7 @@ Commands:
 - --mode \<type>: 默认`sync`
   - sync: 升级所有package版本号
   - diff: 升级修改过的package版本号
-- -m --message \<message>: 默认`chore: version`
+- -m --message \<message>: 默认`chore: version`。运行\``git commit -m '${message} v${version}'`\`的message
 
 ## publish
 *pkgs publish*
@@ -85,12 +100,6 @@ diff模式是基于git tag进行文件更改分析。场景：当monorepo项目�
 不带参数则相当于打上两种一下tag
 - -p: pkgs tag -p(打上publish标签)
 - -v: pkgs tag -v(打上version标签)
-# Features
-使用`version`和`publish`会打上不同的`git tag`，而`diff mode`则是根据这些`git tag`进行分析
-- pkgs version: v`${version}`-v-pkg
-- pkgs publish: sync`${Date.now()}`-p-pkg
-- pkgs version -m diff: sync`${Date.now()}`-v-pkg
-- pkgs publish -m diff: sync`${Date.now()}`-p-pkg
 
 # Function list
 - [x] mode：sync
