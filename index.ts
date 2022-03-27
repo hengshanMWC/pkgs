@@ -1,10 +1,10 @@
-import { Context } from './scripts'
-import type { CMD } from './scripts'
-import type { ExecuteCommandOptions } from './scripts/defaultOptions'
-import { defaultOptions } from './scripts/defaultOptions'
-import { readJSON, assign } from './scripts/utils'
-import { gitDiffTag } from './scripts/git'
-import type { TagType } from './scripts/git'
+import { Context } from './src'
+import type { CMD } from './src'
+import type { ExecuteCommandOptions } from './src/defaultOptions'
+import { defaultOptions } from './src/defaultOptions'
+import { readJSON, assign } from './src/utils'
+import { gitDiffTag } from './src/git'
+import type { TagType } from './src/git'
 export async function executeCommand (
   cmd: CMD,
   options: Partial<ExecuteCommandOptions> = {},

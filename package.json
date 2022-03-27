@@ -27,11 +27,10 @@
   },
   "scripts": {
     "test": "cd ./examples && esno index.ts",
-    "git": "cd ./scripts && esno git.ts",
     "prepare": "husky install",
     "lint": "eslint --ext=js,ts,json,md .",
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",
-    "build": "node rollup.config.js"
+    "build": "node ./scripts/rollup.config.js"
   },
   "bugs": {
     "url": "https://github.com/hengshanMWC/pkgs/issues"

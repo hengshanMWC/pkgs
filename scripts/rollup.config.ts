@@ -11,7 +11,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import esbuild from 'rollup-plugin-esbuild'
 import colors from 'colors'
-import { name } from './package.json'
+import { name } from '../package.json'
 const timeTag = colors.cyan('build')
 console.time(timeTag)
 let moduleName = name
@@ -73,7 +73,7 @@ const genConfig = (key: keyof Builds): RollupOptions => {
     ],
     // 监听
     // watch: {
-    //   include: 'scripts/**',
+    //   include: 'src/**',
     // },
   }
   return config
