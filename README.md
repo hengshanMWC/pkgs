@@ -1,5 +1,9 @@
 # Overview
 结合`pnpm`的`monorepo`工具，提供了基本的`version`升级和`publish`发布功能
+
+# Semantic
+
+对`packages.json`进行版本分析，对于`workspace`的`*`、`^`、`~`都有对应的语意化处理
 # Usage
 ```
 npm i -g @abmao/pkgs
@@ -92,7 +96,9 @@ diff模式是基于git tag进行文件更改分析。场景：当monorepo项目�
 - [x] mode：diff
 - [x] Add config
 - [x] publish tag perf
+- [x] 语义化
 - [ ] bumpp perf
-- [ ] 语义化
+- [ ] bumpp perf，After that, adjust the structure.
 - [ ] Supplementary test
 - [ ] Supplementary examples
+- [ ] pkgs init
