@@ -9,6 +9,7 @@ import camelcase from 'camelcase' // 转驼峰拼写
 // 解析 node_modules 中的模块
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json'
 import esbuild from 'rollup-plugin-esbuild'
 import colors from 'colors'
 import { name } from '../package.json'
@@ -69,6 +70,7 @@ const genConfig = (key: keyof Builds): RollupOptions => {
       esbuildPlugin,
       nodeResolve(),
       commonjs(),
+      json(),
       ...plugins,
     ],
     // 监听
