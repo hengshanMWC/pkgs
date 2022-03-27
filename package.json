@@ -31,8 +31,8 @@
     "lint": "eslint --ext=js,ts,json,md .",
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",
     "build": "node rollup.config.js",
-    "version": "esno ./scripts/version.ts",
-    "publish": "esno ./scripts/publish.ts"
+    "pkgs:version": "esno ./scripts/version.ts",
+    "pkgs:publish": "esno ./scripts/publish.ts"
   },
   "bugs": {
     "url": "https://github.com/hengshanMWC/pkgs/issues"
