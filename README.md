@@ -4,7 +4,7 @@
 # Usage
 ```
 npm i -g @abmao/pkgs
-pkgs versoin
+pkgs version
 pkgs publish
 ```
 monorepo项目切换成pkgs，应该先运行`pkgs tag`，防止错误的`version`和`publish`
@@ -72,8 +72,8 @@ Commands:
   tag [options]      pkgs tag, diff mode: Compare according to tag
   help [command]     display help for command
 ```
-## versoin
-*pkgs versoin*
+## version
+*pkgs version*
 
 升级package版本号
 
