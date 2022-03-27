@@ -2,7 +2,7 @@ import { readFile } from 'jsonfile'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
 import simpleGit from 'simple-git'
-import { getPackagesJSON } from './utils'
+import { getPackagesJSON, warn } from './utils'
 import {
   getPackagesName,
   createRelyMyDirMap,
@@ -39,6 +39,9 @@ export class Context {
     const rootPackage = await readFile(rootFIle)
     const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
     const packagesJSON = await getPackagesJSON(filesPath)
+    if (!packagesJSON.length) {
+      warn('没找到packages')
+    }
     this.createContextAnalysisDiagram(
       ['', ...dirs],
       [rootFIle, ...filesPath],
@@ -100,7 +103,7 @@ export class Context {
   get packagesJSON () {
     if (this.contextAnalysisDiagram) {
       return Object.keys(this.contextAnalysisDiagram)
-        .filter(item => item)
+        .filter(key => key)
         .map(key => this.contextAnalysisDiagram[key].packageJson)
     }
     else {
