@@ -9,8 +9,7 @@ import type {
   SetAnalysisBlockObject,
 } from '../index'
 import { cdDir, warn } from '../utils'
-import { versionText } from '../utils/regExp'
-import { getRelyAttrs } from '../utils/analysisDiagram'
+import { dependentSearch } from '../utils/packageJson'
 import { WARN_NOW_VERSION } from '../constant'
 
 export function cmdVersion (context: Context) {
@@ -86,25 +85,18 @@ export async function changeRelyMyVersion (
   analysisBlock: AnalysisBlockObject,
   triggerSign?: SetAnalysisBlockObject,
 ) {
-  const versionRegExp = new RegExp(versionText)
-  const relyAttrs = getRelyAttrs().reverse()
-  const name = analysisBlock.packageJson.name as string
   const relyMyDir = analysisBlock.relyMyDir
 
   for (let i = 0; i < relyMyDir.length; i++) {
     const relyDir = relyMyDir[i]
-    const analysisBlockRelyMyDir = context.contextAnalysisDiagram[relyDir]
-    const packageJson = analysisBlockRelyMyDir.packageJson
-    const relyAttr = relyAttrs.find(key => packageJson[key][name]) as string
+    const analysisBlockRelyMy = context.contextAnalysisDiagram[relyDir]
 
-    packageJson[relyAttr][name] =
-      packageJson[relyAttr][name]
-        .replace(versionRegExp, analysisBlock.packageJson.version)
+    dependentSearch(analysisBlock, analysisBlockRelyMy)
 
-    if (triggerSign && !triggerSign.has(analysisBlockRelyMyDir)) {
+    if (triggerSign && !triggerSign.has(analysisBlockRelyMy)) {
       await changeVersionResultItem(
         context,
-        analysisBlockRelyMyDir,
+        analysisBlockRelyMy,
         relyDir,
         triggerSign,
       )
