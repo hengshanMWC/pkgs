@@ -30,7 +30,7 @@
     "prepare": "husky install",
     "lint": "eslint --ext=js,ts,json,md .",
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",
-    "build": "node ./scripts/rollup.config.js",
+    "build": "node rollup.config.js",
     "version": "esno ./scripts/version.ts",
     "publish": "esno ./scripts/publish.ts"
   },
