@@ -1,11 +1,12 @@
 import { Context } from './src'
-import type { CMD } from './src'
-import type { ExecuteCommandOptions } from './src/defaultOptions'
 import { defaultOptions } from './src/defaultOptions'
 import { readJSON, assign } from './src/utils'
 import { cliVersion, cliSuccess } from './src/tips'
 import { gitDiffTag } from './src/git'
 import type { TagType } from './src/git'
+import type { CMD } from './src'
+import type { ExecuteCommandOptions } from './src/defaultOptions'
+
 export async function executeCommand (
   cmd: CMD,
   options: Partial<ExecuteCommandOptions> = {},
@@ -38,3 +39,7 @@ export function executeCommandTag (
   }
   cliSuccess()
 }
+
+export type { TagType } from './src/git'
+export type { CMD } from './src'
+export type { ExecuteCommandOptions } from './src/defaultOptions'
