@@ -22,10 +22,10 @@ export async function executeCommand (
   cliSuccess()
 }
 export function executeCommandTag (
-  cmd: Partial<Record<TagType, boolean>>,
+  cmd?: Partial<Record<TagType, boolean>>,
 ) {
   cliVersion('tag')
-  if (!Object.keys(cmd).length) {
+  if (!cmd || !Object.keys(cmd).length) {
     gitDiffTag('v')
     gitDiffTag('p')
   }

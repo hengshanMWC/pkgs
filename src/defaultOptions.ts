@@ -4,11 +4,11 @@ export interface ExecuteCommandOption {
 }
 export interface ExecuteCommandVersionOption extends
   Partial<ExecuteCommandOption> {
-  message: string
+  message?: string
 }
 export interface ExecuteCommandPublishOption extends
   Partial<ExecuteCommandOption> {
-  tag: string
+  tag?: string
 }
 export interface ExecuteCommandOptions extends ExecuteCommandOption {
   packagesPath: string
