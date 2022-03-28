@@ -13,7 +13,7 @@ import json from '@rollup/plugin-json'
 import esbuild from 'rollup-plugin-esbuild'
 import colors from 'colors'
 import { name } from '../package.json'
-const timeTag = colors.cyan('build')
+const timeTag = '📦'
 console.time(timeTag)
 let moduleName = name
 // 检查是否是合法的 npm 包名

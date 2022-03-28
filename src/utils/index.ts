@@ -65,7 +65,7 @@ export function getAssign<T> (templateObject: any, object: any): T {
   }
 }
 export function warn (text: string) {
-  console.warn(colors.yellow.bold(text))
+  console.warn(`${colors.yellow.bold(text)}`)
 }
 export function isVersionStar (version: string) {
   return version.includes(DEPENDENCY_PREFIX)
