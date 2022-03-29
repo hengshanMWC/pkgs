@@ -2,7 +2,7 @@ import { readFile } from 'jsonfile'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
 import simpleGit from 'simple-git'
-import { getPackagesJSON } from './utils'
+import { readFiles } from './utils'
 import {
   getPackagesName,
   createRelyMyDirMap,
@@ -30,6 +30,10 @@ export type SetAnalysisBlockObject = Set<AnalysisBlockObject>
 export class Context {
   options: ExecuteCommandOptions
   contextAnalysisDiagram!: ContextAnalysisDiagram
+  rootPackageJson!: IPackageJson
+  rootFilePath = 'package.json'
+  rootDir = ''
+
   constructor (options: ExecuteCommandOptions) {
     this.options = options
   }
@@ -106,15 +110,14 @@ export class Context {
   }
 
   async initData () {
-    const rootFIle = 'package.json'
-    const rootPackage = await readFile(rootFIle)
+    this.rootPackageJson = await readFile(this.rootFilePath)
     const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
-    const packagesJSON = await getPackagesJSON(filesPath)
+    const packagesJSON = await readFiles(filesPath)
 
     this.createContextAnalysisDiagram(
-      ['', ...dirs],
-      [rootFIle, ...filesPath],
-      [rootPackage, ...packagesJSON],
+      [this.rootDir, ...dirs],
+      [this.rootFilePath, ...filesPath],
+      [this.rootPackageJson, ...packagesJSON],
     )
   }
 

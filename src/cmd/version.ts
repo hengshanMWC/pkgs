@@ -1,6 +1,5 @@
-import { execSync } from 'child_process'
-import { readFile, writeFile } from 'jsonfile'
-import type { IPackageJson } from '@ts-type/package-dts'
+import { writeFile } from 'jsonfile'
+import { versionBumpInfo } from 'bumpp'
 import colors from 'colors'
 import { gitSyncSave, gitDiffSave } from '../git'
 import type {
@@ -8,7 +7,8 @@ import type {
   AnalysisBlockObject,
   SetAnalysisBlockObject,
 } from '../index'
-import { cdDir, warn } from '../utils'
+import { warn, writeFiles } from '../utils'
+import type { WriteObject } from '../utils'
 import { dependentSearch } from '../utils/packageJson'
 import { WARN_NOW_VERSION } from '../constant'
 
@@ -23,13 +23,21 @@ export function cmdVersion (context: Context) {
   }
 }
 export async function handleSyncVersion (context: Context) {
-  const { version: oldVersion } = await readFile('package.json') as IPackageJson
-  const version = await changeVersion('package.json')
+  const oldVersion = context.rootPackageJson.version
+  const version = await changeVersion()
 
   if (oldVersion === version) {
     warn(WARN_NOW_VERSION)
     process.exit()
   }
+  context.rootPackageJson.version = version
+
+  const changes: WriteObject[] = [
+    {
+      filePath: context.rootFilePath,
+      packageJson: context.rootPackageJson,
+    },
+  ]
 
   for (let index = 0; index < context.packagesJSON.length; index++) {
     const packageJson = context.packagesJSON[index]
@@ -37,14 +45,17 @@ export async function handleSyncVersion (context: Context) {
     packageJson.version = version
 
     if (analysisBlock) {
+      changes.push({
+        filePath: context.filesPath[index],
+        packageJson,
+      })
       await changeRelyMyVersion(
         context,
         analysisBlock,
       )
     }
-    await writeFile(context.filesPath[index], packageJson, { spaces: 2 })
   }
-
+  await writeFiles(changes)
   await gitSyncSave(
     version as string,
     context.options.version.message,
@@ -70,14 +81,14 @@ export async function changeVersionResultItem (
   dir: string,
   triggerSign: SetAnalysisBlockObject,
 ) {
-  const { packageJson, filePath } = analysisBlock
+  const { packageJson } = analysisBlock
 
   if (triggerSign.has(analysisBlock)) return
   triggerSign.add(analysisBlock)
 
   const oldVersion = packageJson.version
   console.log(colors.white.bold(`package: ${packageJson.name}`))
-  const version = await changeVersion(filePath, dir)
+  const version = await changeVersion(dir)
 
   if (version !== oldVersion) {
     packageJson.version = version
@@ -94,9 +105,9 @@ export async function changeRelyMyVersion (
   for (let i = 0; i < relyMyDir.length; i++) {
     const relyDir = relyMyDir[i]
     const analysisBlockRelyMy = context.contextAnalysisDiagram[relyDir]
-
     const isChange = dependentSearch(analysisBlock, analysisBlockRelyMy)
 
+    // 只有有变更，并且带triggerSign，才会走version变动
     if (isChange && triggerSign && !triggerSign.has(analysisBlockRelyMy)) {
       await changeVersionResultItem(
         context,
@@ -115,12 +126,10 @@ export function writeJSONs (
   }))
 }
 
-export async function changeVersion (packagePath: string, dir?: string) {
-  const command = `${cdDir(dir)}npx bumpp`
+export async function changeVersion (cwd?: string) {
+  const versionBumpResults = await versionBumpInfo({
+    cwd,
+  })
 
-  execSync(command, { stdio: 'inherit' })
-
-  const { version } = await readFile(packagePath) as IPackageJson
-
-  return version
+  return versionBumpResults.newVersion
 }
