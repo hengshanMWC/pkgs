@@ -8,7 +8,7 @@ export type TagType = 'p' | 'v'
 const _tagMessage = 'pkgs update tag'
 export function gitSyncSave (
   version: string,
-  message: string,
+  message = '',
 ) {
   execSync(`git commit -am '${message} v${version}'`, { stdio: 'inherit' })
   gitSyncTag(version)
