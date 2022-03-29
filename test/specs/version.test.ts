@@ -10,7 +10,7 @@ describe(cmd, () => {
     })
   })
 
-  test(`root diff,${cmd} sync`, async () => {
+  test(`root diff, ${cmd} sync`, async () => {
     await executeCommand(cmd, {
       mode: 'diff',
       [cmd]: {

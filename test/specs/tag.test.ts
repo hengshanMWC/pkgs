@@ -10,7 +10,7 @@ describe(cmd, () => {
     })
   })
 
-  test(`publish,${cmd} sync`, async () => {
+  test(`publish, ${cmd} sync`, async () => {
     await executeCommandTag({
       p: true,
     })
