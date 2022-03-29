@@ -31,7 +31,7 @@ export function gitSyncPublishTag (
 }
 export function gitDiffSave (
   nameAntVersionPackages: string[],
-  message: string,
+  message = '',
 ) {
   const packagesMessage = nameAntVersionPackages
     .reduce((total, text) => `${total}\n- ${text}`, '\n')
