@@ -107,8 +107,8 @@ diff模式是基于git tag进行文件更改分析。场景：当monorepo项目�
 - [x] Add config
 - [x] publish tag perf
 - [x] 语义化
-- [ ] bumpp perf
-- [ ] bumpp perf，After that, adjust the structure.
+- [x] bumpp perf
+- [x] bumpp perf，After that, adjust the structure.
 - [ ] Supplementary test
 - [ ] Supplementary examples
 - [ ] pkgs init
