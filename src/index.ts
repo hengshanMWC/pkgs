@@ -34,17 +34,13 @@ export class Context {
     this.options = options
   }
 
-  async initData () {
-    const rootFIle = 'package.json'
-    const rootPackage = await readFile(rootFIle)
-    const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
-    const packagesJSON = await getPackagesJSON(filesPath)
-
-    this.createContextAnalysisDiagram(
-      ['', ...dirs],
-      [rootFIle, ...filesPath],
-      [rootPackage, ...packagesJSON],
-    )
+  static async create (options: ExecuteCommandOptions, cmd?: CMD) {
+    const result = new Context(options)
+    await result.initData()
+    if (cmd) {
+      await result.cmdAnalysis(cmd)
+    }
+    return result
   }
 
   get allDirs () {
@@ -107,6 +103,19 @@ export class Context {
     else {
       return []
     }
+  }
+
+  async initData () {
+    const rootFIle = 'package.json'
+    const rootPackage = await readFile(rootFIle)
+    const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
+    const packagesJSON = await getPackagesJSON(filesPath)
+
+    this.createContextAnalysisDiagram(
+      ['', ...dirs],
+      [rootFIle, ...filesPath],
+      [rootPackage, ...packagesJSON],
+    )
   }
 
   createContextAnalysisDiagram (

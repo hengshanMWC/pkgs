@@ -14,11 +14,10 @@ export async function executeCommand (
   cliVersion(cmd)
   const packageJson =
     await readJSON('pkgs.json') as Partial<ExecuteCommandOptions>
-  const context = new Context(
+  await Context.create(
     assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
+    cmd,
   )
-  await context.initData()
-  await context.cmdAnalysis(cmd)
   cliSuccess()
 }
 export function executeCommandTag (
