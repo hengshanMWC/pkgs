@@ -18,12 +18,10 @@ export function dependentSearch (
   if (sourceName && sourceVersion) {
     const packageJson = analysisBlockRelyMy.packageJson
     const relyAttrs = getRelyAttrs().reverse()
-
+    // 循环所有依赖key
     relyAttrs.forEach(key => {
       const relyKeyObject = packageJson[key]
-
       if (!relyKeyObject) return
-
       const oldVersion = relyKeyObject[sourceName]
 
       if (oldVersion) {
@@ -62,7 +60,8 @@ export function isVersionLegalUpdate (
 
   if (versionMatchArray && oldVersionMatchArray) {
     if (oldVersionMatchArray[1] === '~') {
-      return +versionMatchArray[3] > +oldVersionMatchArray[3]
+      return (+versionMatchArray[3] > +oldVersionMatchArray[3]) ||
+        (+versionMatchArray[2] > +oldVersionMatchArray[2])
     }
     else if (oldVersionMatchArray[1] === '^') {
       return +versionMatchArray[2] > +oldVersionMatchArray[2]
