@@ -1,5 +1,5 @@
 import { writeFile } from 'jsonfile'
-import { versionBumpInfo } from 'bumpp'
+import { versionBumpInfo } from '@abmao/bump'
 import colors from 'colors'
 import { gitSyncSave, gitDiffSave } from '../git'
 import type {

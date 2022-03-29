@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@abmao/bump': ^0.0.1
   '@abmao/eslint-config-ts': ^0.1.0
   '@abmao/forb': ^1.0.3
   '@commitlint/cli': ^16.2.3
@@ -12,7 +13,6 @@ specifiers:
   '@types/jest': ^27.4.1
   '@types/jsonfile': ^6.1.0
   '@types/validate-npm-package-name': ^3.0.3
-  bumpp: ^7.1.1
   camelcase: ^6.3.0
   colors: ^1.4.0
   commander: ^9.0.0
@@ -30,8 +30,8 @@ specifiers:
   validate-npm-package-name: ^3.0.0
 
 dependencies:
+  '@abmao/bump': 0.0.1
   '@abmao/forb': 1.0.3
-  bumpp: 7.1.1
   colors: 1.4.0
   commander: 9.0.0
   jsonfile: 6.1.0
@@ -61,6 +61,19 @@ devDependencies:
   validate-npm-package-name: 3.0.0
 
 packages:
+
+  /@abmao/bump/0.0.1:
+    resolution: {integrity: sha512-OZgSmBFFcAV69T/tqseWeb5ik8QkUFhtpX3ghu4m0iqOwblfss25l2L5W3xnqmoCnwXZuW4jMOegCzJ+m1Qw+w==}
+    engines: {node: '>=10'}
+    hasBin: true
+    dependencies:
+      '@jsdevtools/ez-spawn': 3.0.4
+      chalk: 4.1.2
+      command-line-args: 5.2.1
+      globby: 11.1.0
+      prompts: 2.4.2
+      semver: 7.3.5
+    dev: false
 
   /@abmao/eslint-config-basic/0.1.0_eslint@8.11.0:
     resolution: {integrity: sha512-JL/Pj+/Sh34lPKdDvI9DCMAm9zVJmo3Wu/YAJmcMbT2s0m/ceUbruWtplWaiIpS4BDEoZTdpp7EHR35T4abM0A==}
@@ -1582,19 +1595,6 @@ packages:
     dependencies:
       semver: 7.3.5
     dev: true
-
-  /bumpp/7.1.1:
-    resolution: {integrity: sha512-pAGjraw9T4I4dnkiQHrKUVQb55dOM5Nj72SVtVlkjFjWjFtg0aSgipQuxDWZ0cqm8WoqtaiBPk+7jHfnZxr7lA==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dependencies:
-      '@jsdevtools/ez-spawn': 3.0.4
-      chalk: 4.1.2
-      command-line-args: 5.2.1
-      globby: 11.1.0
-      prompts: 2.4.2
-      semver: 7.3.5
-    dev: false
 
   /call-bind/1.0.2:
     resolution: {integrity: sha512-7O+FbCihrB5WGbFYesctwmTKae6rOiIzmz1icreWJ+0aA7LJfuqhEso2T9ncpcFtzMQtzXf2QGGueWJGTYsqrA==}
