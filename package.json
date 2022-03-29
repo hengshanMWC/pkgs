@@ -44,6 +44,7 @@
   "homepage": "https://github.com/hengshanMWC/pkgs#readme",
   "dependencies": {
     "@abmao/forb": "^1.0.3",
+    "bumpp": "^7.1.1",
     "colors": "^1.4.0",
     "commander": "^9.0.0",
     "jsonfile": "^6.1.0",
