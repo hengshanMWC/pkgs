@@ -1,4 +1,3 @@
-import { execSync } from 'child_process'
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import { WARN_NOW_CHANGE } from './constant'
@@ -6,49 +5,65 @@ import { warn } from './utils'
 
 export type TagType = 'p' | 'v'
 const _tagMessage = 'pkgs update tag'
-export function gitSyncSave (
+export async function gitSyncSave (
   version: string,
   message = '',
+  git: SimpleGit = simpleGit(),
 ) {
-  execSync(`git commit -am '${message} v${version}'`, { stdio: 'inherit' })
-  gitSyncTag(version)
+  await git.raw([
+    'commit',
+    '-am',
+    `${message} v${version}`,
+  ])
+  await gitSyncTag(version)
 }
-export function gitSyncTag (
-  version?: string,
+export async function gitSyncTag (
+  version: string,
+  git: SimpleGit = simpleGit(),
 ) {
-  execSync(
-    `git tag -a v${version}-v-pkg -m '${version}'`,
-    { stdio: 'inherit' },
-  )
+  await git.tag([
+    '-a',
+    `v${version}-v-pkg`,
+    '-m',
+    version,
+  ])
 }
-export function gitSyncPublishTag (
+export async function gitSyncPublishTag (
   tagMessage: string = _tagMessage,
+  git: SimpleGit = simpleGit(),
 ) {
-  execSync(
-    `git tag -a sync${Date.now()}-p-pkg -m '${tagMessage}'`,
-    { stdio: 'inherit' },
-  )
+  await git.tag([
+    '-a',
+    `sync${Date.now()}-p-pkg`,
+    '-m',
+    tagMessage,
+  ])
 }
-export function gitDiffSave (
+export async function gitDiffSave (
   nameAntVersionPackages: string[],
   message = '',
+  git: SimpleGit = simpleGit(),
 ) {
   const packagesMessage = nameAntVersionPackages
     .reduce((total, text) => `${total}\n- ${text}`, '\n')
-  execSync(
-    `git commit -am '${message}${packagesMessage || _tagMessage}'`,
-    { stdio: 'inherit' },
-  )
-  gitDiffTag('v')
+  await git.raw([
+    'commit',
+    '-am',
+    `${message}${packagesMessage || _tagMessage}`,
+  ])
+  await gitDiffTag('v')
 }
-export function gitDiffTag (
+export async function gitDiffTag (
   type: TagType,
   packagesMessage = _tagMessage,
+  git: SimpleGit = simpleGit(),
 ) {
-  execSync(
-    `git tag -a diff${Date.now()}-${type}-pkg -m '${packagesMessage}'`,
-    { stdio: 'inherit' },
-  )
+  await git.tag([
+    '-a',
+    `diff${Date.now()}-${type}-pkg`,
+    '-m',
+    packagesMessage,
+  ])
 }
 export async function getTag (
   type: TagType,

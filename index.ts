@@ -1,3 +1,5 @@
+import simpleGit from 'simple-git'
+import type { SimpleGit } from 'simple-git'
 import { Context } from './src'
 import { defaultOptions } from './src/defaultOptions'
 import { readJSON, assign } from './src/utils'
@@ -10,6 +12,7 @@ import type { ExecuteCommandOptions } from './src/defaultOptions'
 export async function executeCommand (
   cmd: CMD,
   options: Partial<ExecuteCommandOptions> = {},
+  git: SimpleGit = simpleGit(),
 ) {
   cliVersion(cmd)
   const packageJson =
@@ -17,23 +20,25 @@ export async function executeCommand (
   await Context.create(
     assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
     cmd,
+    git,
   )
   cliSuccess()
 }
-export function executeCommandTag (
+export async function executeCommandTag (
   cmd?: Partial<Record<TagType, boolean>>,
+  git: SimpleGit = simpleGit(),
 ) {
   cliVersion('tag')
   if (!cmd || !Object.keys(cmd).length) {
-    gitDiffTag('v')
-    gitDiffTag('p')
+    await gitDiffTag('v', undefined, git)
+    await gitDiffTag('p', undefined, git)
   }
   else {
     if (cmd.p) {
-      gitDiffTag('p')
+      await gitDiffTag('p', undefined, git)
     }
     if (cmd.v) {
-      gitDiffTag('v')
+      await gitDiffTag('v', undefined, git)
     }
   }
   cliSuccess()

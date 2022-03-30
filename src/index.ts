@@ -1,7 +1,8 @@
 import { readFile } from 'jsonfile'
+import simpleGit from 'simple-git'
+import type { SimpleGit } from 'simple-git'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
-import simpleGit from 'simple-git'
 import { readFiles } from './utils'
 import {
   getPackagesName,
@@ -29,17 +30,23 @@ export type ContextAnalysisDiagram = Record<string, AnalysisBlockObject>
 export type SetAnalysisBlockObject = Set<AnalysisBlockObject>
 export class Context {
   options: ExecuteCommandOptions
+  git: SimpleGit
   contextAnalysisDiagram!: ContextAnalysisDiagram
   rootPackageJson!: IPackageJson
   rootFilePath = 'package.json'
   rootDir = ''
 
-  constructor (options: ExecuteCommandOptions) {
+  constructor (options: ExecuteCommandOptions, git: SimpleGit = simpleGit()) {
     this.options = options
+    this.git = git
   }
 
-  static async create (options: ExecuteCommandOptions, cmd?: CMD) {
-    const result = new Context(options)
+  static async create (
+    options: ExecuteCommandOptions,
+    cmd?: CMD,
+    git: SimpleGit = simpleGit(),
+  ) {
+    const result = new Context(options, git)
     await result.initData()
     if (cmd) {
       await result.cmdAnalysis(cmd)
@@ -204,18 +211,17 @@ export class Context {
 
   async getChangeFiles
   (type: TagType): Promise<string[] | boolean | undefined> {
-    const git = simpleGit()
-    const tag = await getTag(type, git)
+    const tag = await getTag(type, this.git)
 
     // 没有打过标记
     if (!tag) {
       return true
     }
 
-    const tagCommitId = await getTagCommitId(tag, git)
-    const newestCommitId = await getNewestCommitId(git)
+    const tagCommitId = await getTagCommitId(tag, this.git)
+    const newestCommitId = await getNewestCommitId(this.git)
 
-    return getChangeFiles(newestCommitId, tagCommitId as string, git)
+    return getChangeFiles(newestCommitId, tagCommitId as string, this.git)
   }
 
   getDirtyPackagesDir (files: string[] | boolean | undefined) {
