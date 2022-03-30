@@ -1,25 +1,42 @@
-import { executeCommandTag } from '../../index'
+// import { executeCommandTag } from '../../index'
+import { files, mocks } from '../utils'
 const cmd = 'tag'
+const ORIGINAL_CWD = process.cwd()
 describe(cmd, () => {
-  test('default', async () => {
-    await executeCommandTag()
+  afterEach(() => {
+    // Many of the tests in this file change the CWD, so change it back after each test
+    process.chdir(ORIGINAL_CWD)
   })
-  test('version', async () => {
-    await executeCommandTag({
-      v: true,
-    })
-  })
+  test('default', () => {
+    files.create('package.json', { version: '1.0.0' })
+    process.chdir('test/.tmp')
+    expect(1).toBe(1)
+    // The package.json file should have been updated
+    expect(files.json('package.json')).to.deep.equal({ version: '2.34.567' })
 
-  test(`publish, ${cmd} sync`, async () => {
-    await executeCommandTag({
-      p: true,
-    })
+    // Git and NPM should NOT have been called
+    expect(mocks.git()).to.have.lengthOf(0)
+    expect(mocks.npm()).to.have.lengthOf(0)
   })
+  // test('default', async () => {
+  //   await executeCommandTag()
+  // })
+  // test('version', async () => {
+  //   await executeCommandTag({
+  //     v: true,
+  //   })
+  // })
 
-  test('all', async () => {
-    await executeCommandTag({
-      v: true,
-      p: true,
-    })
-  })
+  // test(`publish, ${cmd} sync`, async () => {
+  //   await executeCommandTag({
+  //     p: true,
+  //   })
+  // })
+
+  // test('all', async () => {
+  //   await executeCommandTag({
+  //     v: true,
+  //     p: true,
+  //   })
+  // })
 })

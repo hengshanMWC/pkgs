@@ -1,6 +1,6 @@
 import { executeCommand } from '../../index'
 const cmd = 'publish'
-describe(cmd, () => {
+describe.skip(cmd, () => {
   test('default', async () => {
     await executeCommand(cmd)
   })
