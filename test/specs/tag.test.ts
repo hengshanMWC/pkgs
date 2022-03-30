@@ -1,41 +1,65 @@
-// import { executeCommandTag } from '../../index'
-import { files, mocks } from '../utils'
+// import simpleGit from 'simple-git'
+import type { SimpleGit } from 'simple-git'
+import { executeCommandTag } from '../../index'
+import type { TagType } from '../../index'
+import {
+  getTag,
+  getTagCommitId,
+} from '../../src/git'
+import type {
+  SimpleGitTestContext,
+} from '../__fixtures__'
+import {
+  createTestContext,
+  newSimpleGit,
+  setUpInit,
+  setUpFilesAdded,
+} from '../__fixtures__'
 const cmd = 'tag'
-const ORIGINAL_CWD = process.cwd()
+async function tagExpect (type: TagType, git: SimpleGit) {
+  const tag = await getTag(type, git)
+  const tagCommitId = await getTagCommitId(tag, git)
+  expect(tagCommitId).not.toBeUndefined()
+}
 describe(cmd, () => {
-  afterEach(() => {
-    // Many of the tests in this file change the CWD, so change it back after each test
-    process.chdir(ORIGINAL_CWD)
+  let context: SimpleGitTestContext
+
+  beforeEach(async () => {
+    context = await createTestContext()
+    await setUpInit(context)
+    await context.file(['clean-dir', 'clean'])
+    await context.file(['dirty-dir', 'dirty'])
+    await setUpFilesAdded(context, ['alpha', 'beta'], ['alpha', 'beta', './clean-dir'])
   })
-  test('default', () => {
-    files.create('package.json', { version: '1.0.0' })
-    process.chdir('test/.tmp')
-    // executeCommandTag()
-    // The package.json file should have been updated
-    expect(files.json('package.json')).to.deep.equal({ version: '1.0.0' })
-
-    // Git and NPM should NOT have been called
-    expect(mocks.git()).to.have.lengthOf(0)
+  test('default', async () => {
+    const git = newSimpleGit(context.root)
+    await executeCommandTag(undefined, git)
+    await tagExpect('p', git)
+    await tagExpect('v', git)
   })
-  // test('default', async () => {
-  //   await executeCommandTag()
-  // })
-  // test('version', async () => {
-  //   await executeCommandTag({
-  //     v: true,
-  //   })
-  // })
+  test('version', async () => {
+    const git = newSimpleGit(context.root)
+    await executeCommandTag({
+      v: true,
+    }, git)
+    await tagExpect('v', git)
+  })
 
-  // test(`publish, ${cmd} sync`, async () => {
-  //   await executeCommandTag({
-  //     p: true,
-  //   })
-  // })
+  test('publish', async () => {
+    const git = newSimpleGit(context.root)
+    await executeCommandTag({
+      p: true,
+    }, git)
+    await tagExpect('p', git)
+  })
 
-  // test('all', async () => {
-  //   await executeCommandTag({
-  //     v: true,
-  //     p: true,
-  //   })
-  // })
+  test('all', async () => {
+    const git = newSimpleGit(context.root)
+    await executeCommandTag({
+      v: true,
+      p: true,
+    }, git)
+    await tagExpect('p', git)
+    await tagExpect('v', git)
+  })
 })
