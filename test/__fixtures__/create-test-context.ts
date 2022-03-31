@@ -27,7 +27,7 @@ export interface SimpleGitTestContext {
 }
 const tempDir = resolve(__dirname, '..', '.tmp')
 console.log(tempDir)
-const io = {
+export const io = {
   mkdir (path: string): Promise<string> {
     return new Promise((resolve, reject) => {
       if (existsSync(path)) {
@@ -37,9 +37,9 @@ const io = {
       mkdir(path, { recursive: true }, err => err ? reject(err) : resolve(path))
     })
   },
-  mkdtemp (): Promise<string> {
+  mkdtemp (prefix = 'git-test'): Promise<string> {
     return new Promise((resolve, reject) => {
-      mkdtemp(`${process.env.TMPDIR || '/tmp/'}simple-git-test-`, (err, path) => {
+      mkdtemp(`${process.env.TMPDIR || '/tmp/pkgs-'}${prefix}=`, (err, path) => {
         err ? reject(err) : resolve(path)
       })
     })

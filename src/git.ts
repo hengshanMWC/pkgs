@@ -41,7 +41,7 @@ export async function gitSyncPublishTag (
 }
 export async function gitDiffSave (
   nameAntVersionPackages: string[],
-  message = '',
+  message?: string,
   git: SimpleGit = simpleGit(),
 ) {
   const packagesMessage = nameAntVersionPackages
@@ -49,9 +49,9 @@ export async function gitDiffSave (
   await git.raw([
     'commit',
     '-am',
-    `${message}${packagesMessage || _tagMessage}`,
+    `${message || ''}${packagesMessage || _tagMessage}`,
   ])
-  await gitDiffTag('v')
+  await gitDiffTag('v', message, git)
 }
 export async function gitDiffTag (
   type: TagType,

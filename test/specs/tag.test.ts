@@ -1,35 +1,17 @@
-// import simpleGit from 'simple-git'
-import type { SimpleGit } from 'simple-git'
 import { executeCommandTag } from '../../index'
-import type { TagType } from '../../index'
-import {
-  getTag,
-  getTagCommitId,
-} from '../../src/git'
 import type {
   SimpleGitTestContext,
 } from '../__fixtures__'
 import {
-  createTestContext,
   newSimpleGit,
-  setUpInit,
-  setUpFilesAdded,
 } from '../__fixtures__'
+import { tagExpect, fillgit } from '../__fixtures__/commit'
 const cmd = 'tag'
-async function tagExpect (type: TagType, git: SimpleGit) {
-  const tag = await getTag(type, git)
-  const tagCommitId = await getTagCommitId(tag, git)
-  expect(tagCommitId).not.toBeUndefined()
-}
 describe(cmd, () => {
   let context: SimpleGitTestContext
 
   beforeEach(async () => {
-    context = await createTestContext()
-    await setUpInit(context)
-    await context.file(['clean-dir', 'clean'])
-    await context.file(['dirty-dir', 'dirty'])
-    await setUpFilesAdded(context, ['alpha', 'beta'], ['alpha', 'beta', './clean-dir'])
+    context = await fillgit()
   })
   test('default', async () => {
     const git = newSimpleGit(context.root)

@@ -1,8 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 
-const tempDir = path.resolve(__dirname, '..', '.tmp')
-
 const files = {
   /**
    * Creates a file in the "test/.tmp" directory with the given contents
@@ -14,12 +12,11 @@ const files = {
     if (typeof contents === 'object') {
       contents = JSON.stringify(contents, null, 2)
     }
-
-    const filePath = path.join(tempDir, name)
+    const filePath = path.join(process.cwd(), name)
     const dirPath = path.dirname(filePath)
 
     fs.mkdirSync(dirPath, { recursive: true })
-    fs.writeFileSync(filePath, contents)
+    fs.writeFileSync(name, contents)
   },
 
   /**
@@ -30,7 +27,7 @@ const files = {
    */
   text (name: string) {
     try {
-      return fs.readFileSync(path.join(tempDir, name), 'utf8')
+      return fs.readFileSync(path.join(name), 'utf8')
     }
     catch (e) {
       return ''
@@ -50,7 +47,7 @@ const files = {
       return JSON.parse(json)
     }
     catch (e) {
-      return undefined
+      return {}
     }
   },
 }
