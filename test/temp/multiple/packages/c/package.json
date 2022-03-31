@@ -5,7 +5,7 @@
     "registry": "http://localhost:4873/"
   },
   "dependencies": {
-    "@test/b": "workspace:~0.0.0"
+    "@test/b": "workspace:^0.0.0"
   },
   "devDependencies": {
     "@test/a": "workspace:*"
