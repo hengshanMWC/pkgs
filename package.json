@@ -61,6 +61,7 @@
     "@types/jsonfile": "^6.1.0",
     "@types/rimraf": "^3.0.2",
     "@types/validate-npm-package-name": "^3.0.3",
+    "c8": "^7.11.0",
     "camelcase": "^6.3.0",
     "esbuild-register": "^3.3.2",
     "eslint": "^8.11.0",
