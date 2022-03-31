@@ -39,7 +39,7 @@ export const io = {
   },
   mkdtemp (prefix = 'git-test'): Promise<string> {
     return new Promise((resolve, reject) => {
-      mkdtemp(`${process.env.TMPDIR || '/tmp/pkgs-'}${prefix}=`, (err, path) => {
+      mkdtemp(`${process.env.TMPDIR || '/.tmp/pkgs-'}${prefix}-`, (err, path) => {
         err ? reject(err) : resolve(path)
       })
     })
