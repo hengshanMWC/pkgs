@@ -10,11 +10,8 @@ export async function gitSyncSave (
   message = '',
   git: SimpleGit = simpleGit(),
 ) {
-  await git.raw([
-    'commit',
-    '-am',
-    `${message} v${version}`,
-  ])
+  await git.add('.')
+  await git.commit(`${message} v${version}`)
   await gitSyncTag(version, git)
 }
 export async function gitSyncTag (
@@ -46,11 +43,8 @@ export async function gitDiffSave (
 ) {
   const packagesMessage = nameAntVersionPackages
     .reduce((total, text) => `${total}\n- ${text}`, '\n')
-  await git.raw([
-    'commit',
-    '-am',
-    `${message || ''}${packagesMessage || _tagMessage}`,
-  ])
+  await git.add('.')
+  await git.commit(`${message || ''}${packagesMessage || _tagMessage}`)
   await gitDiffTag('v', message, git)
 }
 export async function gitDiffTag (
