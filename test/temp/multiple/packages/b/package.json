@@ -1,0 +1,10 @@
+{
+  "name": "@test/b",
+  "version": "0.0.0",
+  "publishConfig": {
+    "registry": "http://localhost:4873/"
+  },
+  "dependencies": {
+    "@test/a": "workspace:~0.0.0"
+  }
+}
