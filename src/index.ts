@@ -35,18 +35,21 @@ export class Context {
   rootPackageJson!: IPackageJson
   rootFilePath = 'package.json'
   rootDir = ''
+  version?: string
 
-  constructor (options: ExecuteCommandOptions, git: SimpleGit = simpleGit()) {
+  constructor (options: ExecuteCommandOptions, git: SimpleGit = simpleGit(), version?: string) {
     this.options = options
     this.git = git
+    this.version = version
   }
 
   static async create (
     options: ExecuteCommandOptions,
     cmd?: CMD,
     git: SimpleGit = simpleGit(),
+    version?: string,
   ) {
-    const result = new Context(options, git)
+    const result = new Context(options, git, version)
     await result.initData()
     if (cmd) {
       await result.cmdAnalysis(cmd)

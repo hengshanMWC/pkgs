@@ -13,6 +13,7 @@ export async function executeCommand (
   cmd: CMD,
   options: Partial<ExecuteCommandOptions> = {},
   git: SimpleGit = simpleGit(),
+  version?: string,
 ) {
   cliVersion(cmd)
   const packageJson =
@@ -21,6 +22,7 @@ export async function executeCommand (
     assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
     cmd,
     git,
+    version,
   )
   cliSuccess()
 }

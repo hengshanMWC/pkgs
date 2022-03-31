@@ -24,7 +24,7 @@ export function cmdVersion (context: Context) {
 }
 export async function handleSyncVersion (context: Context) {
   const oldVersion = context.rootPackageJson.version
-  const version = await changeVersion()
+  const version = await changeVersion(context.rootDir, context.version)
 
   if (oldVersion === version) {
     warn(WARN_NOW_VERSION)
@@ -59,6 +59,7 @@ export async function handleSyncVersion (context: Context) {
   await gitSyncSave(
     version as string,
     context.options.version.message,
+    context.git,
   )
 }
 export async function handleDiffVersion (context: Context) {
@@ -73,6 +74,7 @@ export async function handleDiffVersion (context: Context) {
       return `${packageJson.name as string}@${packageJson.version}`
     }),
     context.options.version.message,
+    context.git,
   )
 }
 export async function changeVersionResultItem (
@@ -88,7 +90,7 @@ export async function changeVersionResultItem (
 
   const oldVersion = packageJson.version
   console.log(colors.white.bold(`package: ${packageJson.name}`))
-  const version = await changeVersion(dir)
+  const version = await changeVersion(dir, context.version)
 
   if (version !== oldVersion) {
     packageJson.version = version
@@ -101,6 +103,8 @@ export async function changeRelyMyVersion (
   triggerSign?: SetAnalysisBlockObject,
 ) {
   const relyMyDir = analysisBlock.relyMyDir
+  // 没有依赖则跳出去
+  if (!Array.isArray(relyMyDir)) return
 
   for (let i = 0; i < relyMyDir.length; i++) {
     const relyDir = relyMyDir[i]
@@ -126,8 +130,9 @@ export function writeJSONs (
   }))
 }
 
-export async function changeVersion (cwd?: string) {
+export async function changeVersion (cwd?: string, release?: string) {
   const versionBumpResults = await versionBumpInfo({
+    release,
     cwd,
   })
 

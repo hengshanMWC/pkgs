@@ -15,7 +15,7 @@ export async function gitSyncSave (
     '-am',
     `${message} v${version}`,
   ])
-  await gitSyncTag(version)
+  await gitSyncTag(version, git)
 }
 export async function gitSyncTag (
   version: string,
