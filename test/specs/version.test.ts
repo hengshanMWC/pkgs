@@ -11,7 +11,7 @@ import type {
 } from '../__fixtures__'
 import {
   newSimpleGit,
-  io,
+  setUpFilesAdded,
 } from '../__fixtures__'
 
 const ORIGINAL_CWD = process.cwd()
@@ -21,9 +21,9 @@ describe(cmd, () => {
   let _path: string
 
   async function handleCommand (cd, newVersion: string, dir = 'single') {
-    const mkdtemPath = await io.mkdtemp('version-test')
-    process.chdir(mkdtemPath)
-    _path = path.join(mkdtemPath, dir)
+    context = await fillgit('version-test')
+    process.chdir(context.root)
+    _path = path.join(context.root, dir)
     await fs.copy(path.resolve(__dirname, '../temp', dir), dir)
 
     const git = await cd()
@@ -43,9 +43,8 @@ describe(cmd, () => {
       return fs.readJSON(`packages/${item}/package.json`)
     }))
   }
-  beforeEach(async () => {
-    context = await fillgit()
-  })
+  // beforeEach(async () => {
+  // })
   afterEach(() => {
     // Many of the tests in this file change the CWD, so change it back after each test
     process.chdir(ORIGINAL_CWD)
@@ -61,8 +60,9 @@ describe(cmd, () => {
   })
   test('root diff', async () => {
     const newVersion = '1.0.0'
+    let git: SimpleGit
     await handleCommand(async function () {
-      const git = newSimpleGit(context.root)
+      git = newSimpleGit(context.root)
       process.chdir(_path)
       await executeCommand(cmd, {
         mode: 'diff',
@@ -70,6 +70,7 @@ describe(cmd, () => {
       return git
     }, newVersion, 'multiple')
 
+    // packages test
     const [a, b, c] = await getPackages()
     expect(a.version).toBe(newVersion)
     expect(b.version).toBe(newVersion)
@@ -77,10 +78,26 @@ describe(cmd, () => {
     expect(c.version).toBe(newVersion)
     expect(c.devDependencies['@test/a']).toBe('workspace:*')
     expect(c.dependencies['@test/b']).toBe(`workspace:^${newVersion}`)
+
+    // add 1.1.0
+    const addVersion = '1.1.0'
+    await setUpFilesAdded(context, ['multiple/packages/b/test'])
+    // await fs.appendFile('./packages/b/test', 'test')
+    await executeCommand(cmd, {
+      mode: 'diff',
+    }, git, addVersion)
+    const [addA, addB, addC] = await getPackages()
+    expect(addA.version).toBe(newVersion)
+    expect(addB.version).toBe(addVersion)
+    expect(addB.dependencies['@test/a']).toBe(`workspace:~${newVersion}`)
+    expect(addC.version).toBe(newVersion)
+    expect(addC.dependencies['@test/b']).toBe(`workspace:^${newVersion}`)
+    const packageJson = await fs.readJSON('package.json')
+    expect(packageJson.version).toBe(addVersion)
   })
 
   test(`root diff, ${cmd} sync`, async () => {
-    const newVersion = '1.0.0'
+    const newVersion = '0.0.1'
     await handleCommand(async function () {
       const git = newSimpleGit(context.root)
       process.chdir(_path)
@@ -91,7 +108,15 @@ describe(cmd, () => {
         },
       }, git, newVersion)
       return git
-    }, newVersion)
+    }, newVersion, 'multiple')
+
+    // packages test
+    const [a, b, c] = await getPackages()
+    expect(a.version).toBe(newVersion)
+    expect(b.version).toBe(newVersion)
+    expect(b.dependencies['@test/a']).toBe('workspace:~0.0.0')
+    expect(c.version).toBe(newVersion)
+    expect(c.dependencies['@test/b']).toBe('workspace:^0.0.0')
   })
 
   test('message', async () => {

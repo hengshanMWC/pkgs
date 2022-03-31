@@ -8,7 +8,6 @@ import {
 import {
   createTestContext,
   setUpInit,
-  setUpFilesAdded,
   io,
 } from '.'
 export async function tagExpect (type: TagType, git: SimpleGit) {
@@ -17,12 +16,9 @@ export async function tagExpect (type: TagType, git: SimpleGit) {
   expect(tagCommitId).not.toBeUndefined()
   return tagCommitId
 }
-export async function fillgit () {
-  const context = await createTestContext()
+export async function fillgit (prefix?: string) {
+  const context = await createTestContext(prefix)
   await setUpInit(context)
-  await context.file(['clean-dir', 'clean'])
-  await context.file(['dirty-dir', 'dirty'])
-  await setUpFilesAdded(context, ['alpha', 'beta'], ['alpha', 'beta', './clean-dir'])
   return context
 }
 export async function createJson (prefix: string, content: string | any) {

@@ -1,4 +1,4 @@
-import { join, resolve } from 'path'
+import { join } from 'path'
 import type { WriteFileOptions } from 'fs'
 import { existsSync, mkdir, mkdtemp, realpathSync, writeFile } from 'fs'
 import type { SimpleGit } from 'simple-git'
@@ -25,8 +25,7 @@ export interface SimpleGitTestContext {
 
   readonly git: SimpleGit
 }
-const tempDir = resolve(__dirname, '..', '.tmp')
-console.log(tempDir)
+
 export const io = {
   mkdir (path: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -53,8 +52,8 @@ export const io = {
   },
 }
 
-export async function createTestContext (): Promise<SimpleGitTestContext> {
-  const root = await io.mkdtemp()
+export async function createTestContext (prefix: string): Promise<SimpleGitTestContext> {
+  const root = await io.mkdtemp(prefix)
 
   const context: SimpleGitTestContext = {
     path (...segments) {
@@ -71,7 +70,6 @@ export async function createTestContext (): Promise<SimpleGitTestContext> {
       if (Array.isArray(path)) {
         await context.dir(path[0])
       }
-
       const pathArray = Array.isArray(path) ? path : [path]
       return io.writeFile(context.path(...pathArray), content)
     },

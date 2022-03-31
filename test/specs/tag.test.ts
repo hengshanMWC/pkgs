@@ -4,6 +4,7 @@ import type {
 } from '../__fixtures__'
 import {
   newSimpleGit,
+  setUpFilesAdded,
 } from '../__fixtures__'
 import { tagExpect, fillgit } from '../__fixtures__/commit'
 const cmd = 'tag'
@@ -12,6 +13,8 @@ describe(cmd, () => {
 
   beforeEach(async () => {
     context = await fillgit()
+    // 生成一个commit，防止gittag没commit而报错
+    await setUpFilesAdded(context, ['tag'])
   })
   test('default', async () => {
     const git = newSimpleGit(context.root)
