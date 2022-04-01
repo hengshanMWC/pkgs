@@ -12,14 +12,15 @@ monorepo项目切换成pkgs，应该先运行`pkgs tag`，防止错误的`versio
 # Features
 
 ## mode
+monorepo有两种模式
 - **sync**: 命令将同步所有包
-- **diff**: 命令只会对针对修改过和要修过的文件触发
+- **diff**: 命令只会对更改过的文件触发
 
 ## Semantic
 
 对`packages.json`进行版本分析，对于`workspace`的`*`、`^`、`~`都有对应的语意化处理
 ## CreateTag
-使用`version`和`publish`会打上不同的`git tag`，而`diff mode`则是根据这些`git tag`进行分析。（👇🏻是运行命令后，cli打上的tag
+使用`version`和`publish`命令会打上不同的`git tag`，而`diff mode`则是根据这些`git tag`进行分析。（👇🏻运行命令后，cli打上的tag
 - pkgs version: v`${version}`-v-pkg
 - pkgs publish: sync`${Date.now()}`-p-pkg
 - pkgs version -m diff: sync`${Date.now()}`-v-pkg
@@ -53,7 +54,7 @@ monorepo项目切换成pkgs，应该先运行`pkgs tag`，防止错误的`versio
   - **message**: 运行\``git commit -m '${message} v${version}'`\`的message
 - **publish**: `pkgs version`命令配置
   - **mode**: `sync` | `diff`。决定命令模式
-  - **tag**: 运行\``npm publish --tag ${tag}`\`的tag。如果不传的话，会根据你的version做智能的发布tag
+  - **tag**: 运行\``npm publish --tag ${tag}`\`的tag。如果不传，会分析你的version是否需要添加--tag。例如: version: '1.0.0-beta.1', 发布命令会变成`npm publish --tag beta`
 # Commands
 ```
 pkgs -h
@@ -79,7 +80,7 @@ Commands:
 
 - --mode \<type>: 默认`sync`
   - sync: 升级所有package版本号
-  - diff: 升级修改过和要修过的package版本号
+  - diff: 升级修更改过和需要更改的package版本号
 - -m --message \<message>: 默认`chore: version`。运行\``git commit -m '${message} v${version}'`\`的message
 
 ## publish
@@ -87,10 +88,10 @@ Commands:
 
 发布package
 
-- --mode \<type>: 默认`sync`
+- --mode \<type>:
   - sync: 发布所有package
-  - diff: 发布修改过和要修过得package
-- --tag \<type>: npm publish --tag \<tag>
+  - diff: 发布更改过的package
+- --tag \<type>: npm publish --tag \<type>
 
 ## tag
 打上pkgs tag。
