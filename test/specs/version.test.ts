@@ -13,6 +13,7 @@ import {
   newSimpleGit,
   setUpFilesAdded,
 } from '../__fixtures__'
+import { WARN_NOW_VERSION } from '../../src/constant'
 
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'version'
@@ -43,20 +44,34 @@ describe(cmd, () => {
       return fs.readJSON(`packages/${item}/package.json`)
     }))
   }
-  // beforeEach(async () => {
-  // })
   afterEach(() => {
     // Many of the tests in this file change the CWD, so change it back after each test
     process.chdir(ORIGINAL_CWD)
   })
   test('default', async () => {
     const newVersion = '1.0.0'
-    await handleCommand(async function () {
-      const git = newSimpleGit(context.root)
+    let git: SimpleGit
+    const { newCommitId } = await handleCommand(async function () {
+      git = newSimpleGit(context.root)
       process.chdir(_path)
       await executeCommand(cmd, undefined, git, newVersion)
       return git
     }, newVersion)
+
+    // git message test
+    const gitMessage = await git.show([
+      newCommitId,
+      '-s',
+    ])
+    expect(gitMessage.includes('chore: version')).toBeTruthy()
+
+    // version unchanged
+    try {
+      await executeCommand(cmd, undefined, git, newVersion)
+    }
+    catch (err) {
+      expect(err.message).toBe(WARN_NOW_VERSION)
+    }
   })
   test('root diff', async () => {
     const newVersion = '1.0.0'
@@ -82,7 +97,6 @@ describe(cmd, () => {
     // add 1.1.0
     const addVersion = '1.1.0'
     await setUpFilesAdded(context, ['multiple/packages/b/test'])
-    // await fs.appendFile('./packages/b/test', 'test')
     await executeCommand(cmd, {
       mode: 'diff',
     }, git, addVersion)
@@ -98,8 +112,9 @@ describe(cmd, () => {
 
   test(`root diff, ${cmd} sync`, async () => {
     const newVersion = '0.0.1'
-    await handleCommand(async function () {
-      const git = newSimpleGit(context.root)
+    let git: SimpleGit
+    const { newCommitId } = await handleCommand(async function () {
+      git = newSimpleGit(context.root)
       process.chdir(_path)
       await executeCommand(cmd, {
         mode: 'diff',
@@ -117,10 +132,17 @@ describe(cmd, () => {
     expect(b.dependencies['@test/a']).toBe('workspace:~0.0.0')
     expect(c.version).toBe(newVersion)
     expect(c.dependencies['@test/b']).toBe('workspace:^0.0.0')
+
+    // git message test
+    const gitMessage = await git.show([
+      newCommitId,
+      '-s',
+    ])
+    expect(gitMessage.includes('chore: test')).toBeTruthy()
   })
 
   test('message', async () => {
-    const newVersion = '0.1.0'
+    const newVersion = '0.1.0-beta'
     const message = 'chore: test'
     let git: SimpleGit
     const { newCommitId } = await handleCommand(async function () {

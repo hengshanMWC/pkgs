@@ -27,8 +27,13 @@ export async function handleSyncVersion (context: Context) {
   const version = await changeVersion(context.rootDir, context.version)
 
   if (oldVersion === version) {
-    warn(WARN_NOW_VERSION)
-    process.exit()
+    if (process.env.NODE_ENV === 'test') {
+      throw new Error(WARN_NOW_VERSION)
+    }
+    else {
+      warn(WARN_NOW_VERSION)
+      process.exit()
+    }
   }
   context.rootPackageJson.version = version
 

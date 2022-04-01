@@ -1,29 +1,133 @@
+import path from 'path'
+import type { SimpleGit } from 'simple-git'
+import fs from 'fs-extra'
 import { executeCommand } from '../../index'
+import { tagExpect, fillgit } from '../__fixtures__/commit'
+import type {
+  SimpleGitTestContext,
+} from '../__fixtures__'
+import {
+  getNewestCommitId,
+} from '../../src/git'
+import {
+  newSimpleGit,
+  setUpFilesAdded,
+} from '../__fixtures__'
+import testGlobal from '../../src/utils/test'
+const ORIGINAL_CWD = process.cwd()
 const cmd = 'publish'
-describe.skip(cmd, () => {
-  test('default', async () => {
-    await executeCommand(cmd)
+describe(cmd, () => {
+  let context: SimpleGitTestContext
+  let _path: string
+  const prefix = 'publish-test'
+  const packagesPublish = [
+    'npm publish',
+    'cd packages/a && npm publish --access public',
+    'cd packages/b && npm publish --access public',
+    'cd packages/c && npm publish --access public',
+  ]
+  async function handleCommand (cd: (git: SimpleGit) => void, dir = 'single') {
+    context = await fillgit(prefix)
+    const git = newSimpleGit(context.root)
+    process.chdir(context.root)
+
+    await fs.copy(path.resolve(__dirname, '../temp', dir), dir)
+    _path = path.join(context.root, dir)
+    process.chdir(_path)
+
+    await git.add('.')
+    await git.commit('feat: pkgs publish')
+    await cd(git)
+
+    const tagCommitId = await tagExpect('p', git)
+    const newCommitId = await getNewestCommitId(git)
+    expect(newCommitId.includes(tagCommitId)).toBeTruthy()
+  }
+  function getPackages () {
+    return Promise.all(['a', 'b', 'c'].map(item => {
+      return fs.readJSON(`packages/${item}/package.json`)
+    }))
+  }
+  afterEach(() => {
+    // Many of the tests in this file change the CWD, so change it back after each test
+    process.chdir(ORIGINAL_CWD)
+    testGlobal.pkgsTestPublish = undefined
   })
-  test('root diff', async () => {
-    await executeCommand(cmd, {
-      mode: 'diff',
+  test('default', async () => {
+    await handleCommand(async function (git) {
+      testGlobal.pkgsTestPublish = function (text) {
+        expect(text).toBe(packagesPublish[0])
+      }
+      await executeCommand(cmd, undefined, git)
     })
+  })
+  test('root diff & version beta', async () => {
+    await handleCommand(async function (git) {
+      testGlobal.pkgsTestPublish = function (text) {
+        expect(packagesPublish.includes(text)).toBeTruthy()
+      }
+
+      // 先打上tag
+      const syncVersion = '0.0.1'
+      await executeCommand('version', undefined, git, '0.0.1')
+
+      await executeCommand(cmd, {
+        mode: 'diff',
+      }, git)
+
+      // diff beta
+      const newVersion = '0.0.1-beta.1'
+      await setUpFilesAdded(context, ['multiple/packages/a/test'])
+      await executeCommand('version', {
+        mode: 'diff',
+      }, git, newVersion)
+
+      // version beta
+      const [a, b, c] = await getPackages()
+      expect(a.version).toBe(newVersion)
+      expect(b.version).toBe(syncVersion)
+      expect(c.version).toBe(newVersion)
+
+      testGlobal.pkgsTestPublish = function (text) {
+        const diffPublishs = [packagesPublish[1], packagesPublish[3]]
+          .map(item => `${item} --tag beta`)
+        expect(diffPublishs.includes(text)).toBeTruthy()
+      }
+      await executeCommand(cmd, {
+        mode: 'diff',
+      }, git)
+    }, 'multiple')
   })
 
   test(`root diff, ${cmd} sync`, async () => {
-    await executeCommand(cmd, {
-      mode: 'diff',
-      [cmd]: {
-        mode: 'sync',
-      },
-    })
+    await handleCommand(async function (git) {
+      testGlobal.pkgsTestPublish = function (text) {
+        expect(packagesPublish.slice(1).includes(text)).toBeTruthy()
+      }
+      await executeCommand(cmd, {
+        mode: 'diff',
+        [cmd]: {
+          mode: 'sync',
+        },
+      }, git)
+    }, 'multiple')
   })
 
   test('message', async () => {
-    await executeCommand(cmd, {
-      [cmd]: {
-        tag: 'test',
-      },
-    })
+    const tag = 'test'
+    await handleCommand(async function (git) {
+      testGlobal.pkgsTestPublish = function (text) {
+        expect(packagesPublish
+          .slice(1)
+          .map(item => `${item} --tag ${tag}`)
+          .includes(text),
+        ).toBeTruthy()
+      }
+      await executeCommand(cmd, {
+        [cmd]: {
+          tag,
+        },
+      }, git)
+    }, 'multiple')
   })
 })

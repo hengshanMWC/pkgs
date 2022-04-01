@@ -3,6 +3,7 @@ import type { IPackageJson } from '@ts-type/package-dts'
 import type { Context } from '../index'
 import { gitDiffTag, gitSyncPublishTag } from '../git'
 import { cdDir } from '../utils'
+import testGlobal from '../utils/test'
 import { organization } from '../utils/regExp'
 export function cmdPublish (context: Context) {
   const mode = context.getCorrectOptionValue<'mode'>('publish', 'mode')
@@ -52,7 +53,13 @@ export async function implementPublish (
     else if (packageJson.version?.includes('beta')) {
       command += ' --tag beta'
     }
-
-    execSync(command)
+    if (process.env.NODE_ENV === 'test') {
+      if (testGlobal.pkgsTestPublish) {
+        testGlobal.pkgsTestPublish(command)
+      }
+    }
+    else {
+      execSync(command)
+    }
   }
 }

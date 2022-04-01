@@ -10,6 +10,7 @@ import camelcase from 'camelcase' // 转驼峰拼写
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
+import replace from '@rollup/plugin-replace'
 import esbuild from 'rollup-plugin-esbuild'
 import colors from 'colors'
 import { name } from '../package.json'
@@ -71,6 +72,9 @@ const genConfig = (key: keyof Builds): RollupOptions => {
       nodeResolve(),
       commonjs(),
       json(),
+      replace({
+        'process.env.NODE_ENV': 'undefined',
+      }),
       ...plugins,
     ],
     // 监听
