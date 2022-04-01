@@ -33,7 +33,7 @@
     "prepare": "husky install",
     "lint": "eslint --ext=js,ts,json,md .",
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",
-    "build": "node rollup.config.js && tsc --emitDeclarationOnly",
+    "build": "node rollup.config.js && esno ./scripts/template.ts && tsc --emitDeclarationOnly",
     "pkgs:version": "esno ./scripts/version.ts",
     "pkgs:publish": "esno ./scripts/publish.ts",
     "release": "esno ./scripts/release.ts"
@@ -47,6 +47,7 @@
     "@abmao/forb": "^1.0.3",
     "colors": "^1.4.0",
     "commander": "^9.0.0",
+    "fs-extra": "^10.0.1",
     "jsonfile": "^6.1.0",
     "simple-git": "^3.4.0"
   },
@@ -68,7 +69,6 @@
     "esbuild-register": "^3.3.2",
     "eslint": "^8.11.0",
     "esno": "^0.14.1",
-    "fs-extra": "^10.0.1",
     "husky": "^7.0.4",
     "log-symbols": "^5.1.0",
     "rimraf": "^3.0.2",
