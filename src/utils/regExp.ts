@@ -9,3 +9,5 @@ export const versionRangeText = range + versionText
 export const versionFormal = `${versionNumberText}$`
 // 组织包
 export const organization = '^@[^/]+\\/[^/]+'
+// npm tag
+export const npmTag = '^.+-(\\w+)\\.'

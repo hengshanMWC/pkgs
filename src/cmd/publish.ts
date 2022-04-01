@@ -4,7 +4,7 @@ import type { Context } from '../index'
 import { gitDiffTag, gitSyncPublishTag } from '../git'
 import { cdDir } from '../utils'
 import testGlobal from '../utils/test'
-import { organization } from '../utils/regExp'
+import { organization, npmTag } from '../utils/regExp'
 export function cmdPublish (context: Context) {
   const mode = context.getCorrectOptionValue<'mode'>('publish', 'mode')
 
@@ -50,8 +50,11 @@ export async function implementPublish (
     if (tag) {
       command += ` --tag ${tag}`
     }
-    else if (packageJson.version?.includes('beta')) {
-      command += ' --tag beta'
+    else if (packageJson.version) {
+      const tagArr = packageJson.version.match(new RegExp(npmTag))
+      if (tagArr) {
+        command += ` --tag ${tagArr[1]}`
+      }
     }
     if (process.env.NODE_ENV === 'test') {
       if (testGlobal.pkgsTestPublish) {
