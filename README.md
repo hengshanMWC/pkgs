@@ -4,8 +4,8 @@
 # Usage
 ```
 npm i -g @abmao/pkgs
-pkgs version
-pkgs publish
+pkgs version // 升级版本
+pkgs publish // 发布包
 ```
 monorepo项目切换成pkgs，应该先运行`pkgs tag`，防止错误的`version`和`publish`
 
@@ -50,10 +50,10 @@ monorepo项目切换成pkgs，应该先运行`pkgs tag`，防止错误的`versio
 - **mode**: `sync` | `diff`。决定`version`和`publish`的模式
 - **version**: `pkgs version`命令配置
   - **mode**: `sync` | `diff`。决定命令模式
-  - **message**: `chore: version`。运行\``git commit -m '${message} v${version}'`\`的message
+  - **message**: 运行\``git commit -m '${message} v${version}'`\`的message
 - **publish**: `pkgs version`命令配置
   - **mode**: `sync` | `diff`。决定命令模式
-  - **tag**: 运行\``npm publish --tag ${tag}`\`的tag
+  - **tag**: 运行\``npm publish --tag ${tag}`\`的tag。如果不传的话，会根据你的version做智能的发布tag
 # Commands
 ```
 pkgs -h
@@ -109,6 +109,6 @@ diff模式是基于git tag进行文件更改分析。场景：当monorepo项目�
 - [x] 语义化
 - [x] bumpp perf
 - [x] bumpp perf，After that, adjust the structure.
-- [ ] Supplementary test
+- [x] Supplementary test
 - [ ] Supplementary examples
 - [ ] pkgs init
