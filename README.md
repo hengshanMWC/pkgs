@@ -101,15 +101,3 @@ diff模式是基于git tag进行文件更改分析。场景：当monorepo项目�
 不带参数则相当于打上两种一下tag
 - -p: pkgs tag -p(打上publish标签)
 - -v: pkgs tag -v(打上version标签)
-
-# Function list
-- [x] mode：sync
-- [x] mode：diff
-- [x] Add config
-- [x] publish tag perf
-- [x] 语义化
-- [x] bumpp perf
-- [x] bumpp perf，After that, adjust the structure.
-- [x] Supplementary test
-- [x] Supplementary examples
-- [ ] pkgs init
