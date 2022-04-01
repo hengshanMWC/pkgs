@@ -1,9 +1,9 @@
-import { readFile } from 'jsonfile'
+import { readJSON } from 'fs-extra'
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
-import { readFiles } from './utils'
+import { getFiles } from './utils'
 import {
   getPackagesName,
   createRelyMyDirMap,
@@ -120,9 +120,9 @@ export class Context {
   }
 
   async initData () {
-    this.rootPackageJson = await readFile(this.rootFilePath)
+    this.rootPackageJson = await readJSON(this.rootFilePath)
     const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
-    const packagesJSON = await readFiles(filesPath)
+    const packagesJSON = await getFiles(filesPath)
 
     this.createContextAnalysisDiagram(
       [this.rootDir, ...dirs],

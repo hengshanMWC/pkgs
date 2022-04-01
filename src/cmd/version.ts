@@ -1,4 +1,4 @@
-import { writeFile } from 'jsonfile'
+import { writeJSON } from 'fs-extra'
 import { versionBumpInfo } from '@abmao/bump'
 import colors from 'colors'
 import { gitSyncSave, gitDiffSave } from '../git'
@@ -131,7 +131,7 @@ export function writeJSONs (
   triggerSign: SetAnalysisBlockObject,
 ) {
   return Promise.all([...triggerSign].map(({ filePath, packageJson }) => {
-    return writeFile(filePath, packageJson, { spaces: 2 })
+    return writeJSON(filePath, packageJson, { spaces: 2 })
   }))
 }
 

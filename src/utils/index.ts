@@ -1,17 +1,17 @@
-import { readFile, writeFile } from 'jsonfile'
+import { readJSON, writeJSON } from 'fs-extra'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { DEPENDENCY_PREFIX } from '../constant'
-export async function readJSON (dir: string): Promise<IPackageJson> {
+export async function getJSON (dir: string): Promise<IPackageJson> {
   try {
-    return await readFile(dir)
+    return await readJSON(dir)
   }
   catch {
     return {}
   }
 }
-export async function readFiles (dirs: string[]) {
-  return Promise.all(dirs.map(dir => readFile(dir)))
+export async function getFiles (dirs: string[]) {
+  return Promise.all(dirs.map(dir => getJSON(dir)))
 }
 export interface WriteObject {
   filePath: string
@@ -19,7 +19,7 @@ export interface WriteObject {
 }
 export async function writeFiles (writesObject: WriteObject[]) {
   return Promise.all(
-    writesObject.map(writeObject => writeFile(
+    writesObject.map(writeObject => writeJSON(
       writeObject.filePath,
       writeObject.packageJson,
       { spaces: 2 },

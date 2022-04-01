@@ -3,7 +3,7 @@ import type { SimpleGit } from 'simple-git'
 import { Context } from './src'
 import { cmdInit } from './src/cmd'
 import { defaultOptions } from './src/defaultOptions'
-import { readJSON, assign } from './src/utils'
+import { getJSON, assign } from './src/utils'
 import { cliVersion, cliSuccess } from './src/tips'
 import { gitDiffTag } from './src/git'
 import type { TagType } from './src/git'
@@ -18,7 +18,7 @@ export async function executeCommand (
 ) {
   cliVersion(cmd)
   const packageJson =
-    await readJSON('pkgs.json') as Partial<ExecuteCommandOptions>
+    await getJSON('pkgs.json') as Partial<ExecuteCommandOptions>
   await Context.create(
     assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
     cmd,
