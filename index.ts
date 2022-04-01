@@ -1,6 +1,7 @@
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import { Context } from './src'
+import { cmdInit } from './src/cmd'
 import { defaultOptions } from './src/defaultOptions'
 import { readJSON, assign } from './src/utils'
 import { cliVersion, cliSuccess } from './src/tips'
@@ -45,7 +46,11 @@ export async function executeCommandTag (
   }
   cliSuccess()
 }
-
+export async function executeCommandInit () {
+  cliVersion('init')
+  await cmdInit()
+  cliSuccess()
+}
 export type { TagType } from './src/git'
 export type { CMD } from './src'
 export type { ExecuteCommandOptions } from './src/defaultOptions'

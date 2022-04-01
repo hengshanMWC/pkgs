@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const { program } = require('commander')
-const { executeCommand, executeCommandTag } = require('../dist/pkgs.cjs.min')
+const { executeCommand, executeCommandTag, executeCommandInit } = require('../dist/pkgs.cjs.min')
 const pkg = require('../package.json')
 function handleExecuteCommand (type, cmd) {
   executeCommand(type, {
@@ -35,5 +35,12 @@ program
   .option('-v', 'version tag')
   .action(cmd => {
     executeCommandTag(cmd)
+  })
+
+program
+  .command('init')
+  .description('create pkgs file')
+  .action(() => {
+    executeCommandInit()
   })
 program.parse(process.argv)
