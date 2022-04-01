@@ -25,7 +25,7 @@ describe(cmd, () => {
     context = await fillgit('version-test')
     process.chdir(context.root)
     _path = path.join(context.root, dir)
-    await fs.copy(path.resolve(__dirname, '../temp', dir), dir)
+    await fs.copy(path.resolve(__dirname, '../../examples', dir), dir)
 
     const git = await cd()
 

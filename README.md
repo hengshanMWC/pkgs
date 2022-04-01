@@ -111,5 +111,5 @@ diff模式是基于git tag进行文件更改分析。场景：当monorepo项目�
 - [x] bumpp perf
 - [x] bumpp perf，After that, adjust the structure.
 - [x] Supplementary test
-- [ ] Supplementary examples
+- [x] Supplementary examples
 - [ ] pkgs init

@@ -31,7 +31,7 @@ describe(cmd, () => {
     const git = newSimpleGit(context.root)
     process.chdir(context.root)
 
-    await fs.copy(path.resolve(__dirname, '../temp', dir), dir)
+    await fs.copy(path.resolve(__dirname, '../../examples', dir), dir)
     _path = path.join(context.root, dir)
     process.chdir(_path)
 

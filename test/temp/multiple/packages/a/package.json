@@ -1,7 +1,0 @@
-{
-  "name": "@test/a",
-  "version": "0.0.0",
-  "publishConfig": {
-    "registry": "http://localhost:4873/"
-  }
-}
