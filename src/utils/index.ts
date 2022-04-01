@@ -10,7 +10,7 @@ export async function getJSON (dir: string): Promise<IPackageJson> {
     return {}
   }
 }
-export async function getFiles (dirs: string[]) {
+export async function getJSONs (dirs: string[]) {
   return Promise.all(dirs.map(dir => getJSON(dir)))
 }
 export interface WriteObject {

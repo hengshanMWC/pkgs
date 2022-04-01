@@ -3,7 +3,7 @@ import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
-import { getFiles } from './utils'
+import { getJSONs } from './utils'
 import {
   getPackagesName,
   createRelyMyDirMap,
@@ -122,7 +122,7 @@ export class Context {
   async initData () {
     this.rootPackageJson = await readJSON(this.rootFilePath)
     const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
-    const packagesJSON = await getFiles(filesPath)
+    const packagesJSON = await getJSONs(filesPath)
 
     this.createContextAnalysisDiagram(
       [this.rootDir, ...dirs],
