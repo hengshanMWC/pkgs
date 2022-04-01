@@ -33,7 +33,7 @@
     "prepare": "husky install",
     "lint": "eslint --ext=js,ts,json,md .",
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",
-    "build": "node rollup.config.js && esno ./scripts/template.ts && tsc --emitDeclarationOnly",
+    "build": "esno ./scripts/build.ts && tsc --emitDeclarationOnly",
     "pkgs:version": "esno ./scripts/version.ts",
     "pkgs:publish": "esno ./scripts/publish.ts",
     "release": "esno ./scripts/release.ts"
