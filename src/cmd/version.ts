@@ -1,7 +1,7 @@
 import { writeJSON } from 'fs-extra'
 import { versionBumpInfo } from '@abmao/bump'
 import colors from 'colors'
-import { gitSyncSave, gitDiffSave } from '../git'
+import { gitSyncSave, gitDiffSave, gitTemporary } from '../git'
 import type {
   Context,
   AnalysisBlockObject,
@@ -61,6 +61,7 @@ export async function handleSyncVersion (context: Context) {
     }
   }
   await writeFiles(changes)
+  await gitTemporary(changes.map(item => item.filePath))
   await gitSyncSave(
     version as string,
     context.options.version.message,
@@ -74,6 +75,7 @@ export async function handleDiffVersion (context: Context) {
     await changeVersionResultItem(context, analysisBlock, dir, triggerSign)
   }, 'v')
   await writeJSONs(triggerSign)
+  await gitTemporary([...triggerSign].map(item => item.filePath), context.git)
   await gitDiffSave(
     [...triggerSign].map(({ packageJson }) => {
       return `${packageJson.name as string}@${packageJson.version}`
