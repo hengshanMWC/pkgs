@@ -19,6 +19,7 @@ export interface SimpleGitTestContext {
 
   /** Root directory for the test context */
   readonly root: string
+  readonly _root: string
 
   /** Fully qualified resolved path, accounts for any symlinks to the temp directory */
   readonly rootResolvedPath: string
@@ -36,7 +37,7 @@ export const io = {
       mkdir(path, { recursive: true }, err => err ? reject(err) : resolve(path))
     })
   },
-  mkdtemp (prefix = 'git-test'): Promise<string> {
+  mkdtemp (prefix): Promise<string> {
     return new Promise((resolve, reject) => {
       mkdtemp(`${process.env.TMPDIR || '/.tmp/pkgs-'}${prefix}-`, (err, path) => {
         err ? reject(err) : resolve(path)
@@ -52,8 +53,9 @@ export const io = {
   },
 }
 
-export async function createTestContext (prefix: string): Promise<SimpleGitTestContext> {
-  const root = await io.mkdtemp(prefix)
+export async function createTestContext (prefix: string, dir?: string): Promise<SimpleGitTestContext> {
+  const _root = await io.mkdtemp(prefix)
+  const root = dir ? join(_root, dir) : _root
 
   const context: SimpleGitTestContext = {
     path (...segments) {
@@ -80,6 +82,9 @@ export async function createTestContext (prefix: string): Promise<SimpleGitTestC
     },
     get root () {
       return root
+    },
+    get _root () {
+      return _root
     },
     get rootResolvedPath () {
       return realpathSync(context.root)

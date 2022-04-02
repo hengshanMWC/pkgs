@@ -44,6 +44,7 @@ export async function handleSyncVersion (context: Context) {
     },
   ]
 
+  // 依赖更新
   for (let index = 0; index < context.packagesJSON.length; index++) {
     const packageJson = context.packagesJSON[index]
     const analysisBlock = context.packageJsonToAnalysisBlock(packageJson)
@@ -61,7 +62,7 @@ export async function handleSyncVersion (context: Context) {
     }
   }
   await writeFiles(changes)
-  await gitTemporary(changes.map(item => item.filePath))
+  await gitTemporary(changes.map(item => item.filePath), context.git)
   await gitSyncSave(
     version as string,
     context.options.version.message,

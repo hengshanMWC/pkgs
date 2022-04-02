@@ -12,7 +12,7 @@ describe(cmd, () => {
   let context: SimpleGitTestContext
 
   beforeEach(async () => {
-    context = await fillgit()
+    context = await fillgit('git-test')
     // 生成一个commit，防止gittag没commit而报错
     await setUpFilesAdded(context, ['tag'])
   })

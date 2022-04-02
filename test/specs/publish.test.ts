@@ -2,7 +2,7 @@ import path from 'path'
 import type { SimpleGit } from 'simple-git'
 import fs from 'fs-extra'
 import { executeCommand } from '../../index'
-import { tagExpect, fillgit } from '../__fixtures__/commit'
+import { tagExpect } from '../__fixtures__/commit'
 import type {
   SimpleGitTestContext,
 } from '../__fixtures__'
@@ -12,13 +12,14 @@ import {
 import {
   newSimpleGit,
   setUpFilesAdded,
+  createTestContext,
+  setUpInit,
 } from '../__fixtures__'
 import testGlobal from '../../src/utils/test'
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'publish'
 describe(cmd, () => {
   let context: SimpleGitTestContext
-  let _path: string
   const prefix = 'publish-test'
   const packagesPublish = [
     'npm publish',
@@ -27,14 +28,14 @@ describe(cmd, () => {
     'cd packages/c && npm publish --access public',
   ]
   async function handleCommand (cd: (git: SimpleGit) => void, dir = 'single') {
-    context = await fillgit(prefix)
-    const git = newSimpleGit(context.root)
-    process.chdir(context.root)
+    context = await createTestContext(prefix, dir)
 
+    process.chdir(context._root)
     await fs.copy(path.resolve(__dirname, '../../examples', dir), dir)
-    _path = path.join(context.root, dir)
-    process.chdir(_path)
+    await setUpInit(context)
+    const git = newSimpleGit(context.root)
 
+    process.chdir(context.root)
     await git.add('.')
     await git.commit('feat: pkgs publish')
     await cd(git)
@@ -66,7 +67,6 @@ describe(cmd, () => {
       testGlobal.pkgsTestPublish = function (text) {
         expect(packagesPublish.includes(text)).toBeTruthy()
       }
-
       // 先打上tag
       const syncVersion = '0.0.1'
       await executeCommand('version', undefined, git, '0.0.1')
@@ -77,7 +77,7 @@ describe(cmd, () => {
 
       // diff beta
       const newVersion = '0.0.1-beta.1'
-      await setUpFilesAdded(context, ['multiple/packages/a/test'])
+      await setUpFilesAdded(context, ['packages/a/test'])
       await executeCommand('version', {
         mode: 'diff',
       }, git, newVersion)

@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import type { SimpleGit } from 'simple-git'
 import { executeCommand } from '../../index'
-import { tagExpect, fillgit } from '../__fixtures__/commit'
+import { tagExpect } from '../__fixtures__/commit'
 import {
   getNewestCommitId,
 } from '../../src/git'
@@ -12,6 +12,8 @@ import type {
 import {
   newSimpleGit,
   setUpFilesAdded,
+  createTestContext,
+  setUpInit,
 } from '../__fixtures__'
 import { WARN_NOW_VERSION } from '../../src/constant'
 
@@ -19,13 +21,14 @@ const ORIGINAL_CWD = process.cwd()
 const cmd = 'version'
 describe(cmd, () => {
   let context: SimpleGitTestContext
-  let _path: string
+  const prefix = 'version-test'
 
   async function handleCommand (cd, newVersion: string, dir = 'single') {
-    context = await fillgit('version-test')
-    process.chdir(context.root)
-    _path = path.join(context.root, dir)
+    context = await createTestContext(prefix, dir)
+
+    process.chdir(context._root)
     await fs.copy(path.resolve(__dirname, '../../examples', dir), dir)
+    await setUpInit(context)
 
     const git = await cd()
 
@@ -53,7 +56,7 @@ describe(cmd, () => {
     let git: SimpleGit
     const { newCommitId } = await handleCommand(async function () {
       git = newSimpleGit(context.root)
-      process.chdir(_path)
+      process.chdir(context.root)
       await executeCommand(cmd, undefined, git, newVersion)
       return git
     }, newVersion)
@@ -78,7 +81,7 @@ describe(cmd, () => {
     let git: SimpleGit
     await handleCommand(async function () {
       git = newSimpleGit(context.root)
-      process.chdir(_path)
+      process.chdir(context.root)
       await executeCommand(cmd, {
         mode: 'diff',
       }, git, newVersion)
@@ -96,7 +99,7 @@ describe(cmd, () => {
 
     // add 1.1.0
     const addVersion = '1.1.0'
-    await setUpFilesAdded(context, ['multiple/packages/b/test'])
+    await setUpFilesAdded(context, ['packages/b/test'])
     await executeCommand(cmd, {
       mode: 'diff',
     }, git, addVersion)
@@ -115,7 +118,7 @@ describe(cmd, () => {
     let git: SimpleGit
     const { newCommitId } = await handleCommand(async function () {
       git = newSimpleGit(context.root)
-      process.chdir(_path)
+      process.chdir(context.root)
       await executeCommand(cmd, {
         mode: 'diff',
         [cmd]: {
@@ -147,7 +150,7 @@ describe(cmd, () => {
     let git: SimpleGit
     const { newCommitId } = await handleCommand(async function () {
       git = newSimpleGit(context.root)
-      process.chdir(_path)
+      process.chdir(context.root)
       await executeCommand(cmd, {
         [cmd]: {
           message,

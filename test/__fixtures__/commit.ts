@@ -16,8 +16,8 @@ export async function tagExpect (type: TagType, git: SimpleGit) {
   expect(tagCommitId).not.toBeUndefined()
   return tagCommitId
 }
-export async function fillgit (prefix?: string) {
-  const context = await createTestContext(prefix)
+export async function fillgit (prefix: string, dir?: string) {
+  const context = await createTestContext(prefix, dir)
   await setUpInit(context)
   return context
 }
