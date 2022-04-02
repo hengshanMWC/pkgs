@@ -6,8 +6,6 @@ import {
   getTagCommitId,
 } from '../../src/git'
 import {
-  createTestContext,
-  setUpInit,
   io,
 } from '.'
 export async function tagExpect (type: TagType, git: SimpleGit) {
@@ -15,11 +13,6 @@ export async function tagExpect (type: TagType, git: SimpleGit) {
   const tagCommitId = await getTagCommitId(tag, git)
   expect(tagCommitId).not.toBeUndefined()
   return tagCommitId
-}
-export async function fillgit (prefix: string, dir?: string) {
-  const context = await createTestContext(prefix, dir)
-  await setUpInit(context)
-  return context
 }
 export async function createJson (prefix: string, content: string | any) {
   if (typeof content === 'object') {

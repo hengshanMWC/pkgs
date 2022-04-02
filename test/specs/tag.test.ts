@@ -5,14 +5,17 @@ import type {
 import {
   newSimpleGit,
   setUpFilesAdded,
+  createTestContext,
+  setUpInit,
 } from '../__fixtures__'
-import { tagExpect, fillgit } from '../__fixtures__/commit'
+import { tagExpect } from '../__fixtures__/commit'
 const cmd = 'tag'
 describe(cmd, () => {
   let context: SimpleGitTestContext
 
   beforeEach(async () => {
-    context = await fillgit('git-test')
+    context = await createTestContext('git-test')
+    await setUpInit(context)
     // 生成一个commit，防止gittag没commit而报错
     await setUpFilesAdded(context, ['tag'])
   })
