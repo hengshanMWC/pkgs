@@ -59,12 +59,13 @@ export function isVersionLegalUpdate (
   const oldVersionMatchArray = oldVersion.match(versionRangTextRegExp)
 
   if (versionMatchArray && oldVersionMatchArray) {
+    const minor = (+versionMatchArray[3] > +oldVersionMatchArray[3])
+    const major = (+versionMatchArray[2] > +oldVersionMatchArray[2])
     if (oldVersionMatchArray[1] === '~') {
-      return (+versionMatchArray[3] > +oldVersionMatchArray[3]) ||
-        (+versionMatchArray[2] > +oldVersionMatchArray[2])
+      return minor || major
     }
     else if (oldVersionMatchArray[1] === '^') {
-      return +versionMatchArray[2] > +oldVersionMatchArray[2]
+      return major
     }
   }
   return false
