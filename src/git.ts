@@ -3,7 +3,7 @@ import type { SimpleGit } from 'simple-git'
 import { WARN_NOW_CHANGE } from './constant'
 import { warn } from './utils'
 
-export type TagType = 'p' | 'v'
+export type TagType = 'p' | 'v' | string
 const _tagMessage = 'pkgs update tag'
 export async function gitSyncSave (
   version: string,
@@ -122,4 +122,33 @@ export async function getChangeFiles (
     process.exit()
   }
   return arr
+}
+export type DiffFile = string[] | boolean | undefined
+export async function getRepositoryInfo (
+  type: TagType, git: SimpleGit = simpleGit(),
+): Promise<DiffFile> {
+  const tag = await getTag(type, git)
+
+  // 没有打过标记
+  if (!tag) {
+    return true
+  }
+
+  const tagCommitId = await getTagCommitId(tag, git)
+  const newestCommitId = await getNewestCommitId(git)
+
+  return getChangeFiles(newestCommitId, tagCommitId as string, git)
+}
+export async function getStageInfo (
+  git: SimpleGit = simpleGit(),
+): Promise<string[]> {
+  const { staged } = await git.status()
+  return staged
+}
+
+export async function getWorkInfo (
+  git: SimpleGit = simpleGit(),
+): Promise<string[]> {
+  const { modified, staged } = await git.status()
+  return modified.filter(item => !staged.includes(item))
 }

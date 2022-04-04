@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 const { program } = require('commander')
-const { executeCommand, executeCommandTag, executeCommandInit } = require('../dist/pkgs.cjs.min')
+const {
+  executeCommand,
+  executeCommandTag,
+  executeCommandInit,
+  executeCommandRun,
+} = require('../dist/pkgs.cjs.min')
 const pkg = require('../package.json')
 function handleExecuteCommand (type, cmd) {
   executeCommand(type, {
@@ -42,5 +47,11 @@ program
   .description('create pkgs file')
   .action(() => {
     executeCommandInit()
+  })
+program
+  .command('run <cmd> [mode]')
+  .description('run diff scripts.\n mode: work | stage | repository, default: work')
+  .action((cmd, mode) => {
+    executeCommandRun(cmd, mode)
   })
 program.parse(process.argv)

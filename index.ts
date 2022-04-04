@@ -51,6 +51,16 @@ export async function executeCommandInit () {
   await cmdInit()
   cliSuccess()
 }
+export type RunMode = 'work' | 'stage' | 'repository'
+export async function executeCommandRun (cmd: string, mode: RunMode = 'work', git: SimpleGit = simpleGit()) {
+  const context = await Context.create(
+    defaultOptions,
+    undefined,
+    git,
+  )
+  await context[`${mode}Command`](cmd)
+}
+
 export type { TagType } from './src/git'
 export type { CMD } from './src'
 export type { ExecuteCommandOptions } from './src/defaultOptions'

@@ -26,10 +26,10 @@ export async function handleSyncPublish (context: Context) {
   gitSyncPublishTag(undefined, context.git)
 }
 export async function handleDiffPublish (context: Context) {
-  await context.forDiffPack(async function (analysisBlock, dir) {
+  await context.forRepositoryDiffPack(async function (analysisBlock) {
     await implementPublish(
       analysisBlock.packageJson,
-      dir,
+      analysisBlock.dir,
       context.options.publish.tag,
     )
   }, 'p')

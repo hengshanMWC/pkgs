@@ -72,8 +72,8 @@ export async function handleSyncVersion (context: Context) {
 export async function handleDiffVersion (context: Context) {
   const triggerSign: SetAnalysisBlockObject = new Set()
 
-  await context.forDiffPack(async function (analysisBlock, dir) {
-    await changeVersionResultItem(context, analysisBlock, dir, triggerSign)
+  await context.forRepositoryDiffPack(async function (analysisBlock) {
+    await changeVersionResultItem(context, analysisBlock, analysisBlock.dir, triggerSign)
   }, 'v')
   await writeJSONs(triggerSign)
   await gitTemporary([...triggerSign].map(item => item.filePath), context.git)

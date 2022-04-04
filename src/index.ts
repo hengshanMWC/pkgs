@@ -3,8 +3,9 @@ import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
-import { getJSONs } from './utils'
+import { getJSONs, createCommand, runCmds } from './utils'
 import {
+  getRelyAttrs,
   getPackagesName,
   createRelyMyDirMap,
   setRelyMyDirhMap,
@@ -12,22 +13,23 @@ import {
 } from './utils/analysisDiagram'
 import { cmdVersion, cmdPublish } from './cmd'
 import type { ExecuteCommandOptions } from './defaultOptions'
-import type { TagType } from './git'
+import type { TagType, DiffFile } from './git'
 import {
-  getTag,
-  getNewestCommitId,
-  getTagCommitId,
-  getChangeFiles,
+  gitDiffTag,
+  getRepositoryInfo,
+  getStageInfo,
+  getWorkInfo,
 } from './git'
-
 export interface AnalysisBlockObject {
   packageJson: IPackageJson
   filePath: string
+  dir: string
   relyMyDir: string[]
   myRelyPackageName: string[]
 }
 export type ContextAnalysisDiagram = Record<string, AnalysisBlockObject>
 export type SetAnalysisBlockObject = Set<AnalysisBlockObject>
+export type DiffType = 'work' | 'stage' | 'repository'
 export class Context {
   options: ExecuteCommandOptions
   git: SimpleGit
@@ -145,6 +147,7 @@ export class Context {
       setRelyMyDirhMap(dir, packageJson, relyMyMap)
       this.contextAnalysisDiagram[dir] = {
         packageJson,
+        dir,
         filePath: filesPath[index],
         relyMyDir: relyMyMap[packageJson.name as string],
         myRelyPackageName: getMyRelyPackageName(packagesName, packageJson),
@@ -176,6 +179,80 @@ export class Context {
     }
   }
 
+  createAllCommand (cmd: string) {
+    return createCommand(cmd, this.allDirs)
+  }
+
+  createCommand (cmd: string) {
+    return createCommand(cmd, this.dirs)
+  }
+
+  async workCommand (type: string) {
+    const dirs = await this.getWorkDiffFile()
+    const cmds = createCommand(type, dirs)
+    runCmds(cmds)
+  }
+
+  async stageCommand (type: string) {
+    const dirs = await this.getStageDiffFile()
+    const cmds = createCommand(type, dirs)
+    runCmds(cmds)
+  }
+
+  async repositoryCommand (type: string) {
+    const dirs = await this.getRepositoryDiffFile(type)
+    const cmds = createCommand(type, dirs)
+    const status = runCmds(cmds)
+    if (status !== 'allError') {
+      gitDiffTag(type)
+    }
+  }
+
+  async getWorkDiffFile () {
+    const triggerSign: SetAnalysisBlockObject = new Set()
+    await this.forWorkDiffPack(source => {
+      this.getDirtyFile(source, triggerSign)
+    })
+    return [...triggerSign].map(item => item.dir)
+  }
+
+  async getStageDiffFile () {
+    const triggerSign: SetAnalysisBlockObject = new Set()
+    await this.forStageDiffPack(source => {
+      this.getDirtyFile(source, triggerSign)
+    })
+    return [...triggerSign].map(item => item.dir)
+  }
+
+  async getRepositoryDiffFile (type: string) {
+    const triggerSign: SetAnalysisBlockObject = new Set()
+    await this.forRepositoryDiffPack(source => {
+      this.getDirtyFile(source, triggerSign)
+    }, type)
+    return [...triggerSign].map(item => item.dir)
+  }
+
+  getDirtyFile (source: AnalysisBlockObject, triggerSign: SetAnalysisBlockObject) {
+    if (triggerSign.has(source)) return
+    triggerSign.add(source)
+    const relyMyDir = source.relyMyDir
+    // 没有依赖则跳出去
+    if (!Array.isArray(source.relyMyDir)) return
+    const relyAttrs = getRelyAttrs().reverse()
+
+    for (let i = 0; i < relyMyDir.length; i++) {
+      const relyDir = relyMyDir[i]
+      const analysisBlock = this.contextAnalysisDiagram[relyDir]
+
+      for (let j = 0; j < relyAttrs.length; j++) {
+        const key = relyAttrs[i]
+        const relyKeyObject = analysisBlock.packageJson[key]
+        if (!relyKeyObject) return
+        this.getDirtyFile(analysisBlock, triggerSign)
+      }
+    }
+  }
+
   async cmdAnalysis (cmd: CMD) {
     switch (cmd) {
       case 'version':
@@ -196,35 +273,32 @@ export class Context {
     }
   }
 
-  async forDiffPack (callback: ForPackCallback, type: TagType) {
-    const files = await this.getChangeFiles(type)
-    const dirtyPackagesDir = this.getDirtyPackagesDir(files)
+  async forRepositoryDiffPack (callback: ForPackCallback, type: TagType) {
+    const files = await getRepositoryInfo(type, this.git)
+    await this.forPack(files, callback)
+  }
 
+  async forStageDiffPack (callback: ForPackCallback) {
+    const files = await getStageInfo(this.git)
+    await this.forPack(files, callback)
+  }
+
+  async forWorkDiffPack (callback: ForPackCallback) {
+    const files = await getWorkInfo(this.git)
+    await this.forPack(files, callback)
+  }
+
+  async forPack (files: DiffFile, callback: ForPackCallback) {
+    const dirtyPackagesDir = this.getDirtyPackagesDir(files)
     for (let index = 0; index < dirtyPackagesDir.length; index++) {
       const dir = dirtyPackagesDir[index]
 
       await callback(
         this.contextAnalysisDiagram[dir],
-        dir,
         index,
         this,
       )
     }
-  }
-
-  async getChangeFiles
-  (type: TagType): Promise<string[] | boolean | undefined> {
-    const tag = await getTag(type, this.git)
-
-    // 没有打过标记
-    if (!tag) {
-      return true
-    }
-
-    const tagCommitId = await getTagCommitId(tag, this.git)
-    const newestCommitId = await getNewestCommitId(this.git)
-
-    return getChangeFiles(newestCommitId, tagCommitId as string, this.git)
   }
 
   getDirtyPackagesDir (files: string[] | boolean | undefined) {
@@ -253,7 +327,6 @@ export interface CMDArgs {
 }
 export type ForPackCallback = (
   analysisBlock: AnalysisBlockObject,
-  dir: string,
   index: number,
   context: Context
 ) => Promise<any> | void

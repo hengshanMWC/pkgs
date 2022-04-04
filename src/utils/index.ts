@@ -1,3 +1,4 @@
+import { execSync } from 'child_process'
 import { readJSON, writeJSON } from 'fs-extra'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
@@ -80,6 +81,35 @@ export function getAssign<T> (templateObject: any, object: any): T {
 export function warn (text: string) {
   console.warn(`${colors.yellow.bold(text)}`)
 }
+export function err (text: string) {
+  console.error(`${colors.red.bold(text)}`)
+}
 export function isVersionStar (version: string) {
   return version.includes(DEPENDENCY_PREFIX)
+}
+
+export function createCommand (cmd: string, dirs: string[]) {
+  if (!dirs.length) return []
+  return dirs
+    .map(dir => `${dir ? `cd ${dir} && ` : ''}npm run ${cmd}`)
+}
+export type statusRunCmds = 'allSuccess' | 'allError' | 'error'
+export function runCmds (cmds: string[]): statusRunCmds {
+  let status: statusRunCmds = 'allSuccess'
+  let index = 1
+  cmds.forEach(cmd => {
+    try {
+      execSync(cmd)
+    }
+    catch (e) {
+      if (index++ < cmds.length) {
+        status = 'error'
+      }
+      else {
+        status = 'allError'
+      }
+      err(`${e}`)
+    }
+  })
+  return status
 }
