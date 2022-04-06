@@ -56,24 +56,7 @@ monorepo有两种模式
   - **mode**: `sync` | `diff`。决定命令模式
   - **tag**: 运行\``npm publish --tag ${tag}`\`的tag。如果不传，会分析你的version是否需要添加--tag。例如: version: '1.0.0-beta.1', 发布命令会变成`npm publish --tag beta`
 # Commands
-```
-pkgs -h
-------------
-Usage: pkgs [options] [command]
-
-Simple monorepo combined with pnpm
-
-Options:
-  -V, --version      output the version number
-  -h, --help         display help for command
-
-Commands:
-  version [options]  version package
-  publish [options]  publish package
-  tag [options]      pkgs tag, diff mode: Compare according to tag
-  init               create pkgs file
-  help [command]     display help for command
-```
+可以使用`pkgs -h`查看具体指令
 ## version
 *pkgs version*
 
@@ -109,4 +92,14 @@ diff模式是基于git tag进行文件更改分析。场景：当monorepo项目�
 - packages
 - package.json
 - pkgs.json
+```
+
+## run
+可以指定指令例如`pkgs run test`, 会自动触发需要test的包
+
+有3种模式，`work（工作区） | stage（暂存区） | repository（版本库）`，默认`work`，不同模式对应不同的diff区域对比
+```
+pkgs run test work
+pkgs run test stage
+pkgs run test repository
 ```
