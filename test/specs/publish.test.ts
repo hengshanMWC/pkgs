@@ -33,6 +33,7 @@ describe(cmd, () => {
     process.chdir(context._root)
     await fs.copy(path.resolve(__dirname, '../../examples', dir), dir)
     await setUpInit(context)
+
     const git = newSimpleGit(context.root)
 
     process.chdir(context.root)

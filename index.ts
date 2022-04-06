@@ -53,12 +53,14 @@ export async function executeCommandInit () {
 }
 export type RunMode = 'work' | 'stage' | 'repository'
 export async function executeCommandRun (cmd: string, mode: RunMode = 'work', git: SimpleGit = simpleGit()) {
+  cliVersion('run')
   const context = await Context.create(
     defaultOptions,
     undefined,
     git,
   )
   await context[`${mode}Command`](cmd)
+  cliSuccess()
 }
 
 export type { TagType } from './src/git'

@@ -3,7 +3,7 @@ import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
-import { getJSONs, createCommand, runCmds } from './utils'
+import { getJSONs, createCommand, runCmds, warn } from './utils'
 import {
   getRelyAttrs,
   getPackagesName,
@@ -20,6 +20,7 @@ import {
   getStageInfo,
   getWorkInfo,
 } from './git'
+import { WARN_NOW_RUN } from './constant'
 export interface AnalysisBlockObject {
   packageJson: IPackageJson
   filePath: string
@@ -179,32 +180,43 @@ export class Context {
     }
   }
 
-  createAllCommand (cmd: string) {
-    return createCommand(cmd, this.allDirs)
-  }
-
-  createCommand (cmd: string) {
-    return createCommand(cmd, this.dirs)
+  getDiffDir (dirs: string[]) {
+    return this.options.rootPackage ? dirs : dirs.filter(dir => dir)
   }
 
   async workCommand (type: string) {
     const dirs = await this.getWorkDiffFile()
-    const cmds = createCommand(type, dirs)
-    runCmds(cmds)
+    const cmds = createCommand(type, this.getDiffDir(dirs))
+    if (cmds.length) {
+      runCmds(cmds)
+    }
+    else {
+      warn(WARN_NOW_RUN)
+    }
   }
 
   async stageCommand (type: string) {
     const dirs = await this.getStageDiffFile()
-    const cmds = createCommand(type, dirs)
-    runCmds(cmds)
+    const cmds = createCommand(type, this.getDiffDir(dirs))
+    if (cmds.length) {
+      runCmds(cmds)
+    }
+    else {
+      warn(WARN_NOW_RUN)
+    }
   }
 
   async repositoryCommand (type: string) {
     const dirs = await this.getRepositoryDiffFile(type)
-    const cmds = createCommand(type, dirs)
-    const status = runCmds(cmds)
-    if (status !== 'allError') {
-      gitDiffTag(type)
+    const cmds = createCommand(type, this.getDiffDir(dirs))
+    if (cmds.length) {
+      const status = runCmds(cmds)
+      if (status === 'allSuccess') {
+        gitDiffTag(type)
+      }
+    }
+    else {
+      warn(WARN_NOW_RUN)
     }
   }
 

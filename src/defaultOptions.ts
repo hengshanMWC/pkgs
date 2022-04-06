@@ -12,11 +12,13 @@ export interface ExecuteCommandPublishOption extends
 }
 export interface ExecuteCommandOptions extends ExecuteCommandOption {
   packagesPath: string
+  rootPackage: Boolean
   version: ExecuteCommandVersionOption
   publish: ExecuteCommandPublishOption
 }
 export const defaultOptions: ExecuteCommandOptions = {
   packagesPath: 'packages/*',
+  rootPackage: true,
   mode: 'sync',
   version: {
     mode: undefined,

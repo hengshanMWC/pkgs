@@ -99,7 +99,9 @@ export function runCmds (cmds: string[]): statusRunCmds {
   let index = 1
   cmds.forEach(cmd => {
     try {
-      execSync(cmd)
+      execSync(cmd, {
+        stdio: 'inherit',
+      })
     }
     catch (e) {
       if (index++ < cmds.length) {
