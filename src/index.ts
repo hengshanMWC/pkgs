@@ -387,11 +387,6 @@ export class Context {
       return []
     }
   }
-
-  getNameAntVersionPackages (dir: string) {
-    const packageJson = this.contextAnalysisDiagram[dir].packageJson
-    return `${packageJson.name}@${packageJson.version}`
-  }
 }
 export type CMD = 'version' | 'publish'
 type ForPackCallback = (
