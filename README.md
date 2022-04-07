@@ -31,10 +31,10 @@ monorepo有两种模式
 根目录下定义`pkgs.json`，pkgs运行时会读取其配置
 
 ## Default
-以下是代码中的默认配置
+以下是代码中的默认配置，会读取`pnpm-workspace.yaml`找到多包工作区
 ```JavaScript
 {
-  packagesPath: 'packages/*',
+  rootPackage: true,
   mode: 'sync',
   version: {
     mode: undefined,
@@ -47,7 +47,7 @@ monorepo有两种模式
 }
 ```
 ## Options
-- **packagesPath**: 多包的目录路径
+- **rootPackage**: `pkgs run`是否包括根目录下的命令
 - **mode**: `sync` | `diff`。决定`version`和`publish`的模式
 - **version**: `pkgs version`命令配置
   - **mode**: `sync` | `diff`。决定命令模式

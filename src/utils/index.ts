@@ -1,5 +1,6 @@
 import { execSync } from 'child_process'
-import { readJSON, writeJSON } from 'fs-extra'
+import { readJSON, writeJSON, readFile } from 'fs-extra'
+import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { DEPENDENCY_PREFIX } from '../constant'
@@ -114,4 +115,9 @@ export function runCmds (cmds: string[]): statusRunCmds {
     }
   })
   return status
+}
+
+export async function getYamlPackages (): Promise<string[]> {
+  const doc: any = yaml.load(await readFile('pnpm-workspace.yaml', 'utf8'))
+  return doc.packages as string[]
 }

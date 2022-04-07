@@ -1,5 +1,4 @@
 {
-  "packagesPath": "packages/*",
   "rootPackage": true,
   "mode": "sync",
   "version": {

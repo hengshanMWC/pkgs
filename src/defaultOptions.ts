@@ -11,13 +11,13 @@ export interface ExecuteCommandPublishOption extends
   tag?: string
 }
 export interface ExecuteCommandOptions extends ExecuteCommandOption {
-  packagesPath: string
+  packagesPath: string | string[] | undefined
   rootPackage: Boolean
   version: ExecuteCommandVersionOption
   publish: ExecuteCommandPublishOption
 }
 export const defaultOptions: ExecuteCommandOptions = {
-  packagesPath: 'packages/*',
+  packagesPath: undefined,
   rootPackage: true,
   mode: 'sync',
   version: {

@@ -3,7 +3,7 @@ import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
-import { getJSONs, createCommand, runCmds, warn } from './utils'
+import { getJSONs, createCommand, runCmds, warn, getYamlPackages } from './utils'
 import {
   getRelyAttrs,
   getPackagesName,
@@ -52,7 +52,17 @@ export class Context {
     git: SimpleGit = simpleGit(),
     version?: string,
   ) {
-    const result = new Context(options, git, version)
+    const attrOptions = options
+    // 同步pnpm-workspace.yaml的packagesPath
+    if (!attrOptions.packagesPath) {
+      try {
+        attrOptions.packagesPath = await getYamlPackages()
+      }
+      catch {}
+    }
+
+    const result = new Context(attrOptions, git, version)
+
     await result.initData()
     if (cmd) {
       await result.cmdAnalysis(cmd)
@@ -124,14 +134,21 @@ export class Context {
 
   async initData () {
     this.rootPackageJson = await readJSON(this.rootFilePath)
-    const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
-    const packagesJSON = await getJSONs(filesPath)
+    const values: [string[], string[], IPackageJson[]] = [
+      [this.rootDir],
+      [this.rootFilePath],
+      [this.rootPackageJson],
+    ]
+    if (this.options.packagesPath) {
+      console.log(this.options.packagesPath)
+      const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
+      const packagesJSON = await getJSONs(filesPath)
+      values[0].push(...dirs)
+      values[1].push(...filesPath)
+      values[2].push(...packagesJSON)
+    }
 
-    this.createContextAnalysisDiagram(
-      [this.rootDir, ...dirs],
-      [this.rootFilePath, ...filesPath],
-      [this.rootPackageJson, ...packagesJSON],
-    )
+    this.createContextAnalysisDiagram(...values)
   }
 
   createContextAnalysisDiagram (
