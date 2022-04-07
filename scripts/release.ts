@@ -1,8 +1,9 @@
 import { execSync } from 'child_process'
 import colors from 'colors'
+import { executeCommand } from '../index'
 console.log(`${colors.cyan.bold('release: start')} 🏗`)
-execSync('npm run build', { stdio: 'inherit' })
 execSync('npm run test', { stdio: 'inherit' })
-execSync('npm run pkgs:version', { stdio: 'inherit' })
-execSync('npm run pkgs:publish', { stdio: 'inherit' })
+execSync('npm run build', { stdio: 'inherit' })
+await executeCommand('version')
+await executeCommand('publish')
 console.log(`${colors.cyan.bold('release: success')} 🎉🎉🎉🎉🎊`)
