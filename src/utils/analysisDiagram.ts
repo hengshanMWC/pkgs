@@ -49,7 +49,7 @@ export function getMyRelyPackageName (
   })
   return result
 }
-export function getRely (packageJson: IPackageJson) {
+function getRely (packageJson: IPackageJson) {
   const result: IPackageJson['dependencies'] = {}
   const relyAttrs = getRelyAttrs()
 

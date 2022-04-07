@@ -22,7 +22,7 @@ export function cmdVersion (context: Context) {
     return handleDiffVersion(context)
   }
 }
-export async function handleSyncVersion (context: Context) {
+async function handleSyncVersion (context: Context) {
   const oldVersion = context.rootPackageJson.version
   const version = await changeVersion(context.rootDir, context.version)
 
@@ -69,7 +69,7 @@ export async function handleSyncVersion (context: Context) {
     context.git,
   )
 }
-export async function handleDiffVersion (context: Context) {
+async function handleDiffVersion (context: Context) {
   const triggerSign: SetAnalysisBlockObject = new Set()
 
   await context.forRepositoryDiffPack(async function (analysisBlock) {
@@ -85,7 +85,7 @@ export async function handleDiffVersion (context: Context) {
     context.git,
   )
 }
-export async function changeVersionResultItem (
+async function changeVersionResultItem (
   context: Context,
   analysisBlock: AnalysisBlockObject,
   dir: string,
@@ -105,7 +105,7 @@ export async function changeVersionResultItem (
     await changeRelyMyVersion(context, analysisBlock, triggerSign)
   }
 }
-export async function changeRelyMyVersion (
+async function changeRelyMyVersion (
   context: Context,
   analysisBlock: AnalysisBlockObject,
   triggerSign?: SetAnalysisBlockObject,
@@ -130,7 +130,7 @@ export async function changeRelyMyVersion (
     }
   }
 }
-export function writeJSONs (
+function writeJSONs (
   triggerSign: SetAnalysisBlockObject,
 ) {
   return Promise.all([...triggerSign].map(({ filePath, packageJson }) => {
@@ -138,7 +138,7 @@ export function writeJSONs (
   }))
 }
 
-export async function changeVersion (cwd?: string, release?: string) {
+async function changeVersion (cwd?: string, release?: string) {
   const versionBumpResults = await versionBumpInfo({
     release,
     cwd,

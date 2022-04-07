@@ -100,7 +100,7 @@ export async function getTagCommitId (
   return tagCommitInfo.trim().split('\n').at(-1)
 }
 
-export async function getChangeFiles (
+async function getChangeFiles (
   newestCommitId: string,
   tagCommitId: string,
   git: SimpleGit = simpleGit(),

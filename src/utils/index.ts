@@ -68,7 +68,7 @@ export function assign<T extends Object> (
     return previousValue
   }, {}) as T
 }
-export function getAssign<T> (templateObject: any, object: any): T {
+function getAssign<T> (templateObject: any, object: any): T {
   if (typeof templateObject === 'object') {
     if (typeof object === 'object') {
       return assign(templateObject, object)

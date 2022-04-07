@@ -28,9 +28,9 @@ export interface AnalysisBlockObject {
   relyMyDir: string[]
   myRelyPackageName: string[]
 }
-export type ContextAnalysisDiagram = Record<string, AnalysisBlockObject>
+type ContextAnalysisDiagram = Record<string, AnalysisBlockObject>
 export type SetAnalysisBlockObject = Set<AnalysisBlockObject>
-export type DiffType = 'work' | 'stage' | 'repository'
+// type DiffType = 'work' | 'stage' | 'repository'
 export class Context {
   options: ExecuteCommandOptions
   git: SimpleGit
@@ -354,11 +354,7 @@ export class Context {
   }
 }
 export type CMD = 'version' | 'publish'
-export interface CMDArgs {
-  path: string
-  cache: boolean
-}
-export type ForPackCallback = (
+type ForPackCallback = (
   analysisBlock: AnalysisBlockObject,
   index: number,
   context: Context

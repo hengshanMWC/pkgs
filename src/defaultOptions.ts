@@ -1,12 +1,12 @@
-export type Type = 'sync' | 'diff'
-export interface ExecuteCommandOption {
+type Type = 'sync' | 'diff'
+interface ExecuteCommandOption {
   mode: Type
 }
-export interface ExecuteCommandVersionOption extends
+interface ExecuteCommandVersionOption extends
   Partial<ExecuteCommandOption> {
   message?: string
 }
-export interface ExecuteCommandPublishOption extends
+interface ExecuteCommandPublishOption extends
   Partial<ExecuteCommandOption> {
   tag?: string
 }

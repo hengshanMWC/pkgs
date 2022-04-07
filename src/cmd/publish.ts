@@ -15,7 +15,7 @@ export function cmdPublish (context: Context) {
     return handleDiffPublish(context)
   }
 }
-export async function handleSyncPublish (context: Context) {
+async function handleSyncPublish (context: Context) {
   for (let index = 0; index < context.allPackagesJSON.length; index++) {
     await implementPublish(
       context.allPackagesJSON[index],
@@ -25,7 +25,7 @@ export async function handleSyncPublish (context: Context) {
   }
   gitSyncPublishTag(undefined, context.git)
 }
-export async function handleDiffPublish (context: Context) {
+async function handleDiffPublish (context: Context) {
   await context.forRepositoryDiffPack(async function (analysisBlock) {
     await implementPublish(
       analysisBlock.packageJson,
@@ -35,7 +35,7 @@ export async function handleDiffPublish (context: Context) {
   }, 'publish')
   gitDiffTag('publish', undefined, context.git)
 }
-export async function implementPublish (
+async function implementPublish (
   packageJson: IPackageJson<any>,
   dir?: string,
   tag?: string,

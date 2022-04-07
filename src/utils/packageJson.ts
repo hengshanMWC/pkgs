@@ -47,7 +47,7 @@ export function dependentSearch (
   return result
 }
 // TODO: 只有packageJsonVersion是预发布版本才会被version预发布版本更新
-export function isVersionLegalUpdate (
+function isVersionLegalUpdate (
   version: string,
   oldVersion: string,
 ) {
@@ -70,7 +70,7 @@ export function isVersionLegalUpdate (
   }
   return false
 }
-export function dependencyUpdate (
+function dependencyUpdate (
   packageJson: IPackageJson,
   relyAttr: string,
   name: string,
