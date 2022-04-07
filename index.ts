@@ -54,8 +54,10 @@ export async function executeCommandInit () {
 export type RunMode = 'work' | 'stage' | 'repository'
 export async function executeCommandRun (cmd: string, mode: RunMode = 'work', git: SimpleGit = simpleGit()) {
   cliVersion('run')
+  const packageJson =
+    await getJSON('pkgs.json') as Partial<ExecuteCommandOptions>
   const context = await Context.create(
-    defaultOptions,
+    assign<ExecuteCommandOptions>(defaultOptions, packageJson),
     undefined,
     git,
   )

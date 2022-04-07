@@ -42,7 +42,7 @@
   "homepage": "https://github.com/hengshanMWC/pkgs#readme",
   "dependencies": {
     "@abmao/bump": "^0.0.1",
-    "@abmao/forb": "^1.0.5",
+    "@abmao/forb": "^1.0.6",
     "colors": "^1.4.0",
     "commander": "^9.0.0",
     "fs-extra": "^10.0.1",

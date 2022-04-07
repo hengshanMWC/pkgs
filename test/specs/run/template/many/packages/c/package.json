@@ -5,9 +5,9 @@
     "test": "node test.js"
   },
   "dependencies": {
-    "@test/b": "workspace:^0.0.0"
+    "@test/e": "workspace:^0.0.0"
   },
   "devDependencies": {
-    "@test/a": "workspace:*"
+    "@test/d": "workspace:*"
   }
 }

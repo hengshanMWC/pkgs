@@ -21,12 +21,13 @@ import {
   getWorkInfo,
 } from './git'
 import { WARN_NOW_RUN, PACKAGES_PATH } from './constant'
+import { testEmit } from './utils/test'
 export interface AnalysisBlockObject {
   packageJson: IPackageJson
   filePath: string
   dir: string
   relyMyDir: string[]
-  myRelyPackageName: string[]
+  myRelyDir: string[]
 }
 type ContextAnalysisDiagram = Record<string, AnalysisBlockObject>
 export type SetAnalysisBlockObject = Set<AnalysisBlockObject>
@@ -104,8 +105,7 @@ export class Context {
   get dirs () {
     if (this.contextAnalysisDiagram) {
       return Object.keys(this.contextAnalysisDiagram)
-        .filter(item => item)
-        .map(key => key)
+        .filter(key => key)
     }
     else {
       return []
@@ -167,12 +167,17 @@ export class Context {
     dirs.forEach((dir, index) => {
       const packageJson = packagesJSON[index]
       setRelyMyDirhMap(dir, packageJson, relyMyMap)
+      const names = getMyRelyPackageName(packagesName, packageJson)
+      const myRelyDir = names.map(name => {
+        const i = packagesJSON.findIndex(item => item.name === name)
+        return dirs[i]
+      })
       this.contextAnalysisDiagram[dir] = {
         packageJson,
         dir,
         filePath: filesPath[index],
         relyMyDir: relyMyMap[packageJson.name as string],
-        myRelyPackageName: getMyRelyPackageName(packagesName, packageJson),
+        myRelyDir,
       }
     })
   }
@@ -201,43 +206,76 @@ export class Context {
     }
   }
 
-  getDiffDir (dirs: string[]) {
+  getRunDirs (dirs: string[]) {
     return this.options.rootPackage ? dirs : dirs.filter(dir => dir)
   }
 
-  async workCommand (type: string) {
-    const dirs = await this.getWorkDiffFile()
-    const cmds = createCommand(type, this.getDiffDir(dirs))
-    if (cmds.length) {
-      runCmds(cmds)
-    }
-    else {
-      warn(WARN_NOW_RUN)
-    }
+  // 也许运行命令的时候，需要一个正确的顺序
+  createOrderArray (dirs: string[]) {
+    const result: string[] = []
+    const stack: string[] = []
+    this.dependencyTracking(dirs, result, stack, function () {
+      const value = stack.at(-1)
+      if (value !== undefined && !result.includes(value)) {
+        result.push(value)
+      }
+      stack.pop()
+    })
+    return result
   }
 
-  async stageCommand (type: string) {
-    const dirs = await this.getStageDiffFile()
-    const cmds = createCommand(type, this.getDiffDir(dirs))
-    if (cmds.length) {
-      runCmds(cmds)
-    }
-    else {
-      warn(WARN_NOW_RUN)
-    }
+  dependencyTracking (dirs: string[], result: string[], stack: string[], cd: Function) {
+    dirs.forEach(dir => {
+      if (stack.includes(dir) || result.includes(dir)) return
+      stack.push(dir)
+
+      const { myRelyDir } = this.contextAnalysisDiagram[dir]
+      myRelyDir.forEach(item => {
+        if (!stack.includes(item)) {
+          stack.push(item)
+          const { myRelyDir } = this.contextAnalysisDiagram[item]
+          this.dependencyTracking(myRelyDir, result, stack, cd)
+          cd()
+        }
+      })
+
+      cd()
+    })
   }
 
-  async repositoryCommand (type: string) {
-    const dirs = await this.getRepositoryDiffFile(type)
-    const cmds = createCommand(type, this.getDiffDir(dirs))
+  async commandRun (diffDirs: string[], type: string) {
+    const dirs = this.getRunDirs(diffDirs)
+    const orderDirs = this.createOrderArray(dirs)
+    const cmds = createCommand(type, orderDirs)
     if (cmds.length) {
-      const status = runCmds(cmds)
-      if (status === 'allSuccess') {
-        gitDiffTag(type)
+      if (process.env.NODE_ENV === 'test') {
+        testEmit(cmds)
+      }
+      else {
+        return runCmds(cmds)
       }
     }
     else {
       warn(WARN_NOW_RUN)
+    }
+  }
+
+  /** run start **/
+  async workCommand (type: string) {
+    const diffDirs = await this.getWorkDiffFile()
+    this.commandRun(diffDirs, type)
+  }
+
+  async stageCommand (type: string) {
+    const diffDirs = await this.getStageDiffFile()
+    this.commandRun(diffDirs, type)
+  }
+
+  async repositoryCommand (type: string) {
+    const diffDirs = await this.getRepositoryDiffFile(type)
+    const status = await this.commandRun(diffDirs, type)
+    if (status === 'allSuccess') {
+      gitDiffTag(type)
     }
   }
 
@@ -264,6 +302,7 @@ export class Context {
     }, type)
     return [...triggerSign].map(item => item.dir)
   }
+  /** run end **/
 
   getDirtyFile (source: AnalysisBlockObject, triggerSign: SetAnalysisBlockObject) {
     if (triggerSign.has(source)) return
@@ -276,6 +315,7 @@ export class Context {
     for (let i = 0; i < relyMyDir.length; i++) {
       const relyDir = relyMyDir[i]
       const analysisBlock = this.contextAnalysisDiagram[relyDir]
+      if (triggerSign.has(analysisBlock)) continue
 
       for (let j = 0; j < relyAttrs.length; j++) {
         const key = relyAttrs[i]
