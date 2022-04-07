@@ -21,10 +21,10 @@ monorepo有两种模式
 对`packages.json`进行版本分析，对于`workspace`的`*`、`^`、`~`都有对应的语意化处理
 ## CreateTag
 使用`version`和`publish`命令会打上不同的`git tag`，而`diff mode`则是根据这些`git tag`进行分析。（👇🏻运行命令后，cli打上的tag
-- pkgs version: v`${version}`-v-pkg
-- pkgs publish: sync`${Date.now()}`-p-pkg
-- pkgs version -m diff: sync`${Date.now()}`-v-pkg
-- pkgs publish -m diff: sync`${Date.now()}`-p-pkg
+- pkgs version: v`${version}`-version-pkg
+- pkgs publish: sync`${Date.now()}`-publish-pkg
+- pkgs version -m diff: sync`${Date.now()}`-version-pkg
+- pkgs publish -m diff: sync`${Date.now()}`-publish-pkg
 
 
 # Config

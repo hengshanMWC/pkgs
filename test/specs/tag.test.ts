@@ -22,15 +22,15 @@ describe(cmd, () => {
   test('default', async () => {
     const git = newSimpleGit(context.root)
     await executeCommandTag(undefined, git)
-    await tagExpect('p', git)
-    await tagExpect('v', git)
+    await tagExpect('publish', git)
+    await tagExpect('version', git)
   })
   test('version', async () => {
     const git = newSimpleGit(context.root)
     await executeCommandTag({
       v: true,
     }, git)
-    await tagExpect('v', git)
+    await tagExpect('version', git)
   })
 
   test('publish', async () => {
@@ -38,7 +38,7 @@ describe(cmd, () => {
     await executeCommandTag({
       p: true,
     }, git)
-    await tagExpect('p', git)
+    await tagExpect('publish', git)
   })
 
   test('all', async () => {
@@ -47,7 +47,7 @@ describe(cmd, () => {
       v: true,
       p: true,
     }, git)
-    await tagExpect('p', git)
-    await tagExpect('v', git)
+    await tagExpect('publish', git)
+    await tagExpect('version', git)
   })
 })

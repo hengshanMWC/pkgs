@@ -32,8 +32,8 @@ export async function handleDiffPublish (context: Context) {
       analysisBlock.dir,
       context.options.publish.tag,
     )
-  }, 'p')
-  gitDiffTag('p', undefined, context.git)
+  }, 'publish')
+  gitDiffTag('publish', undefined, context.git)
 }
 export async function implementPublish (
   packageJson: IPackageJson<any>,

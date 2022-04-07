@@ -3,7 +3,7 @@ import type { SimpleGit } from 'simple-git'
 import { WARN_NOW_CHANGE } from './constant'
 import { warn } from './utils'
 
-export type TagType = 'p' | 'v' | string
+export type TagType = 'publish' | 'version' | string
 const _tagMessage = 'pkgs update tag'
 export async function gitSyncSave (
   version: string,
@@ -19,7 +19,7 @@ export async function gitSyncTag (
 ) {
   await git.tag([
     '-a',
-    `v${version}-v-pkg`,
+    `v${version}-version-pkg`,
     '-m',
     version,
   ])
@@ -30,7 +30,7 @@ export async function gitSyncPublishTag (
 ) {
   await git.tag([
     '-a',
-    `sync${Date.now()}-p-pkg`,
+    `sync${Date.now()}-publish-pkg`,
     '-m',
     tagMessage,
   ])
@@ -43,7 +43,7 @@ export async function gitDiffSave (
   const packagesMessage = nameAntVersionPackages
     .reduce((total, text) => `${total}\n- ${text}`, '\n')
   await git.commit(`${message || ''}${packagesMessage || _tagMessage}`)
-  await gitDiffTag('v', message, git)
+  await gitDiffTag('version', message, git)
 }
 export async function gitTemporary (files: string | string[], git: SimpleGit = simpleGit()) {
   await git.add(files)

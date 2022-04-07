@@ -74,7 +74,7 @@ export async function handleDiffVersion (context: Context) {
 
   await context.forRepositoryDiffPack(async function (analysisBlock) {
     await changeVersionResultItem(context, analysisBlock, analysisBlock.dir, triggerSign)
-  }, 'v')
+  }, 'version')
   await writeJSONs(triggerSign)
   await gitTemporary([...triggerSign].map(item => item.filePath), context.git)
   await gitDiffSave(

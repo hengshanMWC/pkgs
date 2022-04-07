@@ -33,15 +33,15 @@ export async function executeCommandTag (
 ) {
   cliVersion('tag')
   if (!cmd || !Object.keys(cmd).length) {
-    await gitDiffTag('v', undefined, git)
-    await gitDiffTag('p', undefined, git)
+    await gitDiffTag('version', undefined, git)
+    await gitDiffTag('publish', undefined, git)
   }
   else {
     if (cmd.p) {
-      await gitDiffTag('p', undefined, git)
+      await gitDiffTag('publish', undefined, git)
     }
     if (cmd.v) {
-      await gitDiffTag('v', undefined, git)
+      await gitDiffTag('version', undefined, git)
     }
   }
   cliSuccess()

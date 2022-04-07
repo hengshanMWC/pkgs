@@ -41,7 +41,7 @@ describe(cmd, () => {
     await git.commit('feat: pkgs publish')
     await cd(git)
 
-    const tagCommitId = await tagExpect('p', git)
+    const tagCommitId = await tagExpect('publish', git)
     const newCommitId = await getNewestCommitId(git)
     expect(newCommitId.includes(tagCommitId)).toBeTruthy()
   }

@@ -35,7 +35,7 @@ describe(cmd, () => {
     const packageJson = await fs.readJSON('package.json')
     expect(packageJson.version).toBe(newVersion)
 
-    const tagCommitId = await tagExpect('v', git)
+    const tagCommitId = await tagExpect('version', git)
     const newCommitId = await getNewestCommitId(git)
     expect(newCommitId.includes(tagCommitId)).toBeTruthy()
     return {
