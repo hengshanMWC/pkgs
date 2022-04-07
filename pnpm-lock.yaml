@@ -3,7 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@abmao/bump': ^0.0.1
   '@abmao/eslint-config-ts': ^0.1.0
-  '@abmao/forb': ^1.0.4
+  '@abmao/forb': ^1.0.5
   '@commitlint/cli': ^16.2.3
   '@commitlint/config-conventional': ^16.2.1
   '@rollup/plugin-commonjs': ^21.0.2
@@ -38,7 +38,7 @@ specifiers:
 
 dependencies:
   '@abmao/bump': 0.0.1
-  '@abmao/forb': 1.0.4
+  '@abmao/forb': 1.0.5
   colors: 1.4.0
   commander: 9.0.0
   fs-extra: 10.0.1
@@ -126,8 +126,8 @@ packages:
       - supports-color
     dev: true
 
-  /@abmao/forb/1.0.4:
-    resolution: {integrity: sha512-yNHYbnIj129C/D/skvbiyrAlHHyC8Nw2qmRF1ZB1Bpe8H+VQR4Ebzc/7aXIwRdmRrmsncsQ8Uk5HMPAlWDMZ0A==}
+  /@abmao/forb/1.0.5:
+    resolution: {integrity: sha512-4j0Q2smPi1aTNMNkejZXWWdOEgaL+l4E2/9R7pwFvenDHnupf/b2kUtVJmKiGQ2nkbYe6Hp3MU16nJTXOOy/Pg==}
     dependencies:
       globby: 13.1.1
     dev: false
