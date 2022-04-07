@@ -1,0 +1,10 @@
+{
+  "name": "@test/d",
+  "version": "0.0.0",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "@test/a": "workspace:^0.0.0"
+  }
+}

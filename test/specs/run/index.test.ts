@@ -1,13 +1,13 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { executeCommandRun } from '../../index'
+import { executeCommandRun } from '../../../index'
 import type {
   SimpleGitTestContext,
-} from '../__fixtures__'
+} from '../../__fixtures__'
 import {
   createTestContext,
   setUpInit,
-} from '../__fixtures__'
+} from '../../__fixtures__'
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'run'
 describe.skip(cmd, () => {
