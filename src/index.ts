@@ -20,7 +20,7 @@ import {
   getStageInfo,
   getWorkInfo,
 } from './git'
-import { WARN_NOW_RUN } from './constant'
+import { WARN_NOW_RUN, PACKAGES_PATH } from './constant'
 export interface AnalysisBlockObject {
   packageJson: IPackageJson
   filePath: string
@@ -59,7 +59,7 @@ export class Context {
         attrOptions.packagesPath = await getYamlPackages()
       }
       catch {
-        attrOptions.packagesPath = 'packages/**'
+        attrOptions.packagesPath = PACKAGES_PATH
       }
     }
 
