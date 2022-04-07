@@ -1,5 +1,5 @@
 - 包顺序问题
-- 读pnpm-workspace.yaml
 - github workflows
 - article
 - CHANGE.md
+- 依赖问题
