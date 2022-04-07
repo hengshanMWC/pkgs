@@ -58,7 +58,9 @@ export class Context {
       try {
         attrOptions.packagesPath = await getYamlPackages()
       }
-      catch {}
+      catch {
+        attrOptions.packagesPath = 'packages/**'
+      }
     }
 
     const result = new Context(attrOptions, git, version)
@@ -140,12 +142,14 @@ export class Context {
       [this.rootPackageJson],
     ]
     if (this.options.packagesPath) {
-      console.log(this.options.packagesPath)
-      const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
-      const packagesJSON = await getJSONs(filesPath)
-      values[0].push(...dirs)
-      values[1].push(...filesPath)
-      values[2].push(...packagesJSON)
+      try {
+        const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
+        const packagesJSON = await getJSONs(filesPath)
+        values[0].push(...dirs)
+        values[1].push(...filesPath)
+        values[2].push(...packagesJSON)
+      }
+      catch {}
     }
 
     this.createContextAnalysisDiagram(...values)
