@@ -250,6 +250,7 @@ export class Context {
     if (cmds.length) {
       if (process.env.NODE_ENV === 'test') {
         testEmit(cmds)
+        return 'allSuccess'
       }
       else {
         return runCmds(cmds)

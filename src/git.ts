@@ -142,13 +142,13 @@ export async function getRepositoryInfo (
 export async function getStageInfo (
   git: SimpleGit = simpleGit(),
 ): Promise<string[]> {
-  const { staged } = await git.status()
-  return staged
+  const { files } = await git.status()
+  return files.filter(file => file.index).map(file => file.path)
 }
 
 export async function getWorkInfo (
   git: SimpleGit = simpleGit(),
 ): Promise<string[]> {
-  const { modified, staged } = await git.status()
-  return modified.filter(item => !staged.includes(item))
+  const { files } = await git.status()
+  return files.filter(file => file.working_dir).map(file => file.path)
 }

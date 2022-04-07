@@ -9,6 +9,7 @@ import {
   setUpInit,
 } from '../../__fixtures__'
 import testGlobal from '../../../src/utils/test'
+import { getTag } from '../../../src/git'
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'run'
 const cmds = [
@@ -41,18 +42,22 @@ describe(cmd, () => {
   }
   async function testRun (arr: string[] = cmds) {
     let i = 0
+    const cmd = 'test'
     testGlobal.pkgsTestPublish = text => {
       expect(text).toBe(arr[i++])
     }
-    await executeCommandRun('test', 'work', context.git)
+    await executeCommandRun(cmd, 'work', context.git)
 
     i = 0
     await context.git.add('.')
-    await executeCommandRun('test', 'stage', context.git)
+    await executeCommandRun(cmd, 'stage', context.git)
 
     i = 0
     await context.git.commit('save')
-    await executeCommandRun('test', 'repository', context.git)
+    await executeCommandRun(cmd, 'repository', context.git)
+
+    const tag = await getTag(cmd)
+    expect(tag.includes(cmd)).toBeTruthy()
   }
   afterEach(() => {
     // Many of the tests in this file change the CWD, so change it back after each test
