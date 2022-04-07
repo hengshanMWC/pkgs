@@ -31,29 +31,6 @@ export async function writeFiles (writesObject: WriteObject[]) {
 export function cdDir (dir?: string) {
   return dir ? `cd ${dir} && ` : ''
 }
-export function cmdOptions<T extends Object, U extends keyof T> (
-  cmd: U,
-  options: Partial<T>,
-  defaultOptions: T,
-): T {
-  const defaultOption = defaultOptions[cmd]
-  const option: any = options[cmd]
-
-  if (typeof defaultOption === 'object') {
-    const result: any = {
-      [cmd]: {},
-    }
-    for (const key in defaultOption) {
-      result[cmd][key] = option[key] !== true
-        ? option[key]
-        : defaultOption[key]
-    }
-    return result
-  }
-  else {
-    return defaultOptions
-  }
-}
 export function assign<T extends Object> (
   ...objects: Partial<T>[]
 ): T {
