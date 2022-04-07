@@ -73,6 +73,7 @@ const genConfig = (key: keyof Builds): RollupOptions => {
       commonjs(),
       json(),
       replace({
+        preventAssignment: true,
         'process.env.NODE_ENV': 'undefined',
       }),
       ...plugins,
