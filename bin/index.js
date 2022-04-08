@@ -51,7 +51,8 @@ program
 program
   .command('run <cmd> [mode]')
   .description('run diff scripts.\n mode: work | stage | repository, default: work')
-  .action((cmd, mode) => {
-    executeCommandRun(cmd, mode)
+  .option('-r <boolean>', 'Include rootPackage', 'true')
+  .action((cmd, mode, option) => {
+    executeCommandRun(cmd, mode, option.r !== 'false')
   })
 program.parse(process.argv)

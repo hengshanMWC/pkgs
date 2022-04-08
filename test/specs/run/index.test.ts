@@ -24,12 +24,12 @@ const cmds = [
 describe(cmd, () => {
   let context: SimpleGitTestContext
   const prefix = `${cmd}-test`
-  async function testMain (dir: string, arr: string[] = cmds) {
+  async function testMain (dir: string, arr: string[], arr2: string[]) {
     await handleCommand(dir)
     await testRun(arr)
     const filePath = path.resolve(context._root, dir, 'packages/a/a')
     await fs.writeFile(filePath, context._root)
-    await testRun(arr)
+    await testRun(arr2, false)
   }
   async function handleCommand (dir) {
     context = await createTestContext(prefix, dir)
@@ -40,21 +40,21 @@ describe(cmd, () => {
     process.chdir(path.resolve(context._root, dir))
     await setUpInit(context)
   }
-  async function testRun (arr: string[] = cmds) {
+  async function testRun (arr: string[] = cmds, rootPackage?: boolean) {
     let i = 0
     const cmd = 'test'
     testGlobal.pkgsTestPublish = text => {
       expect(text).toBe(arr[i++])
     }
-    await executeCommandRun(cmd, 'work', context.git)
+    await executeCommandRun(cmd, 'work', rootPackage, context.git)
 
     i = 0
     await context.git.add('.')
-    await executeCommandRun(cmd, 'stage', context.git)
+    await executeCommandRun(cmd, 'stage', rootPackage, context.git)
 
     i = 0
     await context.git.commit('save')
-    await executeCommandRun(cmd, 'repository', context.git)
+    await executeCommandRun(cmd, 'repository', rootPackage, context.git)
 
     const tag = await getTag(cmd)
     expect(tag.includes(cmd)).toBeTruthy()
@@ -67,19 +67,20 @@ describe(cmd, () => {
   // 无依赖+rootPackage: false
   const quarantine = 'quarantine'
   test(quarantine, async () => {
-    await testMain(quarantine, cmds.slice(1))
+    const _cmds = cmds.slice(1)
+    await testMain(quarantine, _cmds, _cmds)
   })
   // 复杂依赖
   const many = 'many'
   test(many, async () => {
     const _cmds: string[] = cmds.slice();
     [_cmds[3], _cmds[4], _cmds[5]] = [_cmds[4], _cmds[5], _cmds[3]]
-    await testMain(many, _cmds)
+    await testMain(many, _cmds, _cmds.slice(1))
   })
   // 依赖循环
   const Interdependence = 'Interdependence'
   test(Interdependence, async () => {
     const _cmds: string[] = [cmds[0], ...cmds.slice(1, 4).reverse()]
-    await testMain(Interdependence, _cmds)
+    await testMain(Interdependence, _cmds, _cmds.slice(1))
   })
 })

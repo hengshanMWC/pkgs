@@ -31,7 +31,6 @@ export interface AnalysisBlockObject {
 }
 type ContextAnalysisDiagram = Record<string, AnalysisBlockObject>
 export type SetAnalysisBlockObject = Set<AnalysisBlockObject>
-// type DiffType = 'work' | 'stage' | 'repository'
 export class Context {
   options: ExecuteCommandOptions
   git: SimpleGit
