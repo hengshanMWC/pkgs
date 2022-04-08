@@ -281,26 +281,30 @@ export class Context {
   }
 
   async getWorkDiffFile () {
-    const triggerSign: SetAnalysisBlockObject = new Set()
-    await this.forWorkDiffPack(source => {
-      this.getDirtyFile(source, triggerSign)
-    })
-    return [...triggerSign].map(item => item.dir)
+    const files = await getWorkInfo(this.git)
+    return this.getDiffFile(cd => this.forPack(files, source => {
+      cd(source)
+    }))
   }
 
   async getStageDiffFile () {
-    const triggerSign: SetAnalysisBlockObject = new Set()
-    await this.forStageDiffPack(source => {
-      this.getDirtyFile(source, triggerSign)
-    })
-    return [...triggerSign].map(item => item.dir)
+    const files = await getStageInfo(this.git)
+    return this.getDiffFile(cd => this.forPack(files, source => {
+      cd(source)
+    }))
   }
 
   async getRepositoryDiffFile (type: string) {
+    return this.getDiffFile(cd => this.forRepositoryDiffPack(source => {
+      cd(source)
+    }, type))
+  }
+
+  async getDiffFile (forCD: (cd: (source: AnalysisBlockObject) => void) => Promise<void>) {
     const triggerSign: SetAnalysisBlockObject = new Set()
-    await this.forRepositoryDiffPack(source => {
+    await forCD(source => {
       this.getDirtyFile(source, triggerSign)
-    }, type)
+    })
     return [...triggerSign].map(item => item.dir)
   }
   /** run end **/
@@ -349,16 +353,6 @@ export class Context {
 
   async forRepositoryDiffPack (callback: ForPackCallback, type: TagType) {
     const files = await getRepositoryInfo(type, this.git)
-    await this.forPack(files, callback)
-  }
-
-  async forStageDiffPack (callback: ForPackCallback) {
-    const files = await getStageInfo(this.git)
-    await this.forPack(files, callback)
-  }
-
-  async forWorkDiffPack (callback: ForPackCallback) {
-    const files = await getWorkInfo(this.git)
     await this.forPack(files, callback)
   }
 
