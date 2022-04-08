@@ -54,6 +54,7 @@ export class Context {
     version?: string,
   ) {
     const attrOptions = options
+
     // 同步pnpm-workspace.yaml的packagesPath
     if (!attrOptions.packagesPath) {
       try {
@@ -134,6 +135,7 @@ export class Context {
     }
   }
 
+  /** contextAnalysisDiagram start **/
   async initData () {
     this.rootPackageJson = await readJSON(this.rootFilePath)
     const values: [string[], string[], IPackageJson[]] = [
@@ -141,6 +143,7 @@ export class Context {
       [this.rootFilePath],
       [this.rootPackageJson],
     ]
+
     if (this.options.packagesPath) {
       try {
         const { dirs, filesPath } = await getPackagesDir(this.options.packagesPath)
@@ -172,6 +175,7 @@ export class Context {
         const i = packagesJSON.findIndex(item => item.name === name)
         return dirs[i]
       })
+
       this.contextAnalysisDiagram[dir] = {
         packageJson,
         dir,
@@ -181,83 +185,15 @@ export class Context {
       }
     })
   }
+  /** contextAnalysisDiagram end **/
 
-  getCorrectOptionValue<K extends keyof ExecuteCommandOptions['version']>(
-    cmd: 'version', key: keyof ExecuteCommandOptions['version']
-  ): ExecuteCommandOptions['version'][K]
-
-  getCorrectOptionValue<K extends keyof ExecuteCommandOptions['publish']>(
-    cmd: 'publish', key: keyof ExecuteCommandOptions['publish']
-  ): ExecuteCommandOptions['publish'][K]
-
-  getCorrectOptionValue<U extends CMD, K extends keyof ExecuteCommandOptions[U]>
-  (
-    cmd: CMD,
-    key: keyof ExecuteCommandOptions[U],
-  ): ExecuteCommandOptions[U][K] {
-    const options: any = this.options
-    const cmdObject = options[cmd] as ExecuteCommandOptions[U]
-
-    if (typeof cmdObject === 'object') {
-      return cmdObject[key] === undefined ? options[key] : cmdObject[key]
-    }
-    else {
-      return options[key]
-    }
-  }
-
-  getRunDirs (dirs: string[]) {
-    return this.options.rootPackage ? dirs : dirs.filter(dir => dir)
-  }
-
-  // 也许运行命令的时候，需要一个正确的顺序
-  createOrderArray (dirs: string[]) {
-    const result: string[] = []
-    const stack: string[] = []
-    this.dependencyTracking(dirs, result, stack, function () {
-      const value = stack.at(-1)
-      if (value !== undefined && !result.includes(value)) {
-        result.push(value)
-      }
-      stack.pop()
-    })
-    return result
-  }
-
-  dependencyTracking (dirs: string[], result: string[], stack: string[], cd: Function) {
-    dirs.forEach(dir => {
-      if (stack.includes(dir) || result.includes(dir)) return
-      stack.push(dir)
-
-      const { myRelyDir } = this.contextAnalysisDiagram[dir]
-      myRelyDir.forEach(item => {
-        if (!stack.includes(item)) {
-          stack.push(item)
-          const { myRelyDir } = this.contextAnalysisDiagram[item]
-          this.dependencyTracking(myRelyDir, result, stack, cd)
-          cd()
-        }
-      })
-
-      cd()
-    })
-  }
-
-  async commandRun (diffDirs: string[], type: string) {
-    const dirs = this.getRunDirs(diffDirs)
-    const orderDirs = this.createOrderArray(dirs)
-    const cmds = createCommand(type, orderDirs)
-    if (cmds.length) {
-      if (process.env.NODE_ENV === 'test') {
-        testEmit(cmds)
-        return 'allSuccess'
-      }
-      else {
-        return runCmds(cmds)
-      }
-    }
-    else {
-      warn(WARN_NOW_RUN)
+  async cmdAnalysis (cmd: CMD) {
+    switch (cmd) {
+      case 'version':
+        await cmdVersion(this)
+        return
+      case 'publish':
+        await cmdPublish(this)
     }
   }
 
@@ -300,6 +236,9 @@ export class Context {
     }, type))
   }
 
+  /** run end **/
+
+  /** utils start **/
   async getDiffFile (forCD: (cd: (source: AnalysisBlockObject) => void) => Promise<void>) {
     const triggerSign: SetAnalysisBlockObject = new Set()
     await forCD(source => {
@@ -307,12 +246,12 @@ export class Context {
     })
     return [...triggerSign].map(item => item.dir)
   }
-  /** run end **/
 
   getDirtyFile (source: AnalysisBlockObject, triggerSign: SetAnalysisBlockObject) {
     if (triggerSign.has(source)) return
     triggerSign.add(source)
     const relyMyDir = source.relyMyDir
+
     // 没有依赖则跳出去
     if (!Array.isArray(source.relyMyDir)) return
     const relyAttrs = getRelyAttrs().reverse()
@@ -331,23 +270,56 @@ export class Context {
     }
   }
 
-  async cmdAnalysis (cmd: CMD) {
-    switch (cmd) {
-      case 'version':
-        await cmdVersion(this)
-        return
-      case 'publish':
-        await cmdPublish(this)
-    }
+  // 也许运行命令的时候，需要一个正确的顺序
+  createOrderArray (dirs: string[]) {
+    const result: string[] = []
+    const stack: string[] = []
+
+    this.dependencyTracking(dirs, result, stack, function () {
+      const value = stack.at(-1)
+      if (value !== undefined && !result.includes(value)) {
+        result.push(value)
+      }
+      stack.pop()
+    })
+    return result
   }
 
-  packageJsonToAnalysisBlock (packageJson: IPackageJson) {
-    for (const key in this.contextAnalysisDiagram) {
-      const analysisBlock = this.contextAnalysisDiagram[key]
+  dependencyTracking (dirs: string[], result: string[], stack: string[], cd: Function) {
+    dirs.forEach(dir => {
+      if (stack.includes(dir) || result.includes(dir)) return
+      stack.push(dir)
 
-      if (analysisBlock.packageJson === packageJson) {
-        return analysisBlock
+      const { myRelyDir } = this.contextAnalysisDiagram[dir]
+      myRelyDir.forEach(item => {
+        if (!stack.includes(item)) {
+          stack.push(item)
+          const { myRelyDir } = this.contextAnalysisDiagram[item]
+          this.dependencyTracking(myRelyDir, result, stack, cd)
+          cd()
+        }
+      })
+
+      cd()
+    })
+  }
+
+  async commandRun (diffDirs: string[], type: string) {
+    const dirs = this.getRunDirs(diffDirs)
+    const orderDirs = this.createOrderArray(dirs)
+    const cmds = createCommand(type, orderDirs)
+
+    if (cmds.length) {
+      if (process.env.NODE_ENV === 'test') {
+        testEmit(cmds)
+        return 'allSuccess'
       }
+      else {
+        return runCmds(cmds)
+      }
+    }
+    else {
+      warn(WARN_NOW_RUN)
     }
   }
 
@@ -369,6 +341,20 @@ export class Context {
     }
   }
 
+  getRunDirs (dirs: string[]) {
+    return this.options.rootPackage ? dirs : dirs.filter(dir => dir)
+  }
+
+  packageJsonToAnalysisBlock (packageJson: IPackageJson) {
+    for (const key in this.contextAnalysisDiagram) {
+      const analysisBlock = this.contextAnalysisDiagram[key]
+
+      if (analysisBlock.packageJson === packageJson) {
+        return analysisBlock
+      }
+    }
+  }
+
   getDirtyPackagesDir (files: string[] | boolean | undefined) {
     const keys = Object.keys(this.contextAnalysisDiagram)
     if (files === true) {
@@ -382,6 +368,32 @@ export class Context {
       return []
     }
   }
+
+  getCorrectOptionValue<K extends keyof ExecuteCommandOptions['version']>(
+    cmd: 'version', key: keyof ExecuteCommandOptions['version']
+  ): ExecuteCommandOptions['version'][K]
+
+  getCorrectOptionValue<K extends keyof ExecuteCommandOptions['publish']>(
+    cmd: 'publish', key: keyof ExecuteCommandOptions['publish']
+  ): ExecuteCommandOptions['publish'][K]
+
+  getCorrectOptionValue<U extends CMD, K extends keyof ExecuteCommandOptions[U]>
+  (
+    cmd: CMD,
+    key: keyof ExecuteCommandOptions[U],
+  ): ExecuteCommandOptions[U][K] {
+    const options: any = this.options
+    const cmdObject = options[cmd] as ExecuteCommandOptions[U]
+
+    if (typeof cmdObject === 'object') {
+      return cmdObject[key] === undefined ? options[key] : cmdObject[key]
+    }
+    else {
+      return options[key]
+    }
+  }
+
+  /** utils end **/
 }
 export type CMD = 'version' | 'publish'
 type ForPackCallback = (
