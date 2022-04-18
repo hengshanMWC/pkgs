@@ -13,7 +13,7 @@ import { dependentSearch } from '../utils/packageJson'
 import { WARN_NOW_VERSION } from '../constant'
 
 export function cmdVersion (context: Context) {
-  const mode = context.getCorrectOptionValue<'mode'>('version', 'mode')
+  const mode = context.getCorrectOptionValue('version', 'mode')
 
   if (mode === 'sync') {
     return handleSyncVersion(context)
