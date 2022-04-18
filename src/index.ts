@@ -368,21 +368,12 @@ export class Context {
     }
   }
 
-  getCorrectOptionValue<K extends keyof ExecuteCommandOptions['version']>(
-    cmd: 'version', key: keyof ExecuteCommandOptions['version']
-  ): ExecuteCommandOptions['version'][K]
-
-  getCorrectOptionValue<K extends keyof ExecuteCommandOptions['publish']>(
-    cmd: 'publish', key: keyof ExecuteCommandOptions['publish']
-  ): ExecuteCommandOptions['publish'][K]
-
-  getCorrectOptionValue<U extends CMD, K extends keyof ExecuteCommandOptions[U]>
-  (
+  getCorrectOptionValue (
     cmd: CMD,
-    key: keyof ExecuteCommandOptions[U],
-  ): ExecuteCommandOptions[U][K] {
-    const options: any = this.options
-    const cmdObject = options[cmd] as ExecuteCommandOptions[U]
+    key: keyof ExecuteCommandOptions & keyof ExecuteCommandOptions['version'] & keyof ExecuteCommandOptions['publish'],
+  ) {
+    const options = this.options
+    const cmdObject = options[cmd]
 
     if (typeof cmdObject === 'object') {
       return cmdObject[key] === undefined ? options[key] : cmdObject[key]

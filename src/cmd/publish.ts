@@ -6,7 +6,7 @@ import { cdDir } from '../utils'
 import testGlobal from '../utils/test'
 import { organization, npmTag } from '../utils/regExp'
 export function cmdPublish (context: Context) {
-  const mode = context.getCorrectOptionValue<'mode'>('publish', 'mode')
+  const mode = context.getCorrectOptionValue('publish', 'mode')
 
   if (mode === 'sync') {
     return handleSyncPublish(context)
