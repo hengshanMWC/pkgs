@@ -97,7 +97,8 @@ export async function getTagCommitId (
     '-s',
     '--format=%h',
   ])
-  return tagCommitInfo.trim().split('\n').at(-1)
+  const tagCommitInfoRows = tagCommitInfo.trim().split('\n')
+  return tagCommitInfoRows[tagCommitInfoRows.length - 1]
 }
 
 async function getChangeFiles (

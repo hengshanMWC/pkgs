@@ -275,7 +275,7 @@ export class Context {
     const stack: string[] = []
 
     this.dependencyTracking(dirs, result, stack, function () {
-      const value = stack.at(-1)
+      const value = stack[stack.length - 1]
       if (value !== undefined && !result.includes(value)) {
         result.push(value)
       }
