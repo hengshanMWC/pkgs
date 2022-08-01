@@ -1,4 +1,3 @@
 - state
 - github workflows
 - CHANGE.md
-- 依赖问题

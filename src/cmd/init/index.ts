@@ -1,5 +1,5 @@
 import path from 'path'
-import fs from 'fs-extra'
+import { access, mkdir, copyFile, stat } from 'fs-extra'
 export function cmdInit () {
   const packagesName = 'packages'
   const pkgsJsonName = 'pkgs.json'
@@ -15,20 +15,20 @@ export function cmdInit () {
 }
 async function createMkdir (dirName: string) {
   try {
-    const stat = await fs.stat(dirName)
-    if (!stat.isDirectory()) {
+    const statResult = await stat(dirName)
+    if (!statResult.isDirectory()) {
       throw new Error()
     }
   }
   catch {
-    await fs.mkdir(dirName)
+    await mkdir(dirName)
   }
 }
 async function createFile (fileName: string, filePath: string) {
   try {
-    await fs.access(fileName)
+    await access(fileName)
   }
   catch {
-    await fs.copyFile(filePath, fileName)
+    await copyFile(filePath, fileName)
   }
 }

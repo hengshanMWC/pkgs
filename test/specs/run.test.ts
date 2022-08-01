@@ -1,5 +1,5 @@
 import path from 'path'
-import fs from 'fs-extra'
+import { writeFile, copy } from 'fs-extra'
 import { executeCommandRun } from '../../index'
 import type {
   SimpleGitTestContext,
@@ -28,14 +28,14 @@ describe(cmd, () => {
     await handleCommand(dir)
     await testRun(arr)
     const filePath = path.resolve(context._root, dir, 'packages/a/a')
-    await fs.writeFile(filePath, context._root)
+    await writeFile(filePath, context._root)
     await testRun(arr2, false)
   }
   async function handleCommand (dir) {
     context = await createTestContext(prefix, dir)
 
     process.chdir(context._root)
-    await fs.copy(path.resolve(__dirname, '../template', dir), dir)
+    await copy(path.resolve(__dirname, '../template', dir), dir)
 
     process.chdir(path.resolve(context._root, dir))
     await setUpInit(context)
@@ -57,7 +57,7 @@ describe(cmd, () => {
     await executeCommandRun(cmd, 'repository', rootPackage, context.git)
 
     const tag = await getTag(cmd)
-    expect(tag.includes(cmd)).toBeTruthy()
+    expect(tag && tag.includes(cmd)).toBeTruthy()
   }
   afterEach(() => {
     // Many of the tests in this file change the CWD, so change it back after each test

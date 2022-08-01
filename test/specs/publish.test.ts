@@ -1,6 +1,6 @@
 import path from 'path'
 import type { SimpleGit } from 'simple-git'
-import fs from 'fs-extra'
+import { copy, readJSON } from 'fs-extra'
 import { executeCommand } from '../../index'
 import { tagExpect } from '../__fixtures__/commit'
 import type {
@@ -31,7 +31,7 @@ describe(cmd, () => {
     context = await createTestContext(prefix, dir)
 
     process.chdir(context._root)
-    await fs.copy(path.resolve(__dirname, '../../examples', dir), dir)
+    await copy(path.resolve(__dirname, '../../examples', dir), dir)
     await setUpInit(context)
 
     const git = newSimpleGit(context.root)
@@ -47,7 +47,7 @@ describe(cmd, () => {
   }
   function getPackages () {
     return Promise.all(['a', 'b', 'c'].map(item => {
-      return fs.readJSON(`packages/${item}/package.json`)
+      return readJSON(`packages/${item}/package.json`)
     }))
   }
   afterEach(() => {

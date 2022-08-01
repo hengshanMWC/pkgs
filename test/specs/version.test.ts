@@ -1,5 +1,5 @@
 import path from 'path'
-import fs from 'fs-extra'
+import { copy, readJSON } from 'fs-extra'
 import type { SimpleGit } from 'simple-git'
 import { executeCommand } from '../../index'
 import { tagExpect } from '../__fixtures__/commit'
@@ -27,12 +27,12 @@ describe(cmd, () => {
     context = await createTestContext(prefix, dir)
 
     process.chdir(context._root)
-    await fs.copy(path.resolve(__dirname, '../../examples', dir), dir)
+    await copy(path.resolve(__dirname, '../../examples', dir), dir)
     await setUpInit(context)
 
     const git = await cd()
 
-    const packageJson = await fs.readJSON('package.json')
+    const packageJson = await readJSON('package.json')
     expect(packageJson.version).toBe(newVersion)
 
     const tagCommitId = await tagExpect('version', git)
@@ -44,7 +44,7 @@ describe(cmd, () => {
   }
   function getPackages () {
     return Promise.all(['a', 'b', 'c'].map(item => {
-      return fs.readJSON(`packages/${item}/package.json`)
+      return readJSON(`packages/${item}/package.json`)
     }))
   }
   afterEach(() => {
@@ -53,7 +53,7 @@ describe(cmd, () => {
   })
   test('default', async () => {
     const newVersion = '1.0.0'
-    let git: SimpleGit
+    let git!: SimpleGit
     const { newCommitId } = await handleCommand(async function () {
       git = newSimpleGit(context.root)
       process.chdir(context.root)
@@ -78,7 +78,7 @@ describe(cmd, () => {
   })
   test('root diff', async () => {
     const newVersion = '1.0.0'
-    let git: SimpleGit
+    let git!: SimpleGit
     await handleCommand(async function () {
       git = newSimpleGit(context.root)
       process.chdir(context.root)
@@ -109,13 +109,13 @@ describe(cmd, () => {
     expect(addB.dependencies['@test/a']).toBe(`workspace:~${newVersion}`)
     expect(addC.version).toBe(newVersion)
     expect(addC.dependencies['@test/b']).toBe(`workspace:^${newVersion}`)
-    const packageJson = await fs.readJSON('package.json')
+    const packageJson = await readJSON('package.json')
     expect(packageJson.version).toBe(addVersion)
   })
 
   test(`root diff, ${cmd} sync`, async () => {
     const newVersion = '0.0.1'
-    let git: SimpleGit
+    let git!: SimpleGit
     const { newCommitId } = await handleCommand(async function () {
       git = newSimpleGit(context.root)
       process.chdir(context.root)
@@ -147,7 +147,7 @@ describe(cmd, () => {
   test('message', async () => {
     const newVersion = '0.1.0-beta'
     const message = 'chore: test'
-    let git: SimpleGit
+    let git!: SimpleGit
     const { newCommitId } = await handleCommand(async function () {
       git = newSimpleGit(context.root)
       process.chdir(context.root)
