@@ -17,8 +17,9 @@ export async function executeCommand (
   version?: string,
 ) {
   cliVersion(cmd)
-  const packageJson =
-    await getJSON('pkgs.json') as Partial<ExecuteCommandOptions>
+  const packageJson = (await getJSON(
+    'pkgs.json',
+  )) as Partial<ExecuteCommandOptions>
   await Context.create(
     assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
     cmd,
@@ -59,8 +60,9 @@ export async function executeCommandRun (
   git: SimpleGit = simpleGit(),
 ) {
   cliVersion('run')
-  const packageJson =
-    await getJSON('pkgs.json') as Partial<ExecuteCommandOptions>
+  const packageJson = (await getJSON(
+    'pkgs.json',
+  )) as Partial<ExecuteCommandOptions>
   const context = await Context.create(
     assign<ExecuteCommandOptions>(defaultOptions, packageJson, { rootPackage }),
     undefined,

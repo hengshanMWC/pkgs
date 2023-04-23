@@ -4,13 +4,13 @@ import colors from 'colors'
 import { gitSyncSave, gitDiffSave, gitTemporary } from '../git'
 import type {
   Context,
-  AnalysisBlockObject,
   SetAnalysisBlockObject,
 } from '../index'
 import { warn, writeFiles } from '../utils'
 import type { WriteObject } from '../utils'
 import { dependentSearch } from '../utils/packageJson'
 import { WARN_NOW_VERSION } from '../constant'
+import type { AnalysisBlockItem } from '../analysisDiagram'
 
 export function cmdVersion (context: Context) {
   const mode = context.getCorrectOptionValue('version', 'mode')
@@ -23,8 +23,8 @@ export function cmdVersion (context: Context) {
   }
 }
 async function handleSyncVersion (context: Context) {
-  const oldVersion = context.rootPackageJson.version
-  const version = await changeVersion(context.rootDir, context.version)
+  const oldVersion = context.contextAnalysisDiagram.rootPackageJson.version
+  const version = await changeVersion(context.contextAnalysisDiagram.rootDir, context.version)
 
   if (oldVersion === version) {
     if (process.env.NODE_ENV === 'test') {
@@ -35,12 +35,12 @@ async function handleSyncVersion (context: Context) {
       process.exit()
     }
   }
-  context.rootPackageJson.version = version
+  context.contextAnalysisDiagram.rootPackageJson.version = version
 
   const changes: WriteObject[] = [
     {
-      filePath: context.rootFilePath,
-      packageJson: context.rootPackageJson,
+      filePath: context.contextAnalysisDiagram.rootFilePath,
+      packageJson: context.contextAnalysisDiagram.rootPackageJson,
     },
   ]
 
@@ -55,14 +55,14 @@ async function handleSyncVersion (context: Context) {
         filePath: context.filesPath[index],
         packageJson,
       })
-      await changeRelyMyVersion(
-        context,
-        analysisBlock,
-      )
+      await changeRelyMyVersion(context, analysisBlock)
     }
   }
   await writeFiles(changes)
-  await gitTemporary(changes.map(item => item.filePath), context.git)
+  await gitTemporary(
+    changes.map(item => item.filePath),
+    context.git,
+  )
   await gitSyncSave(
     version as string,
     context.options.version.message,
@@ -73,10 +73,18 @@ async function handleDiffVersion (context: Context) {
   const triggerSign: SetAnalysisBlockObject = new Set()
 
   await context.forRepositoryDiffPack(async function (analysisBlock) {
-    await changeVersionResultItem(context, analysisBlock, analysisBlock.dir, triggerSign)
+    await changeVersionResultItem(
+      context,
+      analysisBlock,
+      analysisBlock.dir,
+      triggerSign,
+    )
   }, 'version')
   await writeJSONs(triggerSign)
-  await gitTemporary([...triggerSign].map(item => item.filePath), context.git)
+  await gitTemporary(
+    [...triggerSign].map(item => item.filePath),
+    context.git,
+  )
   await gitDiffSave(
     [...triggerSign].map(({ packageJson }) => {
       return `${packageJson.name as string}@${packageJson.version}`
@@ -87,7 +95,7 @@ async function handleDiffVersion (context: Context) {
 }
 async function changeVersionResultItem (
   context: Context,
-  analysisBlock: AnalysisBlockObject,
+  analysisBlock: AnalysisBlockItem,
   dir: string,
   triggerSign: SetAnalysisBlockObject,
 ) {
@@ -107,7 +115,7 @@ async function changeVersionResultItem (
 }
 async function changeRelyMyVersion (
   context: Context,
-  analysisBlock: AnalysisBlockObject,
+  analysisBlock: AnalysisBlockItem,
   triggerSign?: SetAnalysisBlockObject,
 ) {
   const relyMyDir = analysisBlock.relyMyDir
@@ -116,7 +124,7 @@ async function changeRelyMyVersion (
 
   for (let i = 0; i < relyMyDir.length; i++) {
     const relyDir = relyMyDir[i]
-    const analysisBlockRelyMy = context.contextAnalysisDiagram[relyDir]
+    const analysisBlockRelyMy = context.contextAnalysisDiagram.analysisDiagram[relyDir]
     const isChange = dependentSearch(analysisBlock, analysisBlockRelyMy)
 
     // 只有有变更，并且带triggerSign，才会走version变动
@@ -130,12 +138,12 @@ async function changeRelyMyVersion (
     }
   }
 }
-function writeJSONs (
-  triggerSign: SetAnalysisBlockObject,
-) {
-  return Promise.all([...triggerSign].map(({ filePath, packageJson }) => {
-    return writeJSON(filePath, packageJson, { spaces: 2 })
-  }))
+function writeJSONs (triggerSign: SetAnalysisBlockObject) {
+  return Promise.all(
+    [...triggerSign].map(({ filePath, packageJson }) => {
+      return writeJSON(filePath, packageJson, { spaces: 2 })
+    }),
+  )
 }
 
 async function changeVersion (cwd?: string, release?: string) {
