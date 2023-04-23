@@ -133,4 +133,28 @@ class ContextAnalysisDiagram {
       return []
     }
   }
+
+  dependencyTracking (
+    dirs: string[],
+    result: string[],
+    stack: string[],
+    cd: Function,
+  ) {
+    dirs.forEach(dir => {
+      if (stack.includes(dir) || result.includes(dir)) return
+      stack.push(dir)
+
+      const { myRelyDir } = this.analysisDiagram[dir]
+      myRelyDir.forEach(item => {
+        if (!stack.includes(item)) {
+          stack.push(item)
+          const { myRelyDir } = this.analysisDiagram[item]
+          this.dependencyTracking(myRelyDir, result, stack, cd)
+          cd()
+        }
+      })
+
+      cd()
+    })
+  }
 }

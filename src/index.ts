@@ -186,7 +186,7 @@ export class Context {
     const result: string[] = []
     const stack: string[] = []
 
-    this.dependencyTracking(dirs, result, stack, function () {
+    this.contextAnalysisDiagram.dependencyTracking(dirs, result, stack, function () {
       const value = stack[stack.length - 1]
       if (value !== undefined && !result.includes(value)) {
         result.push(value)
@@ -194,30 +194,6 @@ export class Context {
       stack.pop()
     })
     return result
-  }
-
-  dependencyTracking (
-    dirs: string[],
-    result: string[],
-    stack: string[],
-    cd: Function,
-  ) {
-    dirs.forEach(dir => {
-      if (stack.includes(dir) || result.includes(dir)) return
-      stack.push(dir)
-
-      const { myRelyDir } = this.contextAnalysisDiagram.analysisDiagram[dir]
-      myRelyDir.forEach(item => {
-        if (!stack.includes(item)) {
-          stack.push(item)
-          const { myRelyDir } = this.contextAnalysisDiagram.analysisDiagram[item]
-          this.dependencyTracking(myRelyDir, result, stack, cd)
-          cd()
-        }
-      })
-
-      cd()
-    })
   }
 
   async commandRun (diffDirs: string[], type: string) {
@@ -244,7 +220,7 @@ export class Context {
     await this.forPack(files, callback)
   }
 
-  async forPack (files: DiffFile, callback: ForPackCallback) {
+  private async forPack (files: DiffFile, callback: ForPackCallback) {
     const dirtyPackagesDir = this.contextAnalysisDiagram.getDirtyPackagesDir(files)
     for (let index = 0; index < dirtyPackagesDir.length; index++) {
       const dir = dirtyPackagesDir[index]
@@ -253,7 +229,7 @@ export class Context {
     }
   }
 
-  getRunDirs (dirs: string[]) {
+  private getRunDirs (dirs: string[]) {
     return this.options.rootPackage ? dirs : dirs.filter(dir => dir)
   }
 
