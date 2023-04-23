@@ -104,4 +104,14 @@ class ContextAnalysisDiagram {
       }
     }
   }
+
+  async getRelatedDir (
+    forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>,
+  ) {
+    const triggerSign: SetAnalysisBlockObject = new Set()
+    await forCD(source => {
+      this.getRelatedContent(source, triggerSign)
+    })
+    return [...triggerSign].map(item => item.dir)
+  }
 }

@@ -9,15 +9,10 @@ import {
 } from './utils'
 import { cmdVersion, cmdPublish } from './cmd'
 import { ContextAnalysisDiagram } from './analysisDiagram'
-import type { AnalysisBlockItem, SetAnalysisBlockObject } from './analysisDiagram'
+import type { AnalysisBlockItem } from './analysisDiagram'
 import type { ExecuteCommandOptions } from './defaultOptions'
 import type { TagType, DiffFile } from './git'
-import {
-  gitDiffTag,
-  getRepositoryInfo,
-  getStageInfo,
-  getWorkInfo,
-} from './git'
+import { gitDiffTag, getRepositoryInfo, getStageInfo, getWorkInfo } from './git'
 import { WARN_NOW_RUN, PACKAGES_PATH } from './constant'
 import { testEmit } from './utils/test'
 
@@ -158,7 +153,7 @@ export class Context {
 
   async getWorkDiffFile () {
     const files = await getWorkInfo(this.git)
-    return this.getRelatedDir(cd =>
+    return this.contextAnalysisDiagram.getRelatedDir(cd =>
       this.forPack(files, source => {
         cd(source)
       }),
@@ -167,7 +162,7 @@ export class Context {
 
   async getStageDiffFile () {
     const files = await getStageInfo(this.git)
-    return this.getRelatedDir(cd =>
+    return this.contextAnalysisDiagram.getRelatedDir(cd =>
       this.forPack(files, source => {
         cd(source)
       }),
@@ -175,7 +170,7 @@ export class Context {
   }
 
   async getRepositoryDiffFile (type: string) {
-    return this.getRelatedDir(cd =>
+    return this.contextAnalysisDiagram.getRelatedDir(cd =>
       this.forRepositoryDiffPack(source => {
         cd(source)
       }, type),
@@ -185,15 +180,6 @@ export class Context {
   /** run end **/
 
   /** utils start **/
-  async getRelatedDir (
-    forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>,
-  ) {
-    const triggerSign: SetAnalysisBlockObject = new Set()
-    await forCD(source => {
-      this.contextAnalysisDiagram.getRelatedContent(source, triggerSign)
-    })
-    return [...triggerSign].map(item => item.dir)
-  }
 
   // 也许运行命令的时候，需要一个正确的顺序
   createOrderArray (dirs: string[]) {
