@@ -122,16 +122,6 @@ export class Context {
     }
   }
 
-  async cmdAnalysis (cmd: CMD) {
-    switch (cmd) {
-      case 'version':
-        await cmdVersion(this)
-        return
-      case 'publish':
-        await cmdPublish(this)
-    }
-  }
-
   /** run start **/
   async workCommand (type: string) {
     const diffDirs = await this.getWorkDiffFile()
@@ -177,47 +167,6 @@ export class Context {
     )
   }
 
-  /** run end **/
-
-  /** utils start **/
-
-  async commandRun (diffDirs: string[], type: string) {
-    const dirs = this.getRunDirs(diffDirs)
-    const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(dirs)
-    const cmds = createCommand(type, orderDirs)
-
-    if (cmds.length) {
-      if (process.env.NODE_ENV === 'test') {
-        testEmit(cmds)
-        return 'allSuccess'
-      }
-      else {
-        return runCmds(cmds)
-      }
-    }
-    else {
-      warn(WARN_NOW_RUN)
-    }
-  }
-
-  async forRepositoryDiffPack (callback: ForPackCallback, type: TagType) {
-    const files = await getRepositoryInfo(type, this.git)
-    await this.forPack(files, callback)
-  }
-
-  private async forPack (files: DiffFile, callback: ForPackCallback) {
-    const dirtyPackagesDir = this.contextAnalysisDiagram.getDirtyPackagesDir(files)
-    for (let index = 0; index < dirtyPackagesDir.length; index++) {
-      const dir = dirtyPackagesDir[index]
-
-      await callback(this.contextAnalysisDiagram.analysisDiagram[dir], index, this)
-    }
-  }
-
-  private getRunDirs (dirs: string[]) {
-    return this.options.rootPackage ? dirs : dirs.filter(dir => dir)
-  }
-
   packageJsonToAnalysisBlock (packageJson: IPackageJson) {
     for (const key in this.contextAnalysisDiagram.analysisDiagram) {
       const analysisBlock = this.contextAnalysisDiagram.analysisDiagram[key]
@@ -245,10 +194,55 @@ export class Context {
     }
   }
 
-  /** utils end **/
+  private async commandRun (diffDirs: string[], type: string) {
+    const dirs = this.getRunDirs(diffDirs)
+    const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(dirs)
+    const cmds = createCommand(type, orderDirs)
+
+    if (cmds.length) {
+      if (process.env.NODE_ENV === 'test') {
+        testEmit(cmds)
+        return 'allSuccess'
+      }
+      else {
+        return runCmds(cmds)
+      }
+    }
+    else {
+      warn(WARN_NOW_RUN)
+    }
+  }
+
+  async forRepositoryDiffPack (callback: ForPackCallback, type: TagType) {
+    const files = await getRepositoryInfo(type, this.git)
+    await this.forPack(files, callback)
+  }
+
+  private async cmdAnalysis (cmd: CMD) {
+    switch (cmd) {
+      case 'version':
+        await cmdVersion(this)
+        return
+      case 'publish':
+        await cmdPublish(this)
+    }
+  }
+
+  private async forPack (files: DiffFile, callback: ForPackCallback) {
+    const dirtyPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
+    for (let index = 0; index < dirtyPackagesDir.length; index++) {
+      const dir = dirtyPackagesDir[index]
+
+      await callback(this.contextAnalysisDiagram.analysisDiagram[dir], index, this)
+    }
+  }
+
+  private getRunDirs (dirs: string[]) {
+    return this.options.rootPackage ? dirs : dirs.filter(dir => dir)
+  }
 }
 export type CMD = 'version' | 'publish'
-type ForPackCallback = (
+export type ForPackCallback = (
   analysisBlock: AnalysisBlockItem,
   index: number,
   context: Context

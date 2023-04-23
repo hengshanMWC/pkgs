@@ -70,7 +70,7 @@ class ContextAnalysisDiagram {
     return [...triggerSign].map(item => item.dir)
   }
 
-  getDirtyPackagesDir (files: string[] | boolean | undefined) {
+  getRelatedPackagesDir (files: string[] | boolean | undefined) {
     const keys = Object.keys(this.analysisDiagram)
     if (files === true) {
       return keys
