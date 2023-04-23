@@ -60,57 +60,6 @@ class ContextAnalysisDiagram {
     this.createContextAnalysisDiagram(...values)
   }
 
-  createContextAnalysisDiagram (
-    dirs: string[],
-    filesPath: string[],
-    packagesJSON: IPackageJson[],
-  ) {
-    const packagesName = getPackagesName(packagesJSON)
-    const relyMyMap = createRelyMyDirMap(packagesName)
-    this.analysisDiagram = {}
-
-    dirs.forEach((dir, index) => {
-      const packageJson = packagesJSON[index]
-      setRelyMyDirhMap(dir, packageJson, relyMyMap)
-      const names = getMyRelyPackageName(packagesName, packageJson)
-      const myRelyDir = names.map(name => {
-        const i = packagesJSON.findIndex(item => item.name === name)
-        return dirs[i]
-      })
-
-      this.analysisDiagram[dir] = {
-        packageJson,
-        dir,
-        filePath: filesPath[index],
-        relyMyDir: relyMyMap[packageJson.name as string],
-        myRelyDir,
-      }
-    })
-  }
-
-  getRelatedContent (source: AnalysisBlockItem, triggerSign: SetAnalysisBlockObject) {
-    if (triggerSign.has(source)) return
-    triggerSign.add(source)
-    const relyMyDir = source.relyMyDir
-
-    // 没有依赖则跳出去
-    if (!Array.isArray(source.relyMyDir)) return
-    const relyAttrs = getRelyAttrs().reverse()
-
-    for (let i = 0; i < relyMyDir.length; i++) {
-      const relyDir = relyMyDir[i]
-      const analysisBlock = this.analysisDiagram[relyDir]
-      if (triggerSign.has(analysisBlock)) continue
-
-      for (let j = 0; j < relyAttrs.length; j++) {
-        const key = relyAttrs[i]
-        const relyKeyObject = analysisBlock.packageJson[key]
-        if (!relyKeyObject) return
-        this.getRelatedContent(analysisBlock, triggerSign)
-      }
-    }
-  }
-
   async getRelatedDir (
     forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>,
   ) {
@@ -149,7 +98,58 @@ class ContextAnalysisDiagram {
     return result
   }
 
-  dependencyTracking (
+  private createContextAnalysisDiagram (
+    dirs: string[],
+    filesPath: string[],
+    packagesJSON: IPackageJson[],
+  ) {
+    const packagesName = getPackagesName(packagesJSON)
+    const relyMyMap = createRelyMyDirMap(packagesName)
+    this.analysisDiagram = {}
+
+    dirs.forEach((dir, index) => {
+      const packageJson = packagesJSON[index]
+      setRelyMyDirhMap(dir, packageJson, relyMyMap)
+      const names = getMyRelyPackageName(packagesName, packageJson)
+      const myRelyDir = names.map(name => {
+        const i = packagesJSON.findIndex(item => item.name === name)
+        return dirs[i]
+      })
+
+      this.analysisDiagram[dir] = {
+        packageJson,
+        dir,
+        filePath: filesPath[index],
+        relyMyDir: relyMyMap[packageJson.name as string],
+        myRelyDir,
+      }
+    })
+  }
+
+  private getRelatedContent (source: AnalysisBlockItem, triggerSign: SetAnalysisBlockObject) {
+    if (triggerSign.has(source)) return
+    triggerSign.add(source)
+    const relyMyDir = source.relyMyDir
+
+    // 没有依赖则跳出去
+    if (!Array.isArray(source.relyMyDir)) return
+    const relyAttrs = getRelyAttrs().reverse()
+
+    for (let i = 0; i < relyMyDir.length; i++) {
+      const relyDir = relyMyDir[i]
+      const analysisBlock = this.analysisDiagram[relyDir]
+      if (triggerSign.has(analysisBlock)) continue
+
+      for (let j = 0; j < relyAttrs.length; j++) {
+        const key = relyAttrs[i]
+        const relyKeyObject = analysisBlock.packageJson[key]
+        if (!relyKeyObject) return
+        this.getRelatedContent(analysisBlock, triggerSign)
+      }
+    }
+  }
+
+  private dependencyTracking (
     dirs: string[],
     result: string[],
     stack: string[],
