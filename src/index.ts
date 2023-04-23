@@ -122,7 +122,6 @@ export class Context {
     }
   }
 
-  /** run start **/
   async workCommand (type: string) {
     const diffDirs = await this.getWorkDiffFile()
     this.commandRun(diffDirs, type)
@@ -141,7 +140,7 @@ export class Context {
     }
   }
 
-  async getWorkDiffFile () {
+  private async getWorkDiffFile () {
     const files = await getWorkInfo(this.git)
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
       this.forPack(files, source => {
@@ -150,7 +149,7 @@ export class Context {
     )
   }
 
-  async getStageDiffFile () {
+  private async getStageDiffFile () {
     const files = await getStageInfo(this.git)
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
       this.forPack(files, source => {
@@ -159,7 +158,7 @@ export class Context {
     )
   }
 
-  async getRepositoryDiffFile (type: string) {
+  private async getRepositoryDiffFile (type: string) {
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
       this.forRepositoryDiffPack(source => {
         cd(source)
@@ -194,6 +193,34 @@ export class Context {
     }
   }
 
+  async forRepositoryDiffPack (callback: ForPackCallback, type: TagType) {
+    const files = await getRepositoryInfo(type, this.git)
+    await this.forPack(files, callback)
+  }
+
+  private async cmdAnalysis (cmd: CMD) {
+    switch (cmd) {
+      case 'version':
+        await cmdVersion(this)
+        return
+      case 'publish':
+        await cmdPublish(this)
+    }
+  }
+
+  private async forPack (files: DiffFile, callback: ForPackCallback) {
+    const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
+    for (let index = 0; index < relatedPackagesDir.length; index++) {
+      const dir = relatedPackagesDir[index]
+
+      await callback(this.contextAnalysisDiagram.analysisDiagram[dir], index, this)
+    }
+  }
+
+  private getRunDirs (dirs: string[]) {
+    return this.options.rootPackage ? dirs : dirs.filter(dir => dir)
+  }
+
   private async commandRun (diffDirs: string[], type: string) {
     const dirs = this.getRunDirs(diffDirs)
     const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(dirs)
@@ -211,34 +238,6 @@ export class Context {
     else {
       warn(WARN_NOW_RUN)
     }
-  }
-
-  async forRepositoryDiffPack (callback: ForPackCallback, type: TagType) {
-    const files = await getRepositoryInfo(type, this.git)
-    await this.forPack(files, callback)
-  }
-
-  private async cmdAnalysis (cmd: CMD) {
-    switch (cmd) {
-      case 'version':
-        await cmdVersion(this)
-        return
-      case 'publish':
-        await cmdPublish(this)
-    }
-  }
-
-  private async forPack (files: DiffFile, callback: ForPackCallback) {
-    const dirtyPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
-    for (let index = 0; index < dirtyPackagesDir.length; index++) {
-      const dir = dirtyPackagesDir[index]
-
-      await callback(this.contextAnalysisDiagram.analysisDiagram[dir], index, this)
-    }
-  }
-
-  private getRunDirs (dirs: string[]) {
-    return this.options.rootPackage ? dirs : dirs.filter(dir => dir)
   }
 }
 export type CMD = 'version' | 'publish'
