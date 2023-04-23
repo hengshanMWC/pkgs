@@ -158,7 +158,7 @@ export class Context {
 
   async getWorkDiffFile () {
     const files = await getWorkInfo(this.git)
-    return this.getDiffFile(cd =>
+    return this.getRelatedDir(cd =>
       this.forPack(files, source => {
         cd(source)
       }),
@@ -167,7 +167,7 @@ export class Context {
 
   async getStageDiffFile () {
     const files = await getStageInfo(this.git)
-    return this.getDiffFile(cd =>
+    return this.getRelatedDir(cd =>
       this.forPack(files, source => {
         cd(source)
       }),
@@ -175,7 +175,7 @@ export class Context {
   }
 
   async getRepositoryDiffFile (type: string) {
-    return this.getDiffFile(cd =>
+    return this.getRelatedDir(cd =>
       this.forRepositoryDiffPack(source => {
         cd(source)
       }, type),
@@ -185,7 +185,7 @@ export class Context {
   /** run end **/
 
   /** utils start **/
-  async getDiffFile (
+  async getRelatedDir (
     forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>,
   ) {
     const triggerSign: SetAnalysisBlockObject = new Set()
