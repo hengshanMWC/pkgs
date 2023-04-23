@@ -134,6 +134,21 @@ class ContextAnalysisDiagram {
     }
   }
 
+  // 拓扑排序
+  getDirTopologicalSorting (dirs: string[]) {
+    const result: string[] = []
+    const stack: string[] = []
+
+    this.dependencyTracking(dirs, result, stack, function () {
+      const value = stack[stack.length - 1]
+      if (value !== undefined && !result.includes(value)) {
+        result.push(value)
+      }
+      stack.pop()
+    })
+    return result
+  }
+
   dependencyTracking (
     dirs: string[],
     result: string[],

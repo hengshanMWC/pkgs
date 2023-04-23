@@ -181,24 +181,9 @@ export class Context {
 
   /** utils start **/
 
-  // 也许运行命令的时候，需要一个正确的顺序
-  getDirTopologicalSorting (dirs: string[]) {
-    const result: string[] = []
-    const stack: string[] = []
-
-    this.contextAnalysisDiagram.dependencyTracking(dirs, result, stack, function () {
-      const value = stack[stack.length - 1]
-      if (value !== undefined && !result.includes(value)) {
-        result.push(value)
-      }
-      stack.pop()
-    })
-    return result
-  }
-
   async commandRun (diffDirs: string[], type: string) {
     const dirs = this.getRunDirs(diffDirs)
-    const orderDirs = this.getDirTopologicalSorting(dirs)
+    const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(dirs)
     const cmds = createCommand(type, orderDirs)
 
     if (cmds.length) {
