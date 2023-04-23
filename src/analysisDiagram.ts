@@ -10,9 +10,8 @@ import {
   setRelyMyDirhMap,
 } from './utils/analysisDiagram'
 import type { ExecuteCommandOptions } from './defaultOptions'
-import type { SetAnalysisBlockObject } from '.'
 
-export { ContextAnalysisDiagram, AnalysisBlockItem, AnalysisDiagram }
+export { ContextAnalysisDiagram, AnalysisBlockItem, AnalysisDiagram, SetAnalysisBlockObject }
 
 interface AnalysisBlockItem {
   packageJson: IPackageJson
@@ -22,6 +21,7 @@ interface AnalysisBlockItem {
   myRelyDir: string[]
 }
 type AnalysisDiagram = Record<string, AnalysisBlockItem>
+type SetAnalysisBlockObject = Set<AnalysisBlockItem>
 class ContextAnalysisDiagram {
   packagesPath: ExecuteCommandOptions['packagesPath']
   analysisDiagram!: AnalysisDiagram
@@ -82,7 +82,7 @@ class ContextAnalysisDiagram {
     })
   }
 
-  getDirtyFile (source: AnalysisBlockItem, triggerSign: SetAnalysisBlockObject) {
+  getRelatedContent (source: AnalysisBlockItem, triggerSign: SetAnalysisBlockObject) {
     if (triggerSign.has(source)) return
     triggerSign.add(source)
     const relyMyDir = source.relyMyDir
@@ -100,7 +100,7 @@ class ContextAnalysisDiagram {
         const key = relyAttrs[i]
         const relyKeyObject = analysisBlock.packageJson[key]
         if (!relyKeyObject) return
-        this.getDirtyFile(analysisBlock, triggerSign)
+        this.getRelatedContent(analysisBlock, triggerSign)
       }
     }
   }

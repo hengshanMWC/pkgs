@@ -9,7 +9,7 @@ import {
 } from './utils'
 import { cmdVersion, cmdPublish } from './cmd'
 import { ContextAnalysisDiagram } from './analysisDiagram'
-import type { AnalysisBlockItem } from './analysisDiagram'
+import type { AnalysisBlockItem, SetAnalysisBlockObject } from './analysisDiagram'
 import type { ExecuteCommandOptions } from './defaultOptions'
 import type { TagType, DiffFile } from './git'
 import {
@@ -21,7 +21,6 @@ import {
 import { WARN_NOW_RUN, PACKAGES_PATH } from './constant'
 import { testEmit } from './utils/test'
 
-export type SetAnalysisBlockObject = Set<AnalysisBlockItem>
 export class Context {
   options: ExecuteCommandOptions
   git: SimpleGit
@@ -191,7 +190,7 @@ export class Context {
   ) {
     const triggerSign: SetAnalysisBlockObject = new Set()
     await forCD(source => {
-      this.contextAnalysisDiagram.getDirtyFile(source, triggerSign)
+      this.contextAnalysisDiagram.getRelatedContent(source, triggerSign)
     })
     return [...triggerSign].map(item => item.dir)
   }

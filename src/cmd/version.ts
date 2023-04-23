@@ -4,13 +4,12 @@ import colors from 'colors'
 import { gitSyncSave, gitDiffSave, gitTemporary } from '../git'
 import type {
   Context,
-  SetAnalysisBlockObject,
 } from '../index'
 import { warn, writeFiles } from '../utils'
 import type { WriteObject } from '../utils'
 import { dependentSearch } from '../utils/packageJson'
 import { WARN_NOW_VERSION } from '../constant'
-import type { AnalysisBlockItem } from '../analysisDiagram'
+import type { AnalysisBlockItem, SetAnalysisBlockObject } from '../analysisDiagram'
 
 export function cmdVersion (context: Context) {
   const mode = context.getCorrectOptionValue('version', 'mode')
