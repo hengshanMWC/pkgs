@@ -2,14 +2,17 @@ import type IPackageJson from '@ts-type/package-dts'
 import { readJSON } from 'fs-extra'
 import { getPackagesDir } from '@abmao/forb'
 import { getJSONs } from './utils'
-import { createRelyMyDirMap, getMyRelyPackageName, getPackagesName, setRelyMyDirhMap } from './utils/analysisDiagram'
+import {
+  createRelyMyDirMap,
+  getMyRelyPackageName,
+  getPackagesName,
+  getRelyAttrs,
+  setRelyMyDirhMap,
+} from './utils/analysisDiagram'
 import type { ExecuteCommandOptions } from './defaultOptions'
+import type { SetAnalysisBlockObject } from '.'
 
-export {
-  ContextAnalysisDiagram,
-  AnalysisBlockItem,
-  AnalysisDiagram,
-}
+export { ContextAnalysisDiagram, AnalysisBlockItem, AnalysisDiagram }
 
 interface AnalysisBlockItem {
   packageJson: IPackageJson
@@ -39,9 +42,7 @@ class ContextAnalysisDiagram {
 
     if (this.packagesPath) {
       try {
-        const { dirs, filesPath } = await getPackagesDir(
-          this.packagesPath,
-        )
+        const { dirs, filesPath } = await getPackagesDir(this.packagesPath)
         const packagesJSON = await getJSONs(filesPath)
         values[0].push(...dirs)
         values[1].push(...filesPath)
@@ -79,5 +80,28 @@ class ContextAnalysisDiagram {
         myRelyDir,
       }
     })
+  }
+
+  getDirtyFile (source: AnalysisBlockItem, triggerSign: SetAnalysisBlockObject) {
+    if (triggerSign.has(source)) return
+    triggerSign.add(source)
+    const relyMyDir = source.relyMyDir
+
+    // 没有依赖则跳出去
+    if (!Array.isArray(source.relyMyDir)) return
+    const relyAttrs = getRelyAttrs().reverse()
+
+    for (let i = 0; i < relyMyDir.length; i++) {
+      const relyDir = relyMyDir[i]
+      const analysisBlock = this.analysisDiagram[relyDir]
+      if (triggerSign.has(analysisBlock)) continue
+
+      for (let j = 0; j < relyAttrs.length; j++) {
+        const key = relyAttrs[i]
+        const relyKeyObject = analysisBlock.packageJson[key]
+        if (!relyKeyObject) return
+        this.getDirtyFile(analysisBlock, triggerSign)
+      }
+    }
   }
 }

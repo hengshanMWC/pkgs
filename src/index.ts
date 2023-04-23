@@ -7,9 +7,6 @@ import {
   warn,
   getYamlPackages,
 } from './utils'
-import {
-  getRelyAttrs,
-} from './utils/analysisDiagram'
 import { cmdVersion, cmdPublish } from './cmd'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import type { AnalysisBlockItem } from './analysisDiagram'
@@ -194,35 +191,9 @@ export class Context {
   ) {
     const triggerSign: SetAnalysisBlockObject = new Set()
     await forCD(source => {
-      this.getDirtyFile(source, triggerSign)
+      this.contextAnalysisDiagram.getDirtyFile(source, triggerSign)
     })
     return [...triggerSign].map(item => item.dir)
-  }
-
-  getDirtyFile (
-    source: AnalysisBlockItem,
-    triggerSign: SetAnalysisBlockObject,
-  ) {
-    if (triggerSign.has(source)) return
-    triggerSign.add(source)
-    const relyMyDir = source.relyMyDir
-
-    // 没有依赖则跳出去
-    if (!Array.isArray(source.relyMyDir)) return
-    const relyAttrs = getRelyAttrs().reverse()
-
-    for (let i = 0; i < relyMyDir.length; i++) {
-      const relyDir = relyMyDir[i]
-      const analysisBlock = this.contextAnalysisDiagram.analysisDiagram[relyDir]
-      if (triggerSign.has(analysisBlock)) continue
-
-      for (let j = 0; j < relyAttrs.length; j++) {
-        const key = relyAttrs[i]
-        const relyKeyObject = analysisBlock.packageJson[key]
-        if (!relyKeyObject) return
-        this.getDirtyFile(analysisBlock, triggerSign)
-      }
-    }
   }
 
   // 也许运行命令的时候，需要一个正确的顺序
