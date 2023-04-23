@@ -10,8 +10,9 @@ import {
   setRelyMyDirhMap,
 } from './utils/analysisDiagram'
 import type { ExecuteCommandOptions } from './defaultOptions'
+import type { Context } from '.'
 
-export { ContextAnalysisDiagram, AnalysisBlockItem, AnalysisDiagram, SetAnalysisBlockObject }
+export { ContextAnalysisDiagram, AnalysisBlockItem, AnalysisDiagram, SetAnalysisBlockObject, ForPackCallback }
 
 interface AnalysisBlockItem {
   packageJson: IPackageJson
@@ -22,6 +23,11 @@ interface AnalysisBlockItem {
 }
 type AnalysisDiagram = Record<string, AnalysisBlockItem>
 type SetAnalysisBlockObject = Set<AnalysisBlockItem>
+type ForPackCallback = (
+  analysisBlock: AnalysisBlockItem,
+  index: number,
+  context: Context
+) => Promise<any> | void
 class ContextAnalysisDiagram {
   packagesPath: ExecuteCommandOptions['packagesPath']
   analysisDiagram!: AnalysisDiagram
@@ -113,5 +119,18 @@ class ContextAnalysisDiagram {
       this.getRelatedContent(source, triggerSign)
     })
     return [...triggerSign].map(item => item.dir)
+  }
+
+  getDirtyPackagesDir (files: string[] | boolean | undefined) {
+    const keys = Object.keys(this.analysisDiagram)
+    if (files === true) {
+      return keys
+    }
+    else if (Array.isArray(files)) {
+      return keys.filter(key => files.some(file => file.includes(key)))
+    }
+    else {
+      return []
+    }
   }
 }

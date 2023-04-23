@@ -245,7 +245,7 @@ export class Context {
   }
 
   async forPack (files: DiffFile, callback: ForPackCallback) {
-    const dirtyPackagesDir = this.getDirtyPackagesDir(files)
+    const dirtyPackagesDir = this.contextAnalysisDiagram.getDirtyPackagesDir(files)
     for (let index = 0; index < dirtyPackagesDir.length; index++) {
       const dir = dirtyPackagesDir[index]
 
@@ -264,19 +264,6 @@ export class Context {
       if (analysisBlock.packageJson === packageJson) {
         return analysisBlock
       }
-    }
-  }
-
-  getDirtyPackagesDir (files: string[] | boolean | undefined) {
-    const keys = Object.keys(this.contextAnalysisDiagram.analysisDiagram)
-    if (files === true) {
-      return keys
-    }
-    else if (Array.isArray(files)) {
-      return keys.filter(key => files.some(file => file.includes(key)))
-    }
-    else {
-      return []
     }
   }
 
