@@ -182,7 +182,7 @@ export class Context {
   /** utils start **/
 
   // 也许运行命令的时候，需要一个正确的顺序
-  createOrderArray (dirs: string[]) {
+  getDirTopologicalSorting (dirs: string[]) {
     const result: string[] = []
     const stack: string[] = []
 
@@ -198,7 +198,7 @@ export class Context {
 
   async commandRun (diffDirs: string[], type: string) {
     const dirs = this.getRunDirs(diffDirs)
-    const orderDirs = this.createOrderArray(dirs)
+    const orderDirs = this.getDirTopologicalSorting(dirs)
     const cmds = createCommand(type, orderDirs)
 
     if (cmds.length) {
