@@ -8,12 +8,15 @@ import { StoreCommand } from './storeCommand'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import type { ExecuteCommandOptions } from './defaultOptions'
 import { PACKAGES_PATH } from './constant'
+import { PluginStore } from './plugin'
+import { versionPlugin } from './plugin/version'
 
 export class Context {
   options: ExecuteCommandOptions
   contextAnalysisDiagram!: ContextAnalysisDiagram
   storeCommand!: StoreCommand
   version?: string
+  pluginStore!: PluginStore
 
   constructor (
     options: ExecuteCommandOptions,
@@ -42,10 +45,17 @@ export class Context {
     }
 
     const context = new Context(attrOptions, version)
+
     const contextAnalysisDiagram = new ContextAnalysisDiagram(context.options.packagesPath)
     await contextAnalysisDiagram.initData()
     context.contextAnalysisDiagram = contextAnalysisDiagram
+
     context.storeCommand = new StoreCommand(contextAnalysisDiagram, context.options.rootPackage, git)
+
+    const pluginStore = new PluginStore()
+    pluginStore.use(versionPlugin)
+    context.pluginStore = pluginStore
+
     if (cmd) {
       await context.cmdAnalysis(cmd)
     }

@@ -1,21 +1,27 @@
-import type { ExecuteCommandOptions } from '../defaultOptions'
+import type { PluginData } from '../defaultOptions'
 export {
-  Plugin,
+  PluginStore,
 }
-interface PluginData {
-  command: string
-  description: string
-  option?: string[]
-  action: string
-}
-class Plugin {
-  options: ExecuteCommandOptions
-  list: PluginData[]
-  constructor () {
 
+class PluginStore {
+  map: Map<string, PluginData> = new Map()
+
+  use (plugin: PluginData) {
+    if (this.map.has(plugin.id)) {
+      console.log('有重复的plugin id')
+    }
+    else {
+      this.map.set(plugin.id, plugin)
+    }
+    return this
   }
 
-  register () {
+  async readUse (route: string) {
+    const plugin = await import(route)
+    return this.use(plugin)
+  }
 
+  remove (id: string) {
+    this.map.delete(id)
   }
 }

@@ -1,6 +1,14 @@
+import type { Context } from '.'
+
 type Type = 'sync' | 'diff'
 interface ExecuteCommandOption {
   mode: Type
+}
+export interface PluginData {
+  id: string
+  description: string
+  option?: string[][]
+  action: (context: Context) => void
 }
 interface ExecuteCommandVersionOption extends
   Partial<ExecuteCommandOption> {
@@ -15,6 +23,7 @@ export interface ExecuteCommandOptions extends ExecuteCommandOption {
   rootPackage: Boolean
   version: ExecuteCommandVersionOption
   publish: ExecuteCommandPublishOption
+  plugin?: PluginData[]
 }
 export const defaultOptions: ExecuteCommandOptions = {
   packagesPath: undefined,
@@ -28,4 +37,5 @@ export const defaultOptions: ExecuteCommandOptions = {
     mode: undefined,
     tag: '',
   },
+  plugin: [],
 }
