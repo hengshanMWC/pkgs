@@ -15,22 +15,17 @@ export class Context {
   options: ExecuteCommandOptions
   contextAnalysisDiagram!: ContextAnalysisDiagram
   storeCommand!: StoreCommand
-  version?: string
   pluginStore!: PluginStore
 
   constructor (
     options: ExecuteCommandOptions,
-    version?: string,
   ) {
     this.options = options
-    this.version = version
   }
 
   static async create (
     options: ExecuteCommandOptions,
-    cmd?: CMD,
     git: SimpleGit = simpleGit(),
-    version?: string,
   ) {
     const attrOptions = options
 
@@ -44,7 +39,7 @@ export class Context {
       }
     }
 
-    const context = new Context(attrOptions, version)
+    const context = new Context(attrOptions)
 
     const contextAnalysisDiagram = new ContextAnalysisDiagram(context.options.packagesPath)
     await contextAnalysisDiagram.initData()
@@ -56,9 +51,6 @@ export class Context {
     pluginStore.use(versionPlugin)
     context.pluginStore = pluginStore
 
-    if (cmd) {
-      await context.cmdAnalysis(cmd)
-    }
     return context
   }
 
@@ -141,14 +133,12 @@ export class Context {
     }
   }
 
-  private async cmdAnalysis (cmd: CMD) {
-    switch (cmd) {
-      case 'version':
-        await cmdVersion(this)
-        return
-      case 'publish':
-        await cmdPublish(this)
-    }
+  async cmdVersion (version?: string) {
+    await cmdVersion(this, version)
+  }
+
+  async cmdPublish () {
+    await cmdPublish(this)
   }
 }
 export type CMD = 'version' | 'publish'

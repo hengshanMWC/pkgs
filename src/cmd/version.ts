@@ -11,19 +11,19 @@ import { dependentSearch } from '../utils/packageJson'
 import { WARN_NOW_VERSION } from '../constant'
 import type { AnalysisBlockItem, SetAnalysisBlockObject } from '../analysisDiagram'
 
-export function cmdVersion (context: Context) {
+export function cmdVersion (context: Context, appointVersion?: string) {
   const mode = context.getCorrectOptionValue('version', 'mode')
 
   if (mode === 'sync') {
-    return handleSyncVersion(context)
+    return handleSyncVersion(context, appointVersion)
   }
   else if (mode === 'diff') {
-    return handleDiffVersion(context)
+    return handleDiffVersion(context, appointVersion)
   }
 }
-async function handleSyncVersion (context: Context) {
+async function handleSyncVersion (context: Context, appointVersion?: string) {
   const oldVersion = context.contextAnalysisDiagram.rootPackageJson.version
-  const version = await changeVersion(context.contextAnalysisDiagram.rootDir, context.version)
+  const version = await changeVersion(context.contextAnalysisDiagram.rootDir, appointVersion)
 
   if (oldVersion === version) {
     if (process.env.NODE_ENV === 'test') {
@@ -68,7 +68,7 @@ async function handleSyncVersion (context: Context) {
     context.storeCommand.git,
   )
 }
-async function handleDiffVersion (context: Context) {
+async function handleDiffVersion (context: Context, appointVersion?: string) {
   const triggerSign: SetAnalysisBlockObject = new Set()
 
   await context.storeCommand.forRepositoryDiffPack(async function (analysisBlock) {
@@ -77,6 +77,7 @@ async function handleDiffVersion (context: Context) {
       analysisBlock,
       analysisBlock.dir,
       triggerSign,
+      appointVersion,
     )
   }, 'version')
   await writeJSONs(triggerSign)
@@ -97,6 +98,7 @@ async function changeVersionResultItem (
   analysisBlock: AnalysisBlockItem,
   dir: string,
   triggerSign: SetAnalysisBlockObject,
+  appointVersion?: string,
 ) {
   const { packageJson } = analysisBlock
 
@@ -105,17 +107,18 @@ async function changeVersionResultItem (
 
   const oldVersion = packageJson.version
   console.log(colors.white.bold(`package: ${packageJson.name}`))
-  const version = await changeVersion(dir, context.version)
+  const version = await changeVersion(dir, appointVersion)
 
   if (version !== oldVersion) {
     packageJson.version = version
-    await changeRelyMyVersion(context, analysisBlock, triggerSign)
+    await changeRelyMyVersion(context, analysisBlock, triggerSign, appointVersion)
   }
 }
 async function changeRelyMyVersion (
   context: Context,
   analysisBlock: AnalysisBlockItem,
   triggerSign?: SetAnalysisBlockObject,
+  appointVersion?: string,
 ) {
   const relyMyDir = analysisBlock.relyMyDir
   // 没有依赖则跳出去
@@ -133,6 +136,7 @@ async function changeRelyMyVersion (
         analysisBlockRelyMy,
         relyDir,
         triggerSign,
+        appointVersion,
       )
     }
   }

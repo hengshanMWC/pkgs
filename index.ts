@@ -9,7 +9,19 @@ import { gitDiffTag } from './src/git'
 import type { TagType } from './src/git'
 import type { CMD } from './src'
 import type { ExecuteCommandOptions } from './src/defaultOptions'
+// interface Data {
+//   context: Context
+// }
+// const data = {} as Data
+// (async function (container: Data) {
+//   const packageJson = (await getJSON(
+//     'pkgs.json',
+//   )) as Partial<ExecuteCommandOptions>
+//   container.context = await Context.create(
+//     assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
+//   )
 
+// }(data))
 export async function executeCommand (
   cmd: CMD,
   options: Partial<ExecuteCommandOptions> = {},
@@ -20,12 +32,16 @@ export async function executeCommand (
   const packageJson = (await getJSON(
     'pkgs.json',
   )) as Partial<ExecuteCommandOptions>
-  await Context.create(
+  const context = await Context.create(
     assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
-    cmd,
     git,
-    version,
   )
+  if (cmd === 'version') {
+    await context.cmdVersion(version)
+  }
+  else {
+    await context.cmdPublish()
+  }
   cliSuccess()
 }
 export async function executeCommandTag (
@@ -65,12 +81,31 @@ export async function executeCommandRun (
   )) as Partial<ExecuteCommandOptions>
   const context = await Context.create(
     assign<ExecuteCommandOptions>(defaultOptions, packageJson, { rootPackage }),
-    undefined,
     git,
   )
   await context.storeCommand[`${mode}Command`](cmd)
   cliSuccess()
 }
+
+// export async function pluginCommands (
+//   cmd: any,
+//   options: Partial<ExecuteCommandOptions> = {},
+//   git: SimpleGit = simpleGit(),
+// ) {
+//   cliVersion(cmd)
+//   const packageJson = (await getJSON(
+//     'pkgs.json',
+//   )) as Partial<ExecuteCommandOptions>
+//   const context = await Context.create(
+//     assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
+//     git,
+//   )
+//   const plugin = context.pluginStore.map.get(cmd)
+//   if (plugin) {
+//     plugin.action(context)
+//   }
+//   cliSuccess()
+// }
 
 export type { TagType } from './src/git'
 export type { CMD } from './src'
