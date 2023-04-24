@@ -34,7 +34,8 @@
     "lint": "eslint --ext=js,ts,json,md .",
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",
     "build": "esno ./scripts/build.ts && tsc --emitDeclarationOnly",
-    "release": "esno ./scripts/release.ts"
+    "release": "esno ./scripts/release.ts",
+    "bin": "node bin/index.js"
   },
   "bugs": {
     "url": "https://github.com/hengshanMWC/pkgs/issues"

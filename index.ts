@@ -9,19 +9,19 @@ import { gitDiffTag } from './src/git'
 import type { TagType } from './src/git'
 import type { CMD } from './src'
 import type { ExecuteCommandOptions } from './src/defaultOptions'
-// interface Data {
-//   context: Context
-// }
-// const data = {} as Data
-// (async function (container: Data) {
-//   const packageJson = (await getJSON(
-//     'pkgs.json',
-//   )) as Partial<ExecuteCommandOptions>
-//   container.context = await Context.create(
-//     assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
-//   )
-
-// }(data))
+interface PkgsData {
+  context: Context
+}
+export const pkgsData = {} as PkgsData
+export async function createPkgsData () {
+  const packageJson = (await getJSON(
+    'pkgs.json',
+  )) as Partial<ExecuteCommandOptions>
+  pkgsData.context = await Context.create(
+    assign<ExecuteCommandOptions>(defaultOptions, packageJson),
+  )
+  return pkgsData.context
+}
 export async function executeCommand (
   cmd: CMD,
   options: Partial<ExecuteCommandOptions> = {},

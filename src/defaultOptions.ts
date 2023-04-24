@@ -8,7 +8,7 @@ export interface PluginData {
   id: string
   description: string
   option?: string[][]
-  action: (context: Context) => void
+  action: (context: Context, ...args: any[]) => void
 }
 interface ExecuteCommandVersionOption extends
   Partial<ExecuteCommandOption> {
