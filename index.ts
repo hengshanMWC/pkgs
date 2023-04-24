@@ -68,7 +68,7 @@ export async function executeCommandRun (
     undefined,
     git,
   )
-  await context[`${mode}Command`](cmd)
+  await context.storeCommand[`${mode}Command`](cmd)
   cliSuccess()
 }
 

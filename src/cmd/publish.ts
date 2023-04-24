@@ -23,17 +23,17 @@ async function handleSyncPublish (context: Context) {
       context.options.publish.tag,
     )
   }
-  gitSyncPublishTag(undefined, context.git)
+  gitSyncPublishTag(undefined, context.storeCommand.git)
 }
 async function handleDiffPublish (context: Context) {
-  await context.forRepositoryDiffPack(async function (analysisBlock) {
+  await context.storeCommand.forRepositoryDiffPack(async function (analysisBlock) {
     await implementPublish(
       analysisBlock.packageJson,
       analysisBlock.dir,
       context.options.publish.tag,
     )
   }, 'publish')
-  gitDiffTag('publish', undefined, context.git)
+  gitDiffTag('publish', undefined, context.storeCommand.git)
 }
 async function implementPublish (
   packageJson: IPackageJson<any>,
