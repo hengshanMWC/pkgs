@@ -32,17 +32,17 @@ export async function writeFiles (writesObject: WriteObject[]) {
 export function cdDir (dir?: string) {
   return dir ? `cd ${dir} && ` : ''
 }
-export function assign (
+export function assignOptions (
   ...objects: Partial<ExecuteCommandOptions>[]
 ): ExecuteCommandOptions {
   return objects.reduce((previousValue, currentValue) => {
-    return getAssign(
+    return assignOption(
       previousValue,
       currentValue,
     )
   }, {}) as ExecuteCommandOptions
 }
-function getAssign (
+function assignOption (
   templateObject: Partial<ExecuteCommandOptions>,
   object: Partial<ExecuteCommandOptions>,
 ): Partial<ExecuteCommandOptions> {
