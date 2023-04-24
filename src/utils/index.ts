@@ -4,6 +4,7 @@ import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { DEPENDENCY_PREFIX } from '../constant'
+import type { ExecuteCommandOptions } from '../defaultOptions'
 export async function getJSON (dir: string): Promise<IPackageJson> {
   try {
     return await readJSON(dir)
@@ -31,30 +32,58 @@ export async function writeFiles (writesObject: WriteObject[]) {
 export function cdDir (dir?: string) {
   return dir ? `cd ${dir} && ` : ''
 }
-export function assign<T extends Object> (
-  ...objects: Partial<T>[]
-): T {
-  return objects.reduce((previousValue: any, currentValue) => {
-    for (const key in currentValue) {
-      previousValue[key] =
-        getAssign<T>(
-          previousValue[key],
-          currentValue[key as keyof T],
-        )
-    }
-    return previousValue
-  }, {}) as T
+export function assign (
+  ...objects: Partial<ExecuteCommandOptions>[]
+): ExecuteCommandOptions {
+  return objects.reduce((previousValue, currentValue) => {
+    return getAssign(
+      previousValue,
+      currentValue,
+    )
+  }, {}) as ExecuteCommandOptions
 }
-function getAssign<T> (templateObject: any, object: any): T {
-  if (typeof templateObject === 'object') {
-    if (typeof object === 'object') {
-      return assign(templateObject, object)
+function getAssign (
+  templateObject: Partial<ExecuteCommandOptions>,
+  object: Partial<ExecuteCommandOptions>,
+): Partial<ExecuteCommandOptions> {
+  if (object.mode !== undefined) {
+    templateObject.mode = object.mode
+  }
+  if (object.packagesPath !== undefined) {
+    templateObject.packagesPath = object.packagesPath
+  }
+  if (object.rootPackage !== undefined) {
+    templateObject.rootPackage = object.rootPackage
+  }
+  if (object.version !== undefined) {
+    if (templateObject.version === undefined) {
+      templateObject.version = {}
     }
-    return templateObject
+    if (object.version.mode !== undefined) {
+      templateObject.version.mode = object.version.mode
+    }
+    if (object.version.message !== undefined) {
+      templateObject.version.message = object.version.message
+    }
   }
-  else {
-    return object === undefined ? templateObject : object
+  if (object.publish !== undefined) {
+    if (templateObject.publish === undefined) {
+      templateObject.publish = {}
+    }
+    if (object.publish.mode !== undefined) {
+      templateObject.publish.mode = object.publish.mode
+    }
+    if (object.publish.tag !== undefined) {
+      templateObject.publish.tag = object.publish.tag
+    }
+    if (object.plugin !== undefined) {
+      if (templateObject.plugin === undefined) {
+        templateObject.plugin = []
+      }
+      templateObject.plugin = object.plugin.concat(templateObject.plugin)
+    }
   }
+  return templateObject
 }
 export function warn (text: string) {
   console.warn(`${colors.yellow.bold(text)}`)

@@ -18,7 +18,7 @@ export async function createPkgsData () {
     'pkgs.json',
   )) as Partial<ExecuteCommandOptions>
   pkgsData.context = await Context.create(
-    assign<ExecuteCommandOptions>(defaultOptions, packageJson),
+    assign(defaultOptions, packageJson),
   )
   return pkgsData.context
 }
@@ -33,7 +33,7 @@ export async function executeCommand (
     'pkgs.json',
   )) as Partial<ExecuteCommandOptions>
   const context = await Context.create(
-    assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
+    assign(defaultOptions, packageJson, options),
     git,
   )
   if (cmd === 'version') {
@@ -80,7 +80,7 @@ export async function executeCommandRun (
     'pkgs.json',
   )) as Partial<ExecuteCommandOptions>
   const context = await Context.create(
-    assign<ExecuteCommandOptions>(defaultOptions, packageJson, { rootPackage }),
+    assign(defaultOptions, packageJson, { rootPackage }),
     git,
   )
   await context.storeCommand[`${mode}Command`](cmd)
@@ -97,7 +97,7 @@ export async function executeCommandRun (
 //     'pkgs.json',
 //   )) as Partial<ExecuteCommandOptions>
 //   const context = await Context.create(
-//     assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
+//     assign(defaultOptions, packageJson, options),
 //     git,
 //   )
 //   const plugin = context.pluginStore.map.get(cmd)
