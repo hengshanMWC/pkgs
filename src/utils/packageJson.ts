@@ -1,12 +1,12 @@
 import type { IPackageJson } from '@ts-type/package-dts'
-import type { AnalysisBlockObject } from '../index'
+import type { AnalysisBlockItem } from '../analysisDiagram'
 import { getRelyAttrs } from './analysisDiagram'
 import { versionText, versionRangeText } from './regExp'
 import { isVersionStar } from './index'
 
 export function dependentSearch (
-  source: AnalysisBlockObject,
-  analysisBlockRelyMy: AnalysisBlockObject,
+  source: AnalysisBlockItem,
+  analysisBlockRelyMy: AnalysisBlockItem,
 ) {
   let result = false
   const sourcePackageJson = source.packageJson
