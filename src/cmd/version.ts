@@ -46,7 +46,7 @@ async function handleSyncVersion (context: Context) {
   // 依赖更新
   for (let index = 0; index < context.packagesJSON.length; index++) {
     const packageJson = context.packagesJSON[index]
-    const analysisBlock = context.packageJsonToAnalysisBlock(packageJson)
+    const analysisBlock = context.contextAnalysisDiagram.packageJsonToAnalysisBlock(packageJson)
     packageJson.version = version
 
     if (analysisBlock) {

@@ -1,6 +1,5 @@
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
-import type { IPackageJson } from '@ts-type/package-dts'
 import {
   createCommand,
   runCmds,
@@ -122,6 +121,7 @@ export class Context {
     }
   }
 
+  // start: run [options] <cmd> [mode]  run diff scripts.
   async workCommand (type: string) {
     const diffDirs = await this.getWorkDiffFile()
     this.commandRun(diffDirs, type)
@@ -139,6 +139,7 @@ export class Context {
       gitDiffTag(type)
     }
   }
+  // end
 
   private async getWorkDiffFile () {
     const files = await getWorkInfo(this.git)
@@ -164,16 +165,6 @@ export class Context {
         cd(source)
       }, type),
     )
-  }
-
-  packageJsonToAnalysisBlock (packageJson: IPackageJson) {
-    for (const key in this.contextAnalysisDiagram.analysisDiagram) {
-      const analysisBlock = this.contextAnalysisDiagram.analysisDiagram[key]
-
-      if (analysisBlock.packageJson === packageJson) {
-        return analysisBlock
-      }
-    }
   }
 
   getCorrectOptionValue (
@@ -213,7 +204,7 @@ export class Context {
     for (let index = 0; index < relatedPackagesDir.length; index++) {
       const dir = relatedPackagesDir[index]
 
-      await callback(this.contextAnalysisDiagram.analysisDiagram[dir], index, this)
+      await callback(this.contextAnalysisDiagram.analysisDiagram[dir], index)
     }
   }
 
@@ -244,5 +235,4 @@ export type CMD = 'version' | 'publish'
 export type ForPackCallback = (
   analysisBlock: AnalysisBlockItem,
   index: number,
-  context: Context
 ) => Promise<any> | void
