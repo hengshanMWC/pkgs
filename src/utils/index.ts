@@ -80,7 +80,7 @@ function assignOption (
       if (templateObject.plugin === undefined) {
         templateObject.plugin = []
       }
-      templateObject.plugin = object.plugin.concat(templateObject.plugin)
+      templateObject.plugin = templateObject.plugin.concat(object.plugin)
     }
   }
   return templateObject
