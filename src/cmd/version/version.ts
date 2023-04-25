@@ -1,15 +1,16 @@
 import { writeJSON } from 'fs-extra'
 import { versionBumpInfo } from '@abmao/bump'
 import colors from 'colors'
-import { gitSyncSave, gitDiffSave, gitTemporary } from '../git'
+import { gitSyncSave, gitDiffSave, gitTemporary } from '../../git'
 import type {
   Context,
-} from '../index'
-import { warn, writeFiles } from '../utils'
-import type { WriteObject } from '../utils'
-import { dependentSearch } from '../utils/packageJson'
-import { WARN_NOW_VERSION } from '../constant'
-import type { AnalysisBlockItem, SetAnalysisBlockObject } from '../analysisDiagram'
+} from '../../index'
+import { warn, writeFiles } from '../../utils'
+import type { WriteObject } from '../../utils'
+import { dependentSearch } from '../../utils/packageJson'
+import { WARN_NOW_VERSION } from '../../constant'
+import type { AnalysisBlockItem, SetAnalysisBlockObject } from '../../analysisDiagram'
+// import type { PluginData, ExecuteCommandOptions } from '../../defaultOptions'
 
 export function cmdVersion (context: Context, appointVersion?: string) {
   const mode = context.getCorrectOptionValue('version', 'mode')
@@ -21,6 +22,19 @@ export function cmdVersion (context: Context, appointVersion?: string) {
     return handleDiffVersion(context, appointVersion)
   }
 }
+// export function versionPlugin (): PluginData {
+//   return {
+//     id: 'version',
+//     description: 'version package',
+//     option: [
+//       ['--mode <type>', 'sync | diff'],
+//       ['-m, --message <message>', 'commit message'],
+//     ],
+//     action (context: Context, options: ExecuteCommandOptions['version']) {
+//       cmdVersion(context)
+//     },
+//   }
+// }
 async function handleSyncVersion (context: Context, appointVersion?: string) {
   const oldVersion = context.contextAnalysisDiagram.rootPackageJson.version
   const version = await changeVersion(context.contextAnalysisDiagram.rootDir, appointVersion)

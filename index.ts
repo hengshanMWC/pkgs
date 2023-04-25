@@ -7,13 +7,13 @@ import { gitDiffTag } from './src/git'
 import type { TagType } from './src/git'
 import type { CMD } from './src'
 import type { ExecuteCommandOptions } from './src/defaultOptions'
-interface PkgsData {
-  context: Context
-}
-export const pkgsData = {} as PkgsData
-export async function createPkgsData () {
-  pkgsData.context = await Context.create()
-  return pkgsData.context
+import { PluginStore } from './src/plugin'
+
+export async function createPlugin () {
+  const pluginStore = new PluginStore()
+  const config = await Context.assignConfig()
+  pluginStore.use(...config.plugin)
+  return pluginStore
 }
 export async function executeCommand (
   cmd: CMD,
@@ -22,8 +22,9 @@ export async function executeCommand (
   version?: string,
 ) {
   cliVersion(cmd)
+  const config = await Context.assignConfig(options)
   const context = await Context.create(
-    options,
+    config,
     git,
   )
   if (cmd === 'version') {
@@ -66,8 +67,11 @@ export async function executeCommandRun (
   git: SimpleGit = simpleGit(),
 ) {
   cliVersion('run')
+  const config = await Context.assignConfig({
+    rootPackage,
+  })
   const context = await Context.create(
-    { rootPackage },
+    config,
     git,
   )
   await context.storeCommand[`${mode}Command`](cmd)

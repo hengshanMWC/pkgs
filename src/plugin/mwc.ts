@@ -1,10 +1,10 @@
 import type { PluginData } from '../defaultOptions'
 
 export {
-  versionPlugin,
+  testPlugin,
 }
-const versionPlugin: PluginData = {
-  id: 'mwc',
+const testPlugin: PluginData = {
+  id: 'mwc <cmd> [test]',
   description: 'mwc test',
   option: [
     ['--mode <type>', 'sync | diff'],

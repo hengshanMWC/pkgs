@@ -1,4 +1,4 @@
-import { versionPlugin } from './plugin/version'
+import { testPlugin } from './plugin/mwc'
 import type { Context } from '.'
 type Type = 'sync' | 'diff'
 interface ExecuteCommandOption {
@@ -23,7 +23,7 @@ export interface ExecuteCommandOptions extends ExecuteCommandOption {
   rootPackage: Boolean
   version: ExecuteCommandVersionOption
   publish: ExecuteCommandPublishOption
-  plugin?: Array<PluginData | string>
+  plugin: Array<PluginData | string>
 }
 export const defaultOptions: ExecuteCommandOptions = {
   packagesPath: undefined,
@@ -38,6 +38,6 @@ export const defaultOptions: ExecuteCommandOptions = {
     tag: '',
   },
   plugin: [
-    versionPlugin,
+    testPlugin,
   ],
 }

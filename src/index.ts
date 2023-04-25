@@ -4,7 +4,6 @@ import {
   assignOptions,
   getYamlPackages,
   getJSON,
-  getArray,
 } from './utils'
 import { cmdVersion, cmdPublish } from './cmd'
 import { StoreCommand } from './storeCommand'
@@ -23,18 +22,10 @@ export class Context {
   static configName = 'pkgs.json'
 
   static async create (
-    config?: ConstructorParameters<typeof Context>[0],
+    config: ConstructorParameters<typeof Context>[0],
     git: SimpleGit = simpleGit(),
   ) {
-    // 多份配置整合
-    const configs = []
-    const pkgsJson = (await getJSON(
-      Context.configName,
-    )) as Partial<ExecuteCommandOptions>
-    configs.push(pkgsJson)
-    config && configs.push(...getArray<Partial<ExecuteCommandOptions>>(config))
-
-    const context = new Context(configs)
+    const context = new Context(config)
     await context.readDefaultPackagesPath()
 
     // 生成包之间的图表关系
@@ -53,10 +44,17 @@ export class Context {
     return context
   }
 
+  static async assignConfig (...config: Partial<ExecuteCommandOptions>[]) {
+    const pkgsJson = (await getJSON(
+      Context.configName,
+    )) as Partial<ExecuteCommandOptions>
+    return assignOptions(defaultOptions, pkgsJson, ...config)
+  }
+
   constructor (
-    config: Partial<ExecuteCommandOptions> | Partial<ExecuteCommandOptions>[],
+    config: ExecuteCommandOptions,
   ) {
-    this.options = assignOptions(defaultOptions, ...getArray<Partial<ExecuteCommandOptions>>(config))
+    this.options = config
   }
 
   get allDirs () {

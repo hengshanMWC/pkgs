@@ -1,3 +1,3 @@
-export * from './version'
+export * from './version/version'
 export * from './publish'
 export * from './init'
