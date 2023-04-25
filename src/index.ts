@@ -1,12 +1,14 @@
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import {
+  assignOptions,
   getYamlPackages,
 } from './utils'
 import { cmdVersion, cmdPublish } from './cmd'
 import { StoreCommand } from './storeCommand'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import type { ExecuteCommandOptions } from './defaultOptions'
+import { defaultOptions } from './defaultOptions'
 import { PACKAGES_PATH } from './constant'
 import { PluginStore } from './plugin'
 import { versionPlugin } from './plugin/version'
@@ -18,28 +20,17 @@ export class Context {
   pluginStore!: PluginStore
 
   constructor (
-    options: ExecuteCommandOptions,
+    options: Partial<ExecuteCommandOptions> | Partial<ExecuteCommandOptions>[],
   ) {
-    this.options = options
+    this.options = assignOptions(defaultOptions, ...(Array.isArray(options) ? options : [options]))
   }
 
   static async create (
-    options: ExecuteCommandOptions,
+    options: ConstructorParameters<typeof Context>[0],
     git: SimpleGit = simpleGit(),
   ) {
-    const attrOptions = options
-
-    // 同步pnpm-workspace.yaml的packagesPath
-    if (!attrOptions.packagesPath) {
-      try {
-        attrOptions.packagesPath = await getYamlPackages()
-      }
-      catch {
-        attrOptions.packagesPath = PACKAGES_PATH
-      }
-    }
-
-    const context = new Context(attrOptions)
+    const context = new Context(options)
+    await context.readDefaultPackagesPath()
 
     const contextAnalysisDiagram = new ContextAnalysisDiagram(context.options.packagesPath)
     await contextAnalysisDiagram.initData()
@@ -139,6 +130,18 @@ export class Context {
 
   async cmdPublish () {
     await cmdPublish(this)
+  }
+
+  private async readDefaultPackagesPath () {
+    if (!this.options.packagesPath) {
+      try {
+        // 同步pnpm-workspace.yaml的packagesPath
+        this.options.packagesPath = await getYamlPackages()
+      }
+      catch {
+        this.options.packagesPath = PACKAGES_PATH
+      }
+    }
   }
 }
 export type CMD = 'version' | 'publish'

@@ -2,8 +2,7 @@ import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import { Context } from './src'
 import { cmdInit } from './src/cmd'
-import { defaultOptions } from './src/defaultOptions'
-import { getJSON, assignOptions } from './src/utils'
+import { getJSON } from './src/utils'
 import { cliVersion, cliSuccess } from './src/tips'
 import { gitDiffTag } from './src/git'
 import type { TagType } from './src/git'
@@ -17,9 +16,7 @@ export async function createPkgsData () {
   const pkgsJson = (await getJSON(
     'pkgs.json',
   )) as Partial<ExecuteCommandOptions>
-  pkgsData.context = await Context.create(
-    assignOptions(defaultOptions, pkgsJson),
-  )
+  pkgsData.context = await Context.create(pkgsJson)
   return pkgsData.context
 }
 export async function executeCommand (
@@ -33,7 +30,7 @@ export async function executeCommand (
     'pkgs.json',
   )) as Partial<ExecuteCommandOptions>
   const context = await Context.create(
-    assignOptions(defaultOptions, pkgsJson, options),
+    [pkgsJson, options],
     git,
   )
   if (cmd === 'version') {
@@ -80,32 +77,12 @@ export async function executeCommandRun (
     'pkgs.json',
   )) as Partial<ExecuteCommandOptions>
   const context = await Context.create(
-    assignOptions(defaultOptions, pkgsJson, { rootPackage }),
+    [pkgsJson, { rootPackage }],
     git,
   )
   await context.storeCommand[`${mode}Command`](cmd)
   cliSuccess()
 }
-
-// export async function pluginCommands (
-//   cmd: any,
-//   options: Partial<ExecuteCommandOptions> = {},
-//   git: SimpleGit = simpleGit(),
-// ) {
-//   cliVersion(cmd)
-//   const pkgsJson = (await getJSON(
-//     'pkgs.json',
-//   )) as Partial<ExecuteCommandOptions>
-//   const context = await Context.create(
-//     assignOptions(defaultOptions, pkgsJson, options),
-//     git,
-//   )
-//   const plugin = context.pluginStore.map.get(cmd)
-//   if (plugin) {
-//     plugin.action(context)
-//   }
-//   cliSuccess()
-// }
 
 export type { TagType } from './src/git'
 export type { CMD } from './src'
