@@ -14,11 +14,11 @@ interface PkgsData {
 }
 export const pkgsData = {} as PkgsData
 export async function createPkgsData () {
-  const packageJson = (await getJSON(
+  const pkgsJson = (await getJSON(
     'pkgs.json',
   )) as Partial<ExecuteCommandOptions>
   pkgsData.context = await Context.create(
-    assign<ExecuteCommandOptions>(defaultOptions, packageJson),
+    assign<ExecuteCommandOptions>(defaultOptions, pkgsJson),
   )
   return pkgsData.context
 }
@@ -29,11 +29,11 @@ export async function executeCommand (
   version?: string,
 ) {
   cliVersion(cmd)
-  const packageJson = (await getJSON(
+  const pkgsJson = (await getJSON(
     'pkgs.json',
   )) as Partial<ExecuteCommandOptions>
   const context = await Context.create(
-    assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
+    assign<ExecuteCommandOptions>(defaultOptions, pkgsJson, options),
     git,
   )
   if (cmd === 'version') {
@@ -76,11 +76,11 @@ export async function executeCommandRun (
   git: SimpleGit = simpleGit(),
 ) {
   cliVersion('run')
-  const packageJson = (await getJSON(
+  const pkgsJson = (await getJSON(
     'pkgs.json',
   )) as Partial<ExecuteCommandOptions>
   const context = await Context.create(
-    assign<ExecuteCommandOptions>(defaultOptions, packageJson, { rootPackage }),
+    assign<ExecuteCommandOptions>(defaultOptions, pkgsJson, { rootPackage }),
     git,
   )
   await context.storeCommand[`${mode}Command`](cmd)
@@ -93,11 +93,11 @@ export async function executeCommandRun (
 //   git: SimpleGit = simpleGit(),
 // ) {
 //   cliVersion(cmd)
-//   const packageJson = (await getJSON(
+//   const pkgsJson = (await getJSON(
 //     'pkgs.json',
 //   )) as Partial<ExecuteCommandOptions>
 //   const context = await Context.create(
-//     assign<ExecuteCommandOptions>(defaultOptions, packageJson, options),
+//     assign<ExecuteCommandOptions>(defaultOptions, pkgsJson, options),
 //     git,
 //   )
 //   const plugin = context.pluginStore.map.get(cmd)
