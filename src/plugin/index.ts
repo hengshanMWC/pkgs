@@ -6,7 +6,7 @@ export {
 class PluginStore {
   map: Map<string, PluginData> = new Map()
 
-  use (plugin: PluginData) {
+  add (plugin: PluginData) {
     if (this.map.has(plugin.id)) {
       console.log('有重复的plugin id')
     }
@@ -16,9 +16,21 @@ class PluginStore {
     return this
   }
 
-  async readUse (route: string) {
+  async readAdd (route: string) {
     const plugin = await import(route)
-    return this.use(plugin)
+    return this.add(plugin)
+  }
+
+  async use (...plugins: Array<PluginData | string>) {
+    for (let i = 0; i < plugins.length; i++) {
+      const plugin = plugins[i]
+      if (typeof plugin === 'string') {
+        await this.readAdd(plugin)
+      }
+      else {
+        this.add(plugin)
+      }
+    }
   }
 
   remove (id: string) {

@@ -1,3 +1,4 @@
+import { versionPlugin } from './plugin/version'
 import type { Context } from '.'
 
 type Type = 'sync' | 'diff'
@@ -37,5 +38,7 @@ export const defaultOptions: ExecuteCommandOptions = {
     mode: undefined,
     tag: '',
   },
-  plugin: [],
+  plugin: [
+    versionPlugin,
+  ],
 }

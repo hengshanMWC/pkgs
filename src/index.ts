@@ -13,7 +13,6 @@ import type { ExecuteCommandOptions } from './defaultOptions'
 import { defaultOptions } from './defaultOptions'
 import { PACKAGES_PATH } from './constant'
 import { PluginStore } from './plugin'
-import { versionPlugin } from './plugin/version'
 
 export class Context {
   options: ExecuteCommandOptions
@@ -48,7 +47,7 @@ export class Context {
 
     // 插件系统
     const pluginStore = new PluginStore()
-    pluginStore.use(versionPlugin)
+    pluginStore.use(...(context.options.plugin || []))
     context.pluginStore = pluginStore
 
     return context
