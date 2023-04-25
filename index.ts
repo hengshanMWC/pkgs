@@ -2,7 +2,6 @@ import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import { Context } from './src'
 import { cmdInit } from './src/cmd'
-import { getJSON } from './src/utils'
 import { cliVersion, cliSuccess } from './src/tips'
 import { gitDiffTag } from './src/git'
 import type { TagType } from './src/git'
@@ -13,10 +12,7 @@ interface PkgsData {
 }
 export const pkgsData = {} as PkgsData
 export async function createPkgsData () {
-  const pkgsJson = (await getJSON(
-    'pkgs.json',
-  )) as Partial<ExecuteCommandOptions>
-  pkgsData.context = await Context.create(pkgsJson)
+  pkgsData.context = await Context.create()
   return pkgsData.context
 }
 export async function executeCommand (
@@ -26,11 +22,8 @@ export async function executeCommand (
   version?: string,
 ) {
   cliVersion(cmd)
-  const pkgsJson = (await getJSON(
-    'pkgs.json',
-  )) as Partial<ExecuteCommandOptions>
   const context = await Context.create(
-    [pkgsJson, options],
+    options,
     git,
   )
   if (cmd === 'version') {
@@ -73,11 +66,8 @@ export async function executeCommandRun (
   git: SimpleGit = simpleGit(),
 ) {
   cliVersion('run')
-  const pkgsJson = (await getJSON(
-    'pkgs.json',
-  )) as Partial<ExecuteCommandOptions>
   const context = await Context.create(
-    [pkgsJson, { rootPackage }],
+    { rootPackage },
     git,
   )
   await context.storeCommand[`${mode}Command`](cmd)

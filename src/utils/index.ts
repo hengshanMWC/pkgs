@@ -127,3 +127,7 @@ export async function getYamlPackages (): Promise<string[]> {
   const doc: any = yaml.load(await readFile('pnpm-workspace.yaml', 'utf8'))
   return doc.packages as string[]
 }
+
+export function getArray<T> (params: T | T[]): T[] {
+  return Array.isArray(params) ? params : [params]
+}

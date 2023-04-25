@@ -3,6 +3,8 @@ import type { SimpleGit } from 'simple-git'
 import {
   assignOptions,
   getYamlPackages,
+  getJSON,
+  getArray,
 } from './utils'
 import { cmdVersion, cmdPublish } from './cmd'
 import { StoreCommand } from './storeCommand'
@@ -19,30 +21,43 @@ export class Context {
   storeCommand!: StoreCommand
   pluginStore!: PluginStore
 
-  constructor (
-    options: Partial<ExecuteCommandOptions> | Partial<ExecuteCommandOptions>[],
-  ) {
-    this.options = assignOptions(defaultOptions, ...(Array.isArray(options) ? options : [options]))
-  }
+  static configName = 'pkgs.json'
 
   static async create (
-    options: ConstructorParameters<typeof Context>[0],
+    config?: ConstructorParameters<typeof Context>[0],
     git: SimpleGit = simpleGit(),
   ) {
-    const context = new Context(options)
+    // 多份配置整合
+    const configs = []
+    const pkgsJson = (await getJSON(
+      Context.configName,
+    )) as Partial<ExecuteCommandOptions>
+    configs.push(pkgsJson)
+    config && configs.push(...getArray<Partial<ExecuteCommandOptions>>(config))
+
+    const context = new Context(configs)
     await context.readDefaultPackagesPath()
 
+    // 生成包之间的图表关系
     const contextAnalysisDiagram = new ContextAnalysisDiagram(context.options.packagesPath)
     await contextAnalysisDiagram.initData()
     context.contextAnalysisDiagram = contextAnalysisDiagram
 
+    // 命令系统
     context.storeCommand = new StoreCommand(contextAnalysisDiagram, context.options.rootPackage, git)
 
+    // 插件系统
     const pluginStore = new PluginStore()
     pluginStore.use(versionPlugin)
     context.pluginStore = pluginStore
 
     return context
+  }
+
+  constructor (
+    config: Partial<ExecuteCommandOptions> | Partial<ExecuteCommandOptions>[],
+  ) {
+    this.options = assignOptions(defaultOptions, ...getArray<Partial<ExecuteCommandOptions>>(config))
   }
 
   get allDirs () {
