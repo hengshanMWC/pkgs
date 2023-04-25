@@ -3,7 +3,7 @@ import type { SimpleGit } from 'simple-git'
 import { Context } from './src'
 import { cmdInit } from './src/cmd'
 import { defaultOptions } from './src/defaultOptions'
-import { getJSON, assign } from './src/utils'
+import { getJSON, assignOptions } from './src/utils'
 import { cliVersion, cliSuccess } from './src/tips'
 import { gitDiffTag } from './src/git'
 import type { TagType } from './src/git'
@@ -18,7 +18,7 @@ export async function createPkgsData () {
     'pkgs.json',
   )) as Partial<ExecuteCommandOptions>
   pkgsData.context = await Context.create(
-    assign<ExecuteCommandOptions>(defaultOptions, pkgsJson),
+    assignOptions(defaultOptions, pkgsJson),
   )
   return pkgsData.context
 }
@@ -33,7 +33,7 @@ export async function executeCommand (
     'pkgs.json',
   )) as Partial<ExecuteCommandOptions>
   const context = await Context.create(
-    assign<ExecuteCommandOptions>(defaultOptions, pkgsJson, options),
+    assignOptions(defaultOptions, pkgsJson, options),
     git,
   )
   if (cmd === 'version') {
@@ -80,7 +80,7 @@ export async function executeCommandRun (
     'pkgs.json',
   )) as Partial<ExecuteCommandOptions>
   const context = await Context.create(
-    assign<ExecuteCommandOptions>(defaultOptions, pkgsJson, { rootPackage }),
+    assignOptions(defaultOptions, pkgsJson, { rootPackage }),
     git,
   )
   await context.storeCommand[`${mode}Command`](cmd)
@@ -97,7 +97,7 @@ export async function executeCommandRun (
 //     'pkgs.json',
 //   )) as Partial<ExecuteCommandOptions>
 //   const context = await Context.create(
-//     assign<ExecuteCommandOptions>(defaultOptions, pkgsJson, options),
+//     assignOptions(defaultOptions, pkgsJson, options),
 //     git,
 //   )
 //   const plugin = context.pluginStore.map.get(cmd)
