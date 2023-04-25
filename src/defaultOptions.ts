@@ -1,6 +1,5 @@
 import { versionPlugin } from './plugin/version'
 import type { Context } from '.'
-
 type Type = 'sync' | 'diff'
 interface ExecuteCommandOption {
   mode: Type
@@ -24,7 +23,7 @@ export interface ExecuteCommandOptions extends ExecuteCommandOption {
   rootPackage: Boolean
   version: ExecuteCommandVersionOption
   publish: ExecuteCommandPublishOption
-  plugin?: PluginData[]
+  plugin?: Array<PluginData | string>
 }
 export const defaultOptions: ExecuteCommandOptions = {
   packagesPath: undefined,

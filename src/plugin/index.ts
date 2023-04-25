@@ -1,4 +1,4 @@
-import type { PluginData } from '../defaultOptions'
+import type { ExecuteCommandOptions, PluginData } from '../defaultOptions'
 export {
   PluginStore,
 }
@@ -21,7 +21,7 @@ class PluginStore {
     return this.add(plugin)
   }
 
-  async use (...plugins: Array<PluginData | string>) {
+  async use (...plugins: Required<ExecuteCommandOptions>['plugin']) {
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
       if (typeof plugin === 'string') {
