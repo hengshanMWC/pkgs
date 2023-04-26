@@ -34,7 +34,6 @@ export function createPublishPlugin (): PluginData {
     option: [
       ['--mode <type>', 'sync | diff'],
       ['-tag <type>', 'npm publish --tag <type>'],
-      ['-m, --message <message>', 'commit message'],
     ],
     action (context: Context, options: ExecuteCommandOptions['publish'] = {}) {
       context.assignOptions(options)
