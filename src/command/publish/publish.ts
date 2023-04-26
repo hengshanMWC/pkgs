@@ -1,10 +1,10 @@
 import { execSync } from 'child_process'
 import type { IPackageJson } from '@ts-type/package-dts'
-import type { Context } from '../lib/context'
-import { gitDiffTag, gitSyncPublishTag } from '../utils/git'
-import { cdDir } from '../utils'
-import testGlobal from '../utils/test'
-import { organization, npmTag } from '../utils/regExp'
+import type { Context } from '../../lib/context'
+import { gitDiffTag, gitSyncPublishTag } from '../../utils/git'
+import { cdDir } from '../../utils'
+import testGlobal from '../../utils/test'
+import { organization, npmTag } from '../../utils/regExp'
 export function cmdPublish (context: Context) {
   const mode = context.getCorrectOptionValue('publish', 'mode')
 
