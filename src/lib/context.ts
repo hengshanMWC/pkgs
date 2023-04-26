@@ -4,13 +4,13 @@ import {
   assignOptions,
   getYamlPackages,
   getJSON,
-} from './utils'
-import { cmdVersion, cmdPublish } from './command'
-import { StoreCommand } from './storeCommand'
+} from '../utils'
+import { cmdVersion, cmdPublish } from '../command'
+import type { ExecuteCommandOptions } from '../defaultOptions'
+import { defaultOptions } from '../defaultOptions'
+import { PACKAGES_PATH } from '../constant'
 import { ContextAnalysisDiagram } from './analysisDiagram'
-import type { ExecuteCommandOptions } from './defaultOptions'
-import { defaultOptions } from './defaultOptions'
-import { PACKAGES_PATH } from './constant'
+import { StoreCommand } from './storeCommand'
 import { PluginStore } from './plugin'
 
 export class Context {

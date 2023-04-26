@@ -9,7 +9,7 @@ import { warn, writeFiles } from '../../utils'
 import type { WriteObject } from '../../utils'
 import { dependentSearch } from '../../utils/packageJson'
 import { WARN_NOW_VERSION } from '../../constant'
-import type { AnalysisBlockItem, SetAnalysisBlockObject } from '../../analysisDiagram'
+import type { AnalysisBlockItem, SetAnalysisBlockObject } from '../../lib/analysisDiagram'
 // import type { PluginData, ExecuteCommandOptions } from '../../defaultOptions'
 
 export function cmdVersion (context: Context, appointVersion?: string) {

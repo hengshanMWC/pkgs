@@ -2,14 +2,14 @@ import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import { program } from 'commander'
 import pkg from '../package.json'
-import { Context } from './context'
+import { Context } from './lib/context'
 import { cmdInit } from './command'
 import { cliVersion, cliSuccess } from './tips'
 import { gitDiffTag } from './git'
 import type { TagType } from './git'
-import type { CMD } from './context'
+import type { CMD } from './lib/context'
 import type { ExecuteCommandOptions } from './defaultOptions'
-import { PluginStore } from './plugin'
+import { PluginStore } from './lib/plugin'
 
 export async function cliMain (argv: NodeJS.Process['argv']) {
   const pluginStore = new PluginStore()
@@ -92,5 +92,5 @@ export async function executeCommandRun (
 }
 
 export type { TagType } from './git'
-export type { CMD } from './context'
+export type { CMD } from './lib/context'
 export type { ExecuteCommandOptions } from './defaultOptions'

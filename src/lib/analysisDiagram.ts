@@ -1,15 +1,15 @@
 import type IPackageJson from '@ts-type/package-dts'
 import { readJSON } from 'fs-extra'
 import { getPackagesDir } from '@abmao/forb'
-import { getJSONs } from './utils'
+import { getJSONs } from '../utils'
 import {
   createRelyMyDirMap,
   getMyRelyPackageName,
   getPackagesName,
   getRelyAttrs,
   setRelyMyDirhMap,
-} from './utils/analysisDiagram'
-import type { ExecuteCommandOptions } from './defaultOptions'
+} from '../utils/analysisDiagram'
+import type { ExecuteCommandOptions } from '../defaultOptions'
 import type { Context } from './context'
 
 export { ContextAnalysisDiagram, AnalysisBlockItem, AnalysisDiagram, SetAnalysisBlockObject, ForPackCallback }

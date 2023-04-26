@@ -1,4 +1,4 @@
-import type { ExecuteCommandOptions, PluginData } from './defaultOptions'
+import type { ExecuteCommandOptions, PluginData } from '../defaultOptions'
 export {
   PluginStore,
 }

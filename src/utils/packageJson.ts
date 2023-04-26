@@ -1,5 +1,5 @@
 import type { IPackageJson } from '@ts-type/package-dts'
-import type { AnalysisBlockItem } from '../analysisDiagram'
+import type { AnalysisBlockItem } from '../lib/analysisDiagram'
 import { getRelyAttrs } from './analysisDiagram'
 import { versionText, versionRangeText } from './regExp'
 import { isVersionStar } from './index'
