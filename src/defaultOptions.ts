@@ -1,4 +1,5 @@
-import { testPlugin } from './plugin/mwc'
+import type { Command } from 'commander'
+import { initPlugin } from './cmd'
 import type { Context } from '.'
 type Type = 'sync' | 'diff'
 interface ExecuteCommandOption {
@@ -7,7 +8,7 @@ interface ExecuteCommandOption {
 export interface PluginData {
   id: string
   description: string
-  option?: string[][]
+  option?: Parameters<Command['option']>[]
   action: (context: Context, ...args: any[]) => void
 }
 interface ExecuteCommandVersionOption extends
@@ -38,6 +39,6 @@ export const defaultOptions: ExecuteCommandOptions = {
     tag: '',
   },
   plugin: [
-    testPlugin,
+    initPlugin(),
   ],
 }

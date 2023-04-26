@@ -22,10 +22,17 @@ export class Context {
   static configName = 'pkgs.json'
 
   static async create (
-    config: ConstructorParameters<typeof Context>[0],
+    config?: ConstructorParameters<typeof Context>[0],
     git: SimpleGit = simpleGit(),
   ) {
-    const context = new Context(config)
+    let contextConfig: ConstructorParameters<typeof Context>[0]
+    if (config) {
+      contextConfig = config
+    }
+    else {
+      contextConfig = await Context.assignConfig()
+    }
+    const context = new Context(contextConfig)
     await context.readDefaultPackagesPath()
 
     // 生成包之间的图表关系
@@ -117,6 +124,10 @@ export class Context {
     else {
       return []
     }
+  }
+
+  setConfig (...config: ExecuteCommandOptions[]) {
+    this.options = assignOptions(this.options, ...config)
   }
 
   getCorrectOptionValue (

@@ -1,5 +1,7 @@
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
+import { program } from 'commander'
+import pkg from './package.json'
 import { Context } from './src'
 import { cmdInit } from './src/cmd'
 import { cliVersion, cliSuccess } from './src/tips'
@@ -9,11 +11,30 @@ import type { CMD } from './src'
 import type { ExecuteCommandOptions } from './src/defaultOptions'
 import { PluginStore } from './src/plugin'
 
-export async function createPlugin () {
+export async function cliMain (argv: NodeJS.Process['argv']) {
   const pluginStore = new PluginStore()
   const config = await Context.assignConfig()
   pluginStore.use(...config.plugin)
-  return pluginStore
+  program
+    .version(pkg.version)
+    .description('Simple monorepo combined with pnpm')
+  pluginStore.map.forEach(value => {
+    let _program = program
+      .command(value.id)
+      .description(value.description)
+      .action(async (...args) => {
+        cliVersion(value.id)
+        const context = await Context.create()
+        await value.action(context, ...args)
+        cliSuccess()
+      })
+    if (value.option) {
+      value.option.forEach(item => {
+        _program = _program.option(...item)
+      })
+    }
+  })
+  program.parse(argv)
 }
 export async function executeCommand (
   cmd: CMD,
