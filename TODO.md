@@ -1,3 +1,5 @@
 - state
 - github workflows
 - CHANGE.md
+- plugin
+- git能力
