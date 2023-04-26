@@ -42,7 +42,6 @@ export async function executeCommand (
   git: SimpleGit = simpleGit(),
   version?: string,
 ) {
-  cliVersion(cmd)
   const config = await Context.assignConfig(options)
   const context = await Context.create(
     config,
@@ -54,13 +53,11 @@ export async function executeCommand (
   else {
     await context.cmdPublish()
   }
-  cliSuccess()
 }
 export async function executeCommandTag (
   cmd?: Partial<Record<TagType, boolean>>,
   git: SimpleGit = simpleGit(),
 ) {
-  cliVersion('tag')
   if (!cmd || !Object.keys(cmd).length) {
     await gitDiffTag('version', undefined, git)
     await gitDiffTag('publish', undefined, git)
@@ -73,12 +70,9 @@ export async function executeCommandTag (
       await gitDiffTag('version', undefined, git)
     }
   }
-  cliSuccess()
 }
 export async function executeCommandInit () {
-  cliVersion('init')
   await cmdInit()
-  cliSuccess()
 }
 export type RunMode = 'work' | 'stage' | 'repository'
 export async function executeCommandRun (
@@ -87,7 +81,6 @@ export async function executeCommandRun (
   rootPackage?: boolean,
   git: SimpleGit = simpleGit(),
 ) {
-  cliVersion('run')
   const config = await Context.assignConfig({
     rootPackage,
   })
@@ -96,7 +89,6 @@ export async function executeCommandRun (
     git,
   )
   await context.storeCommand[`${mode}Command`](cmd)
-  cliSuccess()
 }
 
 export type { TagType } from './src/git'
