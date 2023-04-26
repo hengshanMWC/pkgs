@@ -1,14 +1,15 @@
-import type { Command } from 'commander'
-import { initPlugin } from './command'
+import { createInitPlugin, createRunPlugin, createTagPlugin } from './command'
 import type { Context } from './lib/context'
 type Type = 'sync' | 'diff'
 interface ExecuteCommandOption {
   mode: Type
 }
+
+type PluginOption = [flags: string, description?: string, defaultValue?: string | boolean]
 export interface PluginData {
   id: string
   description: string
-  option?: Parameters<Command['option']>[]
+  option?: PluginOption[]
   action: (context: Context, ...args: any[]) => void
 }
 interface ExecuteCommandVersionOption extends
@@ -39,6 +40,8 @@ export const defaultOptions: ExecuteCommandOptions = {
     tag: '',
   },
   plugin: [
-    initPlugin(),
+    createRunPlugin(),
+    createInitPlugin(),
+    createTagPlugin(),
   ],
 }

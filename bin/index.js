@@ -32,20 +32,20 @@ cliMain(process.argv)
 //   .option('-p', 'publish tag')
 //   .option('-v', 'version tag')
 //   .action(cmd => {
-//     executeCommandTag(cmd)
+//     commandTag(cmd)
 //   })
 
 // program
 //   .command('init')
 //   .description('create pkgs file')
 //   .action(() => {
-//     executeCommandInit()
+//     commandInit()
 //   })
 // program
 //   .command('run <cmd> [mode]')
 //   .description('run diff scripts.\n mode: work | stage | repository, default: work')
 //   .option('-r <boolean>', 'Include rootPackage', 'true')
 //   .action((cmd, mode, option) => {
-//     executeCommandRun(cmd, mode, option.r !== 'false')
+//     commandRun(cmd, mode, option.r !== 'false')
 //   })
 // })

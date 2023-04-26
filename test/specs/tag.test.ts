@@ -1,4 +1,4 @@
-import { executeCommandTag } from '../../src/index'
+import { commandTag } from '../../src/index'
 import type {
   SimpleGitTestContext,
 } from '../__fixtures__'
@@ -21,13 +21,13 @@ describe(cmd, () => {
   })
   test('default', async () => {
     const git = newSimpleGit(context.root)
-    await executeCommandTag(undefined, git)
+    await commandTag(undefined, git)
     await tagExpect('publish', git)
     await tagExpect('version', git)
   })
   test('version', async () => {
     const git = newSimpleGit(context.root)
-    await executeCommandTag({
+    await commandTag({
       v: true,
     }, git)
     await tagExpect('version', git)
@@ -35,7 +35,7 @@ describe(cmd, () => {
 
   test('publish', async () => {
     const git = newSimpleGit(context.root)
-    await executeCommandTag({
+    await commandTag({
       p: true,
     }, git)
     await tagExpect('publish', git)
@@ -43,7 +43,7 @@ describe(cmd, () => {
 
   test('all', async () => {
     const git = newSimpleGit(context.root)
-    await executeCommandTag({
+    await commandTag({
       v: true,
       p: true,
     }, git)

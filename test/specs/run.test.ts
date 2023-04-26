@@ -1,6 +1,6 @@
 import path from 'path'
 import { writeFile, copy } from 'fs-extra'
-import { executeCommandRun } from '../../src/index'
+import { commandRun } from '../../src/index'
 import type {
   SimpleGitTestContext,
 } from '../__fixtures__'
@@ -46,15 +46,15 @@ describe(cmd, () => {
     testGlobal.pkgsTestPublish = text => {
       expect(text).toBe(arr[i++])
     }
-    await executeCommandRun(cmd, 'work', rootPackage, context.git)
+    await commandRun(cmd, 'work', rootPackage, context.git)
 
     i = 0
     await context.git.add('.')
-    await executeCommandRun(cmd, 'stage', rootPackage, context.git)
+    await commandRun(cmd, 'stage', rootPackage, context.git)
 
     i = 0
     await context.git.commit('save')
-    await executeCommandRun(cmd, 'repository', rootPackage, context.git)
+    await commandRun(cmd, 'repository', rootPackage, context.git)
 
     const tag = await getTag(cmd)
     expect(tag && tag.includes(cmd)).toBeTruthy()

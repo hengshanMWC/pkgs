@@ -126,8 +126,11 @@ export class Context {
     }
   }
 
-  setConfig (...config: ExecuteCommandOptions[]) {
+  assignOptions (...config: Partial<ExecuteCommandOptions>[]) {
     this.options = assignOptions(this.options, ...config)
+    if (this.storeCommand) {
+      this.storeCommand.rootPackage = this.options.rootPackage
+    }
   }
 
   getCorrectOptionValue (

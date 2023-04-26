@@ -1,6 +1,6 @@
 import path from 'path'
 import { stat, access, readFile, writeFile, appendFile } from 'fs-extra'
-import { executeCommandInit } from '../../src/index'
+import { commandInit } from '../../src/index'
 import { io } from '../__fixtures__'
 
 const ORIGINAL_CWD = process.cwd()
@@ -19,7 +19,7 @@ describe(cmd, () => {
   test('default', async () => {
     const _path = await io.mkdtemp(prefix)
     process.chdir(_path)
-    await executeCommandInit()
+    await commandInit()
     const statResult = await stat(packagesName)
     expect(statResult.isDirectory()).toBeTruthy()
     const pkgsJsonNameResult = await access(pkgsJsonName)
@@ -31,7 +31,7 @@ describe(cmd, () => {
     await appendFile(pkgsJsonName, _path, 'utf-8')
     await appendFile(packageJsonName, _path, 'utf-8')
     // 不会覆盖
-    await executeCommandInit()
+    await commandInit()
     const packagesFileData = await readFile(packagesFile, 'utf-8')
     const pkgsJsonData = await readFile(pkgsJsonName, 'utf-8')
     const packageJsonData = await readFile(packageJsonName, 'utf-8')
