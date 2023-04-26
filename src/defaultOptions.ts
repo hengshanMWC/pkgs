@@ -1,6 +1,6 @@
 import type { Command } from 'commander'
 import { initPlugin } from './cmd'
-import type { Context } from '.'
+import type { Context } from './context'
 type Type = 'sync' | 'diff'
 interface ExecuteCommandOption {
   mode: Type

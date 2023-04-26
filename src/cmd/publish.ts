@@ -1,6 +1,6 @@
 import { execSync } from 'child_process'
 import type { IPackageJson } from '@ts-type/package-dts'
-import type { Context } from '../index'
+import type { Context } from '../context'
 import { gitDiffTag, gitSyncPublishTag } from '../git'
 import { cdDir } from '../utils'
 import testGlobal from '../utils/test'

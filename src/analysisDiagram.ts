@@ -10,7 +10,7 @@ import {
   setRelyMyDirhMap,
 } from './utils/analysisDiagram'
 import type { ExecuteCommandOptions } from './defaultOptions'
-import type { Context } from '.'
+import type { Context } from './context'
 
 export { ContextAnalysisDiagram, AnalysisBlockItem, AnalysisDiagram, SetAnalysisBlockObject, ForPackCallback }
 

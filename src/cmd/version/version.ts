@@ -4,7 +4,7 @@ import colors from 'colors'
 import { gitSyncSave, gitDiffSave, gitTemporary } from '../../git'
 import type {
   Context,
-} from '../../index'
+} from '../../context'
 import { warn, writeFiles } from '../../utils'
 import type { WriteObject } from '../../utils'
 import { dependentSearch } from '../../utils/packageJson'

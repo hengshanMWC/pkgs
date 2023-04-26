@@ -2,12 +2,12 @@ import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import { program } from 'commander'
 import pkg from './package.json'
-import { Context } from './src'
+import { Context } from './src/context'
 import { cmdInit } from './src/cmd'
 import { cliVersion, cliSuccess } from './src/tips'
 import { gitDiffTag } from './src/git'
 import type { TagType } from './src/git'
-import type { CMD } from './src'
+import type { CMD } from './src/context'
 import type { ExecuteCommandOptions } from './src/defaultOptions'
 import { PluginStore } from './src/plugin'
 
@@ -100,5 +100,5 @@ export async function executeCommandRun (
 }
 
 export type { TagType } from './src/git'
-export type { CMD } from './src'
+export type { CMD } from './src/context'
 export type { ExecuteCommandOptions } from './src/defaultOptions'
