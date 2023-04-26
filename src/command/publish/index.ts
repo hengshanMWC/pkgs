@@ -1,11 +1,14 @@
 import { execSync } from 'child_process'
 import type { IPackageJson } from '@ts-type/package-dts'
-import type { Context } from '../../lib/context'
+import type { SimpleGit } from 'simple-git'
+import simpleGit from 'simple-git'
+import { Context } from '../../lib/context'
 import { gitDiffTag, gitSyncPublishTag } from '../../utils/git'
 import { cdDir } from '../../utils'
 import testGlobal from '../../utils/test'
 import { organization, npmTag } from '../../utils/regExp'
-export function cmdPublish (context: Context) {
+import type { ExecuteCommandOptions } from '../../defaultOptions'
+function main (context: Context) {
   const mode = context.getCorrectOptionValue('publish', 'mode')
 
   if (mode === 'sync') {
@@ -14,6 +17,14 @@ export function cmdPublish (context: Context) {
   else if (mode === 'diff') {
     return handleDiffPublish(context)
   }
+}
+export async function commandPublish (options: Partial<ExecuteCommandOptions> = {}, git: SimpleGit = simpleGit()) {
+  const config = await Context.assignConfig(options)
+  const context = await Context.create(
+    config,
+    git,
+  )
+  await main(context)
 }
 async function handleSyncPublish (context: Context) {
   for (let index = 0; index < context.allPackagesJSON.length; index++) {

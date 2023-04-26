@@ -25,8 +25,8 @@ async function main (context: Context, appointVersion?: string) {
 }
 export async function commandVersion (
   options: Partial<ExecuteCommandOptions> = {},
-  appointVersion?: string,
   git: SimpleGit = simpleGit(),
+  appointVersion?: string,
 ) {
   const config = await Context.assignConfig(options)
   const context = await Context.create(
