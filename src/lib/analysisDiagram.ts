@@ -10,9 +10,8 @@ import {
   setRelyMyDirhMap,
 } from '../utils/analysisDiagram'
 import type { ExecuteCommandOptions } from '../defaultOptions'
-import type { Context } from './context'
 
-export { ContextAnalysisDiagram, AnalysisBlockItem, AnalysisDiagram, SetAnalysisBlockObject, ForPackCallback }
+export { ContextAnalysisDiagram, AnalysisBlockItem, AnalysisDiagram, SetAnalysisBlockObject }
 
 interface AnalysisBlockItem {
   packageJson: IPackageJson
@@ -23,11 +22,6 @@ interface AnalysisBlockItem {
 }
 type AnalysisDiagram = Record<string, AnalysisBlockItem>
 type SetAnalysisBlockObject = Set<AnalysisBlockItem>
-type ForPackCallback = (
-  analysisBlock: AnalysisBlockItem,
-  index: number,
-  context: Context
-) => Promise<any> | void
 class ContextAnalysisDiagram {
   packagesPath: ExecuteCommandOptions['packagesPath']
   analysisDiagram!: AnalysisDiagram

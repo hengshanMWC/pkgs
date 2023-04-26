@@ -5,19 +5,16 @@ import {
   getYamlPackages,
   getJSON,
 } from '../utils'
-import { cmdPublish } from '../command'
 import type { ExecuteCommandOptions } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
 import { PACKAGES_PATH } from '../constant'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { StoreCommand } from './storeCommand'
-// import { PluginStore } from './plugin'
 
 export class Context {
   options: ExecuteCommandOptions
   contextAnalysisDiagram!: ContextAnalysisDiagram
   storeCommand!: StoreCommand
-  // pluginStore!: PluginStore
 
   static configName = 'pkgs.json'
 
@@ -42,11 +39,6 @@ export class Context {
 
     // 命令系统
     context.storeCommand = new StoreCommand(contextAnalysisDiagram, context.options.rootPackage, git)
-
-    // 插件系统
-    // const pluginStore = new PluginStore()
-    // pluginStore.use(...(context.options.plugin || []))
-    // context.pluginStore = pluginStore
 
     return context
   }
@@ -151,10 +143,6 @@ export class Context {
     else {
       return options[key]
     }
-  }
-
-  async cmdPublish () {
-    await cmdPublish(this)
   }
 
   private async readDefaultPackagesPath () {
