@@ -7,7 +7,7 @@ import { gitDiffTag, gitSyncPublishTag } from '../../utils/git'
 import { cdDir } from '../../utils'
 import testGlobal from '../../utils/test'
 import { organization, npmTag } from '../../utils/regExp'
-import type { ExecuteCommandOptions } from '../../defaultOptions'
+import type { ExecuteCommandOptions, PluginData } from '../../defaultOptions'
 function main (context: Context) {
   const mode = context.getCorrectOptionValue('publish', 'mode')
 
@@ -25,6 +25,22 @@ export async function commandPublish (options: Partial<ExecuteCommandOptions> = 
     git,
   )
   await main(context)
+}
+
+export function createPublishPlugin (): PluginData {
+  return {
+    id: 'publish',
+    description: 'publish package',
+    option: [
+      ['--mode <type>', 'sync | diff'],
+      ['-tag <type>', 'npm publish --tag <type>'],
+      ['-m, --message <message>', 'commit message'],
+    ],
+    action (context: Context, options: ExecuteCommandOptions['publish'] = {}) {
+      context.assignOptions(options)
+      main(context)
+    },
+  }
 }
 async function handleSyncPublish (context: Context) {
   for (let index = 0; index < context.allPackagesJSON.length; index++) {
