@@ -1,4 +1,4 @@
-import { executeCommandTag } from '../../index'
+import { executeCommandTag } from '../../src/index'
 import type {
   SimpleGitTestContext,
 } from '../__fixtures__'

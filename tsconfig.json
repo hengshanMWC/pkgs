@@ -1,7 +1,7 @@
 {
   "exclude": ["node_modules", "**/dist"],
   "include": [
-    "index.ts",
+    "src/index.ts",
   ],
   "compilerOptions": {
     "target": "es2017",

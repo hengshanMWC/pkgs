@@ -39,7 +39,7 @@ type Builds = Partial<Record<InternalModuleFormat, RollupOptions>>
 // rollup 配置
 const builds: Builds = {
   es: {
-    input: 'index.ts',
+    input: 'src/index.ts',
     output: {
       // 当文件名包含 .min 时将会自动启用 terser 进行压缩
       file: `dist/${moduleName}.esm.min.js`,
@@ -48,7 +48,7 @@ const builds: Builds = {
     },
   },
   cjs: {
-    input: 'index.ts',
+    input: 'src/index.ts',
     output: {
       // 当文件名包含 .min 时将会自动启用 terser 进行压缩
       file: `dist/${moduleName}.cjs.min.js`,

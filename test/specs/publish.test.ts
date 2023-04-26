@@ -1,7 +1,7 @@
 import path from 'path'
 import type { SimpleGit } from 'simple-git'
 import { copy, readJSON } from 'fs-extra'
-import { executeCommand } from '../../index'
+import { executeCommand } from '../../src/index'
 import { tagExpect } from '../__fixtures__/commit'
 import type {
   SimpleGitTestContext,

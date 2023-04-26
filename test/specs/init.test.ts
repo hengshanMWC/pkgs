@@ -1,6 +1,6 @@
 import path from 'path'
 import { stat, access, readFile, writeFile, appendFile } from 'fs-extra'
-import { executeCommandInit } from '../../index'
+import { executeCommandInit } from '../../src/index'
 import { io } from '../__fixtures__'
 
 const ORIGINAL_CWD = process.cwd()

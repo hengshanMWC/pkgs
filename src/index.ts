@@ -1,15 +1,15 @@
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import { program } from 'commander'
-import pkg from './package.json'
-import { Context } from './src/context'
-import { cmdInit } from './src/command'
-import { cliVersion, cliSuccess } from './src/tips'
-import { gitDiffTag } from './src/git'
-import type { TagType } from './src/git'
-import type { CMD } from './src/context'
-import type { ExecuteCommandOptions } from './src/defaultOptions'
-import { PluginStore } from './src/plugin'
+import pkg from '../package.json'
+import { Context } from './context'
+import { cmdInit } from './command'
+import { cliVersion, cliSuccess } from './tips'
+import { gitDiffTag } from './git'
+import type { TagType } from './git'
+import type { CMD } from './context'
+import type { ExecuteCommandOptions } from './defaultOptions'
+import { PluginStore } from './plugin'
 
 export async function cliMain (argv: NodeJS.Process['argv']) {
   const pluginStore = new PluginStore()
@@ -91,6 +91,6 @@ export async function executeCommandRun (
   await context.storeCommand[`${mode}Command`](cmd)
 }
 
-export type { TagType } from './src/git'
-export type { CMD } from './src/context'
-export type { ExecuteCommandOptions } from './src/defaultOptions'
+export type { TagType } from './git'
+export type { CMD } from './context'
+export type { ExecuteCommandOptions } from './defaultOptions'

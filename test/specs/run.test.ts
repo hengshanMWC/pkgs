@@ -1,6 +1,6 @@
 import path from 'path'
 import { writeFile, copy } from 'fs-extra'
-import { executeCommandRun } from '../../index'
+import { executeCommandRun } from '../../src/index'
 import type {
   SimpleGitTestContext,
 } from '../__fixtures__'

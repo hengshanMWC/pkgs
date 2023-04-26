@@ -1,7 +1,7 @@
 import path from 'path'
 import { copy, readJSON } from 'fs-extra'
 import type { SimpleGit } from 'simple-git'
-import { executeCommand } from '../../index'
+import { executeCommand } from '../../src/index'
 import { tagExpect } from '../__fixtures__/commit'
 import {
   getNewestCommitId,
