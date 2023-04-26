@@ -5,7 +5,7 @@ import {
   getYamlPackages,
   getJSON,
 } from './utils'
-import { cmdVersion, cmdPublish } from './cmd'
+import { cmdVersion, cmdPublish } from './command'
 import { StoreCommand } from './storeCommand'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import type { ExecuteCommandOptions } from './defaultOptions'
