@@ -67,8 +67,8 @@ describe(cmd, () => {
   // 无依赖+rootPackage: false
   const quarantine = 'quarantine'
   test(quarantine, async () => {
-    const _cmds = cmds.slice(1)
-    await testMain(quarantine, _cmds, _cmds)
+    const _cmds = cmds.slice()
+    await testMain(quarantine, _cmds, _cmds.slice(1))
   })
   // 复杂依赖
   const many = 'many'
