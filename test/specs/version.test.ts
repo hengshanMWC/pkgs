@@ -5,7 +5,7 @@ import { executeCommand } from '../../src/index'
 import { tagExpect } from '../__fixtures__/commit'
 import {
   getNewestCommitId,
-} from '../../src/git'
+} from '../../src/utils/git'
 import type {
   SimpleGitTestContext,
 } from '../__fixtures__'

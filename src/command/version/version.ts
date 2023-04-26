@@ -1,10 +1,10 @@
 import { writeJSON } from 'fs-extra'
 import { versionBumpInfo } from '@abmao/bump'
 import colors from 'colors'
-import { gitSyncSave, gitDiffSave, gitTemporary } from '../../git'
+import { gitSyncSave, gitDiffSave, gitTemporary } from '../../utils/git'
 import type {
   Context,
-} from '../../context'
+} from '../../lib/context'
 import { warn, writeFiles } from '../../utils'
 import type { WriteObject } from '../../utils'
 import { dependentSearch } from '../../utils/packageJson'

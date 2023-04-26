@@ -9,7 +9,7 @@ import {
   setUpInit,
 } from '../__fixtures__'
 import testGlobal from '../../src/utils/test'
-import { getTag } from '../../src/git'
+import { getTag } from '../../src/utils/git'
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'run'
 const cmds = [

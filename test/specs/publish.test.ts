@@ -8,7 +8,7 @@ import type {
 } from '../__fixtures__'
 import {
   getNewestCommitId,
-} from '../../src/git'
+} from '../../src/utils/git'
 import {
   newSimpleGit,
   setUpFilesAdded,

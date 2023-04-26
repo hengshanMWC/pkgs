@@ -4,7 +4,7 @@ import type { TagType } from '../../src/index'
 import {
   getTag,
   getTagCommitId,
-} from '../../src/git'
+} from '../../src/utils/git'
 import {
   io,
 } from '.'

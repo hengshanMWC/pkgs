@@ -1,7 +1,7 @@
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
-import { WARN_NOW_CHANGE } from './constant'
-import { warn } from './utils'
+import { WARN_NOW_CHANGE } from '../constant'
+import { warn } from './index'
 
 export type TagType = 'publish' | 'version' | string
 const _tagMessage = 'pkgs update tag'
