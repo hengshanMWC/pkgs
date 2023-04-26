@@ -3,7 +3,7 @@ import type { SimpleGit } from 'simple-git'
 import { Context } from './lib/context'
 import type { CMD } from './lib/context'
 import type { ExecuteCommandOptions } from './defaultOptions'
-import { cmdVersion } from './command'
+import { commandVersion } from './command'
 
 export * from './cli'
 export * from './command'
@@ -15,7 +15,7 @@ export async function executeCommand (
   version?: string,
 ) {
   if (cmd === 'version') {
-    await cmdVersion(options, version, git)
+    await commandVersion(options, version, git)
   }
   else {
     const config = await Context.assignConfig(options)

@@ -23,7 +23,7 @@ async function main (context: Context, appointVersion?: string) {
     return handleDiffVersion(context, appointVersion)
   }
 }
-export async function cmdVersion (
+export async function commandVersion (
   options: Partial<ExecuteCommandOptions> = {},
   appointVersion?: string,
   git: SimpleGit = simpleGit(),
