@@ -1,4 +1,4 @@
-import { createInitPlugin, createRunPlugin, createTagPlugin } from './command'
+import { createInitPlugin, createRunPlugin, createTagPlugin, createVersionPlugin } from './command'
 import type { Context } from './lib/context'
 type Type = 'sync' | 'diff'
 interface ExecuteCommandOption {
@@ -43,5 +43,6 @@ export const defaultOptions: ExecuteCommandOptions = {
     createRunPlugin(),
     createInitPlugin(),
     createTagPlugin(),
+    createVersionPlugin(),
   ],
 }
