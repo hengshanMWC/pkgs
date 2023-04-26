@@ -5,19 +5,19 @@ import {
   getYamlPackages,
   getJSON,
 } from '../utils'
-import { cmdVersion, cmdPublish } from '../command'
+import { cmdPublish } from '../command'
 import type { ExecuteCommandOptions } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
 import { PACKAGES_PATH } from '../constant'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { StoreCommand } from './storeCommand'
-import { PluginStore } from './plugin'
+// import { PluginStore } from './plugin'
 
 export class Context {
   options: ExecuteCommandOptions
   contextAnalysisDiagram!: ContextAnalysisDiagram
   storeCommand!: StoreCommand
-  pluginStore!: PluginStore
+  // pluginStore!: PluginStore
 
   static configName = 'pkgs.json'
 
@@ -44,9 +44,9 @@ export class Context {
     context.storeCommand = new StoreCommand(contextAnalysisDiagram, context.options.rootPackage, git)
 
     // 插件系统
-    const pluginStore = new PluginStore()
-    pluginStore.use(...(context.options.plugin || []))
-    context.pluginStore = pluginStore
+    // const pluginStore = new PluginStore()
+    // pluginStore.use(...(context.options.plugin || []))
+    // context.pluginStore = pluginStore
 
     return context
   }
@@ -131,6 +131,9 @@ export class Context {
     if (this.storeCommand) {
       this.storeCommand.rootPackage = this.options.rootPackage
     }
+    if (this.contextAnalysisDiagram) {
+      this.contextAnalysisDiagram.packagesPath = this.options.packagesPath
+    }
   }
 
   getCorrectOptionValue (
@@ -148,10 +151,6 @@ export class Context {
     else {
       return options[key]
     }
-  }
-
-  async cmdVersion (version?: string) {
-    await cmdVersion(this, version)
   }
 
   async cmdPublish () {

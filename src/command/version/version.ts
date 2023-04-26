@@ -1,8 +1,10 @@
 import { writeJSON } from 'fs-extra'
 import { versionBumpInfo } from '@abmao/bump'
 import colors from 'colors'
+import type { SimpleGit } from 'simple-git'
+import simpleGit from 'simple-git'
 import { gitSyncSave, gitDiffSave, gitTemporary } from '../../utils/git'
-import type {
+import {
   Context,
 } from '../../lib/context'
 import { warn, writeFiles } from '../../utils'
@@ -10,9 +12,8 @@ import type { WriteObject } from '../../utils'
 import { dependentSearch } from '../../utils/packageJson'
 import { WARN_NOW_VERSION } from '../../constant'
 import type { AnalysisBlockItem, SetAnalysisBlockObject } from '../../lib/analysisDiagram'
-// import type { PluginData, ExecuteCommandOptions } from '../../defaultOptions'
-
-export function cmdVersion (context: Context, appointVersion?: string) {
+import type { PluginData, ExecuteCommandOptions } from '../../defaultOptions'
+async function main (context: Context, appointVersion?: string) {
   const mode = context.getCorrectOptionValue('version', 'mode')
 
   if (mode === 'sync') {
@@ -22,19 +23,32 @@ export function cmdVersion (context: Context, appointVersion?: string) {
     return handleDiffVersion(context, appointVersion)
   }
 }
-// export function versionPlugin (): PluginData {
-//   return {
-//     id: 'version',
-//     description: 'version package',
-//     option: [
-//       ['--mode <type>', 'sync | diff'],
-//       ['-m, --message <message>', 'commit message'],
-//     ],
-//     action (context: Context, options: ExecuteCommandOptions['version']) {
-//       cmdVersion(context)
-//     },
-//   }
-// }
+export async function cmdVersion (
+  options: Partial<ExecuteCommandOptions> = {},
+  appointVersion?: string,
+  git: SimpleGit = simpleGit(),
+) {
+  const config = await Context.assignConfig(options)
+  const context = await Context.create(
+    config,
+    git,
+  )
+  await main(context, appointVersion)
+}
+export function createVersionPlugin (): PluginData {
+  return {
+    id: 'version',
+    description: 'version package',
+    option: [
+      ['--mode <type>', 'sync | diff'],
+      ['-m, --message <message>', 'commit message'],
+    ],
+    action (context: Context, options: ExecuteCommandOptions['version'] = {}) {
+      context.assignOptions(options)
+      main(context)
+    },
+  }
+}
 async function handleSyncVersion (context: Context, appointVersion?: string) {
   const oldVersion = context.contextAnalysisDiagram.rootPackageJson.version
   const version = await changeVersion(context.contextAnalysisDiagram.rootDir, appointVersion)
