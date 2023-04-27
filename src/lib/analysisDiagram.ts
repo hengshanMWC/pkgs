@@ -32,6 +32,68 @@ class ContextAnalysisDiagram {
     this.packagesPath = packagesPath
   }
 
+  get allDirs () {
+    if (this.analysisDiagram) {
+      return Object.keys(this.analysisDiagram).map(key => key)
+    }
+    else {
+      return []
+    }
+  }
+
+  get allFilesPath () {
+    if (this.analysisDiagram) {
+      return Object.keys(this.analysisDiagram).map(
+        key => this.analysisDiagram[key].filePath,
+      )
+    }
+    else {
+      return []
+    }
+  }
+
+  get allPackagesJSON () {
+    if (this.analysisDiagram) {
+      return Object.keys(this.analysisDiagram).map(
+        key => this.analysisDiagram[key].packageJson,
+      )
+    }
+    else {
+      return []
+    }
+  }
+
+  get dirs () {
+    if (this.analysisDiagram) {
+      return Object.keys(this.analysisDiagram).filter(key => key)
+    }
+    else {
+      return []
+    }
+  }
+
+  get filesPath () {
+    if (this.analysisDiagram) {
+      return Object.keys(this.analysisDiagram)
+        .filter(item => item)
+        .map(key => this.analysisDiagram[key].filePath)
+    }
+    else {
+      return []
+    }
+  }
+
+  get packagesJSON () {
+    if (this.analysisDiagram) {
+      return Object.keys(this.analysisDiagram)
+        .filter(key => key)
+        .map(key => this.analysisDiagram[key].packageJson)
+    }
+    else {
+      return []
+    }
+  }
+
   async initData () {
     this.rootPackageJson = await readJSON(this.rootFilePath)
     const values: [string[], string[], IPackageJson[]] = [

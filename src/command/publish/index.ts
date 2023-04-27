@@ -43,10 +43,10 @@ export function createPublishPlugin (): PluginData {
   }
 }
 async function handleSyncPublish (context: Context) {
-  for (let index = 0; index < context.allPackagesJSON.length; index++) {
+  for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
     await implementPublish(
-      context.allPackagesJSON[index],
-      context.allDirs[index],
+      context.contextAnalysisDiagram.allPackagesJSON[index],
+      context.contextAnalysisDiagram.allDirs[index],
       context.options.publish.tag,
     )
   }

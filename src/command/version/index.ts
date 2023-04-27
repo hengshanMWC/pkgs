@@ -73,14 +73,14 @@ async function handleSyncVersion (context: Context, appointVersion?: string) {
   ]
 
   // 依赖更新
-  for (let index = 0; index < context.packagesJSON.length; index++) {
-    const packageJson = context.packagesJSON[index]
+  for (let index = 0; index < context.contextAnalysisDiagram.packagesJSON.length; index++) {
+    const packageJson = context.contextAnalysisDiagram.packagesJSON[index]
     const analysisBlock = context.contextAnalysisDiagram.packageJsonToAnalysisBlock(packageJson)
     packageJson.version = version
 
     if (analysisBlock) {
       changes.push({
-        filePath: context.filesPath[index],
+        filePath: context.contextAnalysisDiagram.filesPath[index],
         packageJson,
       })
       await changeRelyMyVersion(context, analysisBlock)

@@ -26,14 +26,19 @@ class StoreCommand {
     this.git = git
   }
 
+  // async allCommand (type: string) {
+  //   const diffDirs = await this.getWorkDiffFile()
+  //   await this.commandRun(diffDirs, type)
+  // }
+
   async workCommand (type: string) {
     const diffDirs = await this.getWorkDiffFile()
-    this.commandRun(diffDirs, type)
+    await this.commandRun(diffDirs, type)
   }
 
   async stageCommand (type: string) {
     const diffDirs = await this.getStageDiffFile()
-    this.commandRun(diffDirs, type)
+    await this.commandRun(diffDirs, type)
   }
 
   async repositoryCommand (type: string) {
