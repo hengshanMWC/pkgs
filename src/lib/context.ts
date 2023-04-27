@@ -56,68 +56,6 @@ export class Context {
     this.options = config
   }
 
-  get allDirs () {
-    if (this.contextAnalysisDiagram.analysisDiagram) {
-      return Object.keys(this.contextAnalysisDiagram.analysisDiagram).map(key => key)
-    }
-    else {
-      return []
-    }
-  }
-
-  get allFilesPath () {
-    if (this.contextAnalysisDiagram.analysisDiagram) {
-      return Object.keys(this.contextAnalysisDiagram.analysisDiagram).map(
-        key => this.contextAnalysisDiagram.analysisDiagram[key].filePath,
-      )
-    }
-    else {
-      return []
-    }
-  }
-
-  get allPackagesJSON () {
-    if (this.contextAnalysisDiagram.analysisDiagram) {
-      return Object.keys(this.contextAnalysisDiagram.analysisDiagram).map(
-        key => this.contextAnalysisDiagram.analysisDiagram[key].packageJson,
-      )
-    }
-    else {
-      return []
-    }
-  }
-
-  get dirs () {
-    if (this.contextAnalysisDiagram.analysisDiagram) {
-      return Object.keys(this.contextAnalysisDiagram.analysisDiagram).filter(key => key)
-    }
-    else {
-      return []
-    }
-  }
-
-  get filesPath () {
-    if (this.contextAnalysisDiagram.analysisDiagram) {
-      return Object.keys(this.contextAnalysisDiagram.analysisDiagram)
-        .filter(item => item)
-        .map(key => this.contextAnalysisDiagram.analysisDiagram[key].filePath)
-    }
-    else {
-      return []
-    }
-  }
-
-  get packagesJSON () {
-    if (this.contextAnalysisDiagram.analysisDiagram) {
-      return Object.keys(this.contextAnalysisDiagram.analysisDiagram)
-        .filter(key => key)
-        .map(key => this.contextAnalysisDiagram.analysisDiagram[key].packageJson)
-    }
-    else {
-      return []
-    }
-  }
-
   assignOptions (...config: Partial<ExecuteCommandOptions>[]) {
     this.options = assignOptions(this.options, ...config)
     if (this.storeCommand) {
