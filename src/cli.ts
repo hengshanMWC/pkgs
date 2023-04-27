@@ -12,7 +12,7 @@ export async function cliMain (argv: NodeJS.Process['argv']) {
     .description('Simple monorepo combined with pnpm')
   pluginStore.map.forEach(value => {
     let _program = program
-      .command(value.id)
+      .command(value.command)
       .description(value.description)
       .action(async (...args) => {
         cliVersion(value.id)

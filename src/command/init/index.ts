@@ -17,6 +17,7 @@ export function commandInit () {
 export function createInitPlugin (): PluginData {
   return {
     id: 'init',
+    command: 'init',
     description: 'create pkgs file',
     action: commandInit,
   }

@@ -8,6 +8,7 @@ interface ExecuteCommandOption {
 type PluginOption = [flags: string, description?: string, defaultValue?: string | boolean]
 export interface PluginData {
   id: string
+  command: string
   description: string
   option?: PluginOption[]
   action: (context: Context, ...args: any[]) => void

@@ -30,7 +30,8 @@ async function commandRun (
 
 function createRunPlugin (): PluginData {
   return {
-    id: 'run <cmd> [mode]',
+    id: 'run',
+    command: 'run <cmd> [mode]',
     description: 'run diff scripts.\n mode: work | stage | repository, default: work',
     option: [
       ['-r <boolean>', 'Include rootPackage', 'true'],

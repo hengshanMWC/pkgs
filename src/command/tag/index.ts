@@ -26,6 +26,7 @@ export async function commandTag (
 export function createTagPlugin (): PluginData {
   return {
     id: 'tag',
+    command: 'tag',
     description: 'pkgs tag, diff mode: Compare according to tag',
     option: [
       ['-p', 'publish tag'],

@@ -38,6 +38,7 @@ export async function commandVersion (
 export function createVersionPlugin (): PluginData {
   return {
     id: 'version',
+    command: 'version',
     description: 'version package',
     option: [
       ['--mode <type>', 'sync | diff'],

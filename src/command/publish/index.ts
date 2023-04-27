@@ -30,6 +30,7 @@ export async function commandPublish (options: Partial<ExecuteCommandOptions> = 
 export function createPublishPlugin (): PluginData {
   return {
     id: 'publish',
+    command: 'publish',
     description: 'publish package',
     option: [
       ['--mode <type>', 'sync | diff'],
