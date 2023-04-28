@@ -1,6 +1,6 @@
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
-import type { ExecuteCommandConfing } from '../defaultOptions'
+import type { ExecuteCommandConfig } from '../defaultOptions'
 import type { DiffFile, TagType } from '../utils/git'
 import { getRepositoryInfo, getStageInfo, getWorkInfo, gitDiffTag } from '../utils/git'
 import { createCommand, runCmds, warn } from '../utils'
@@ -14,11 +14,11 @@ export {
 
 class StoreCommand {
   contextAnalysisDiagram: ContextAnalysisDiagram
-  rootPackage: ExecuteCommandConfing['rootPackage']
+  rootPackage: ExecuteCommandConfig['rootPackage']
   git: SimpleGit
   constructor (
     contextAnalysisDiagram: ContextAnalysisDiagram,
-    rootPackage: ExecuteCommandConfing['rootPackage'],
+    rootPackage: ExecuteCommandConfig['rootPackage'],
     git: SimpleGit = simpleGit(),
   ) {
     this.contextAnalysisDiagram = contextAnalysisDiagram

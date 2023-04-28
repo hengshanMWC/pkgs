@@ -7,7 +7,7 @@ import { gitDiffTag, gitSyncPublishTag } from '../../utils/git'
 import { cdDir } from '../../utils'
 import testGlobal from '../../utils/test'
 import { organization, npmTag } from '../../utils/regExp'
-import type { ExecuteCommandConfing, PluginData } from '../../defaultOptions'
+import type { ExecuteCommandConfig, PluginData } from '../../defaultOptions'
 function main (context: Context) {
   const mode = context.getCorrectOptionValue('publish', 'mode')
 
@@ -18,7 +18,7 @@ function main (context: Context) {
     return handleDiffPublish(context)
   }
 }
-export async function commandPublish (options: Partial<ExecuteCommandConfing> = {}, git: SimpleGit = simpleGit()) {
+export async function commandPublish (options: Partial<ExecuteCommandConfig> = {}, git: SimpleGit = simpleGit()) {
   const config = await Context.assignConfig(options)
   const context = await Context.create(
     config,
@@ -36,7 +36,7 @@ export function createPublishPlugin (): PluginData {
       ['--mode <type>', 'sync | diff'],
       ['-tag <type>', 'npm publish --tag <type>'],
     ],
-    action (context: Context, options: ExecuteCommandConfing['publish'] = {}) {
+    action (context: Context, options: ExecuteCommandConfig['publish'] = {}) {
       context.assignOptions(options)
       main(context)
     },

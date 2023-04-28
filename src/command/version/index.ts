@@ -12,7 +12,7 @@ import type { WriteObject } from '../../utils'
 import { dependentSearch } from '../../utils/packageJson'
 import { WARN_NOW_VERSION } from '../../constant'
 import type { AnalysisBlockItem, SetAnalysisBlockObject } from '../../lib/analysisDiagram'
-import type { PluginData, ExecuteCommandConfing } from '../../defaultOptions'
+import type { PluginData, ExecuteCommandConfig } from '../../defaultOptions'
 async function main (context: Context, appointVersion?: string) {
   const mode = context.getCorrectOptionValue('version', 'mode')
 
@@ -24,7 +24,7 @@ async function main (context: Context, appointVersion?: string) {
   }
 }
 export async function commandVersion (
-  options: Partial<ExecuteCommandConfing> = {},
+  options: Partial<ExecuteCommandConfig> = {},
   git: SimpleGit = simpleGit(),
   appointVersion?: string,
 ) {
@@ -44,7 +44,7 @@ export function createVersionPlugin (): PluginData {
       ['--mode <type>', 'sync | diff'],
       ['-m, --message <message>', 'commit message'],
     ],
-    action (context: Context, options: ExecuteCommandConfing['version'] = {}) {
+    action (context: Context, options: ExecuteCommandConfig['version'] = {}) {
       context.assignOptions(options)
       main(context)
     },

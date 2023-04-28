@@ -5,14 +5,14 @@ import {
   getYamlPackages,
   getJSON,
 } from '../utils'
-import type { ExecuteCommandConfing } from '../defaultOptions'
+import type { ExecuteCommandConfig } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
 import { PACKAGES_PATH } from '../constant'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { StoreCommand } from './storeCommand'
 
 export class Context {
-  options: ExecuteCommandConfing
+  options: ExecuteCommandConfig
   contextAnalysisDiagram!: ContextAnalysisDiagram
   storeCommand!: StoreCommand
 
@@ -43,20 +43,20 @@ export class Context {
     return context
   }
 
-  static async assignConfig (...config: Partial<ExecuteCommandConfing>[]) {
+  static async assignConfig (...config: Partial<ExecuteCommandConfig>[]) {
     const pkgsJson = (await getJSON(
       Context.configName,
-    )) as Partial<ExecuteCommandConfing>
+    )) as Partial<ExecuteCommandConfig>
     return assignOptions(defaultOptions, pkgsJson, ...config)
   }
 
   constructor (
-    config: ExecuteCommandConfing,
+    config: ExecuteCommandConfig,
   ) {
     this.options = config
   }
 
-  assignOptions (...config: Partial<ExecuteCommandConfing>[]) {
+  assignOptions (...config: Partial<ExecuteCommandConfig>[]) {
     this.options = assignOptions(this.options, ...config)
     if (this.storeCommand) {
       this.storeCommand.rootPackage = this.options.rootPackage
@@ -68,9 +68,9 @@ export class Context {
 
   getCorrectOptionValue (
     cmd: CMD,
-    key: keyof ExecuteCommandConfing &
-    keyof ExecuteCommandConfing['version'] &
-    keyof ExecuteCommandConfing['publish'],
+    key: keyof ExecuteCommandConfig &
+    keyof ExecuteCommandConfig['version'] &
+    keyof ExecuteCommandConfig['publish'],
   ) {
     const options = this.options
     const cmdObject = options[cmd]

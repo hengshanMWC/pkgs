@@ -9,7 +9,7 @@ import {
   getRelyAttrs,
   setRelyMyDirhMap,
 } from '../utils/analysisDiagram'
-import type { ExecuteCommandConfing } from '../defaultOptions'
+import type { ExecuteCommandConfig } from '../defaultOptions'
 
 export { ContextAnalysisDiagram, AnalysisBlockItem, AnalysisDiagram, SetAnalysisBlockObject }
 
@@ -23,12 +23,12 @@ interface AnalysisBlockItem {
 type AnalysisDiagram = Record<string, AnalysisBlockItem>
 type SetAnalysisBlockObject = Set<AnalysisBlockItem>
 class ContextAnalysisDiagram {
-  packagesPath: ExecuteCommandConfing['packagesPath']
+  packagesPath: ExecuteCommandConfig['packagesPath']
   analysisDiagram!: AnalysisDiagram
   rootPackageJson!: IPackageJson
   rootFilePath = 'package.json'
   rootDir = ''
-  constructor (packagesPath: ExecuteCommandConfing['packagesPath']) {
+  constructor (packagesPath: ExecuteCommandConfig['packagesPath']) {
     this.packagesPath = packagesPath
   }
 

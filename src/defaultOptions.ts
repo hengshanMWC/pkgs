@@ -21,14 +21,14 @@ interface ExecuteCommandPublishOption extends
   Partial<ExecuteCommandOption> {
   tag?: string
 }
-export interface ExecuteCommandConfing extends ExecuteCommandOption {
+export interface ExecuteCommandConfig extends ExecuteCommandOption {
   packagesPath: string | string[] | undefined
   rootPackage: Boolean
   version: ExecuteCommandVersionOption
   publish: ExecuteCommandPublishOption
   plugin: Array<PluginData | string>
 }
-export const defaultOptions: ExecuteCommandConfing = {
+export const defaultOptions: ExecuteCommandConfig = {
   packagesPath: undefined,
   rootPackage: true,
   mode: 'sync',
