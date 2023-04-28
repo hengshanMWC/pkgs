@@ -4,7 +4,7 @@ import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { DEPENDENCY_PREFIX } from '../constant'
-import type { ExecuteCommandOptions } from '../defaultOptions'
+import type { ExecuteCommandConfing } from '../defaultOptions'
 export async function getJSON (dir: string): Promise<IPackageJson> {
   try {
     return await readJSON(dir)
@@ -33,19 +33,19 @@ export function cdDir (dir?: string) {
   return dir ? `cd ${dir} && ` : ''
 }
 export function assignOptions (
-  ...objects: Partial<ExecuteCommandOptions>[]
-): ExecuteCommandOptions {
+  ...objects: Partial<ExecuteCommandConfing>[]
+): ExecuteCommandConfing {
   return objects.reduce((previousValue, currentValue) => {
     return assignOption(
       previousValue,
       currentValue,
     )
-  }, {}) as ExecuteCommandOptions
+  }, {}) as ExecuteCommandConfing
 }
 function assignOption (
-  templateObject: Partial<ExecuteCommandOptions>,
-  object: Partial<ExecuteCommandOptions>,
-): Partial<ExecuteCommandOptions> {
+  templateObject: Partial<ExecuteCommandConfing>,
+  object: Partial<ExecuteCommandConfing>,
+): Partial<ExecuteCommandConfing> {
   if (object.mode !== undefined) {
     templateObject.mode = object.mode
   }
