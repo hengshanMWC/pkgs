@@ -18,8 +18,8 @@ function main (context: Context) {
     return handleDiffPublish(context)
   }
 }
-export async function commandPublish (options: Partial<ExecuteCommandConfig> = {}, git: SimpleGit = simpleGit()) {
-  const config = await Context.assignConfig(options)
+export async function commandPublish (configParam: Partial<ExecuteCommandConfig> = {}, git: SimpleGit = simpleGit()) {
+  const config = await Context.assignConfig(configParam)
   const context = await Context.create(
     config,
     git,
@@ -36,8 +36,8 @@ export function createPublishPlugin (): PluginData {
       ['--mode <type>', 'sync | diff'],
       ['-tag <type>', 'npm publish --tag <type>'],
     ],
-    action (context: Context, options: ExecuteCommandConfig['publish'] = {}) {
-      context.assignOptions(options)
+    action (context: Context, config: ExecuteCommandConfig['publish'] = {}) {
+      context.assignOptions(config)
       main(context)
     },
   }
@@ -47,7 +47,7 @@ async function handleSyncPublish (context: Context) {
     await implementPublish(
       context.contextAnalysisDiagram.allPackagesJSON[index],
       context.contextAnalysisDiagram.allDirs[index],
-      context.options.publish.tag,
+      context.config.publish.tag,
     )
   }
   gitSyncPublishTag(undefined, context.storeCommand.git)
@@ -57,7 +57,7 @@ async function handleDiffPublish (context: Context) {
     await implementPublish(
       analysisBlock.packageJson,
       analysisBlock.dir,
-      context.options.publish.tag,
+      context.config.publish.tag,
     )
   }, 'publish')
   gitDiffTag('publish', undefined, context.storeCommand.git)

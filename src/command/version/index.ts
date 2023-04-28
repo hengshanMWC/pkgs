@@ -24,11 +24,11 @@ async function main (context: Context, appointVersion?: string) {
   }
 }
 export async function commandVersion (
-  options: Partial<ExecuteCommandConfig> = {},
+  configParam: Partial<ExecuteCommandConfig> = {},
   git: SimpleGit = simpleGit(),
   appointVersion?: string,
 ) {
-  const config = await Context.assignConfig(options)
+  const config = await Context.assignConfig(configParam)
   const context = await Context.create(
     config,
     git,
@@ -44,8 +44,8 @@ export function createVersionPlugin (): PluginData {
       ['--mode <type>', 'sync | diff'],
       ['-m, --message <message>', 'commit message'],
     ],
-    action (context: Context, options: ExecuteCommandConfig['version'] = {}) {
-      context.assignOptions(options)
+    action (context: Context, config: ExecuteCommandConfig['version'] = {}) {
+      context.assignOptions(config)
       main(context)
     },
   }
@@ -93,7 +93,7 @@ async function handleSyncVersion (context: Context, appointVersion?: string) {
   )
   await gitSyncSave(
     version as string,
-    context.options.version.message,
+    context.config.version.message,
     context.storeCommand.git,
   )
 }
@@ -118,7 +118,7 @@ async function handleDiffVersion (context: Context, appointVersion?: string) {
     [...triggerSign].map(({ packageJson }) => {
       return `${packageJson.name as string}@${packageJson.version}`
     }),
-    context.options.version.message,
+    context.config.version.message,
     context.storeCommand.git,
   )
 }

@@ -12,7 +12,7 @@ import { ContextAnalysisDiagram } from './analysisDiagram'
 import { StoreCommand } from './storeCommand'
 
 export class Context {
-  options: ExecuteCommandConfig
+  config: ExecuteCommandConfig
   contextAnalysisDiagram!: ContextAnalysisDiagram
   storeCommand!: StoreCommand
 
@@ -33,12 +33,12 @@ export class Context {
     await context.readDefaultPackagesPath()
 
     // 生成包之间的图表关系
-    const contextAnalysisDiagram = new ContextAnalysisDiagram(context.options.packagesPath)
+    const contextAnalysisDiagram = new ContextAnalysisDiagram(context.config.packagesPath)
     await contextAnalysisDiagram.initData()
     context.contextAnalysisDiagram = contextAnalysisDiagram
 
     // 命令系统
-    context.storeCommand = new StoreCommand(contextAnalysisDiagram, context.options.rootPackage, git)
+    context.storeCommand = new StoreCommand(contextAnalysisDiagram, context.config.rootPackage, git)
 
     return context
   }
@@ -53,16 +53,16 @@ export class Context {
   constructor (
     config: ExecuteCommandConfig,
   ) {
-    this.options = config
+    this.config = config
   }
 
   assignOptions (...config: Partial<ExecuteCommandConfig>[]) {
-    this.options = assignOptions(this.options, ...config)
+    this.config = assignOptions(this.config, ...config)
     if (this.storeCommand) {
-      this.storeCommand.rootPackage = this.options.rootPackage
+      this.storeCommand.rootPackage = this.config.rootPackage
     }
     if (this.contextAnalysisDiagram) {
-      this.contextAnalysisDiagram.packagesPath = this.options.packagesPath
+      this.contextAnalysisDiagram.packagesPath = this.config.packagesPath
     }
   }
 
@@ -72,25 +72,25 @@ export class Context {
     keyof ExecuteCommandConfig['version'] &
     keyof ExecuteCommandConfig['publish'],
   ) {
-    const options = this.options
-    const cmdObject = options[cmd]
+    const config = this.config
+    const cmdObject = config[cmd]
 
     if (typeof cmdObject === 'object') {
-      return cmdObject[key] === undefined ? options[key] : cmdObject[key]
+      return cmdObject[key] === undefined ? config[key] : cmdObject[key]
     }
     else {
-      return options[key]
+      return config[key]
     }
   }
 
   private async readDefaultPackagesPath () {
-    if (!this.options.packagesPath) {
+    if (!this.config.packagesPath) {
       try {
         // 同步pnpm-workspace.yaml的packagesPath
-        this.options.packagesPath = await getYamlPackages()
+        this.config.packagesPath = await getYamlPackages()
       }
       catch {
-        this.options.packagesPath = PACKAGES_PATH
+        this.config.packagesPath = PACKAGES_PATH
       }
     }
   }
