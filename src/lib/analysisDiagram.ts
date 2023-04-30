@@ -32,18 +32,20 @@ class ContextAnalysisDiagram {
     this.packagesPath = packagesPath
   }
 
+  // 获取所有包目录路径
   get allDirs () {
     if (this.analysisDiagram) {
-      return Object.keys(this.analysisDiagram).map(key => key)
+      return Object.keys(this.analysisDiagram)
     }
     else {
       return []
     }
   }
 
+  // 获取所有包package.json文件路径
   get allFilesPath () {
     if (this.analysisDiagram) {
-      return Object.keys(this.analysisDiagram).map(
+      return this.allDirs.map(
         key => this.analysisDiagram[key].filePath,
       )
     }
@@ -52,9 +54,10 @@ class ContextAnalysisDiagram {
     }
   }
 
+  // 获取所有包的package.json
   get allPackagesJSON () {
     if (this.analysisDiagram) {
-      return Object.keys(this.analysisDiagram).map(
+      return this.allDirs.map(
         key => this.analysisDiagram[key].packageJson,
       )
     }
@@ -63,19 +66,20 @@ class ContextAnalysisDiagram {
     }
   }
 
+  // 获取所有子包的所有目录路径
   get dirs () {
     if (this.analysisDiagram) {
-      return Object.keys(this.analysisDiagram).filter(key => key)
+      return this.allDirs.filter(key => key)
     }
     else {
       return []
     }
   }
 
+  // 获取所有子包package.json文件路径
   get filesPath () {
     if (this.analysisDiagram) {
-      return Object.keys(this.analysisDiagram)
-        .filter(item => item)
+      return this.dirs
         .map(key => this.analysisDiagram[key].filePath)
     }
     else {
@@ -83,10 +87,10 @@ class ContextAnalysisDiagram {
     }
   }
 
+  // 获取所有子包的package.json
   get packagesJSON () {
     if (this.analysisDiagram) {
-      return Object.keys(this.analysisDiagram)
-        .filter(key => key)
+      return this.dirs
         .map(key => this.analysisDiagram[key].packageJson)
     }
     else {
