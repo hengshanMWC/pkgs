@@ -26,8 +26,9 @@ class ContextAnalysisDiagram {
   packagesPath: ExecuteCommandConfig['packagesPath']
   analysisDiagram!: AnalysisDiagram
   rootPackageJson!: IPackageJson
-  rootFilePath = 'package.json'
-  rootDir = ''
+  static rootFilePath = 'package.json'
+  static rootDir = ''
+
   constructor (packagesPath: ExecuteCommandConfig['packagesPath']) {
     this.packagesPath = packagesPath
   }
@@ -99,13 +100,15 @@ class ContextAnalysisDiagram {
   }
 
   async initData () {
-    this.rootPackageJson = await readJSON(this.rootFilePath)
+    // 根目录信息
+    this.rootPackageJson = await readJSON(ContextAnalysisDiagram.rootFilePath)
     const values: [string[], string[], IPackageJson[]] = [
-      [this.rootDir],
-      [this.rootFilePath],
+      [ContextAnalysisDiagram.rootDir],
+      [ContextAnalysisDiagram.rootFilePath],
       [this.rootPackageJson],
     ]
 
+    // 子包目录信息
     if (this.packagesPath) {
       try {
         const { dirs, filesPath } = await getPackagesDir(this.packagesPath)
@@ -114,7 +117,9 @@ class ContextAnalysisDiagram {
         values[1].push(...filesPath)
         values[2].push(...packagesJSON)
       }
-      catch {}
+      catch (error) {
+        console.error('获取子包信息错误: ', error)
+      }
     }
 
     this.createContextAnalysisDiagram(...values)
@@ -177,6 +182,7 @@ class ContextAnalysisDiagram {
     const relyMyMap = createRelyMyDirMap(packagesName)
     this.analysisDiagram = {}
 
+    // 组装依赖，生成图表信息
     dirs.forEach((dir, index) => {
       const packageJson = packagesJSON[index]
       setRelyMyDirhMap(dir, packageJson, relyMyMap)

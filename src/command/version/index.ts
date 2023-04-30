@@ -12,6 +12,7 @@ import type { WriteObject } from '../../utils'
 import { dependentSearch } from '../../utils/packageJson'
 import { WARN_NOW_VERSION } from '../../constant'
 import type { AnalysisBlockItem, SetAnalysisBlockObject } from '../../lib/analysisDiagram'
+import { ContextAnalysisDiagram } from '../../lib/analysisDiagram'
 import type { PluginData, ExecuteCommandConfig } from '../../defaultOptions'
 async function main (context: Context, appointVersion?: string) {
   const mode = context.getCorrectOptionValue('version', 'mode')
@@ -52,7 +53,7 @@ export function createVersionPlugin (): PluginData {
 }
 async function handleSyncVersion (context: Context, appointVersion?: string) {
   const oldVersion = context.contextAnalysisDiagram.rootPackageJson.version
-  const version = await changeVersion(context.contextAnalysisDiagram.rootDir, appointVersion)
+  const version = await changeVersion(ContextAnalysisDiagram.rootDir, appointVersion)
 
   if (oldVersion === version) {
     if (process.env.NODE_ENV === 'test') {
@@ -67,7 +68,7 @@ async function handleSyncVersion (context: Context, appointVersion?: string) {
 
   const changes: WriteObject[] = [
     {
-      filePath: context.contextAnalysisDiagram.rootFilePath,
+      filePath: ContextAnalysisDiagram.rootFilePath,
       packageJson: context.contextAnalysisDiagram.rootPackageJson,
     },
   ]
