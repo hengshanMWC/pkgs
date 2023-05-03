@@ -1,17 +1,17 @@
-import type { ExecuteCommandConfig, PluginData } from '../defaultOptions'
 export {
   PluginStore,
 }
+type CreatePluginData<T> = () => T
+class PluginStore<T extends { id: any }> {
+  map: Map<string, T> = new Map()
 
-class PluginStore {
-  map: Map<string, PluginData> = new Map()
-
-  add (plugin: PluginData) {
-    if (this.map.has(plugin.id)) {
+  add (plugin: T | CreatePluginData<T>) {
+    const pluginData: T = typeof plugin === 'function' ? plugin() : plugin
+    if (this.map.has(pluginData.id)) {
       console.log('有重复的plugin id')
     }
     else {
-      this.map.set(plugin.id, plugin)
+      this.map.set(pluginData.id, pluginData)
     }
     return this
   }
@@ -21,7 +21,7 @@ class PluginStore {
     return this.add(plugin)
   }
 
-  async use (...plugins: Required<ExecuteCommandConfig>['plugin']) {
+  async use (...plugins: Array<T | string>) {
     for (let i = 0; i < plugins.length; i++) {
       const plugin = plugins[i]
       if (typeof plugin === 'string') {
