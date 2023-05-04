@@ -36,7 +36,7 @@
     "build": "esno ./scripts/build.ts && tsc --emitDeclarationOnly",
     "build:npm": "cross-env NODE_ENV=npm npm run build",
     "release": "esno ./scripts/release.ts",
-    "bin": "node bin/index.js"
+    "bin": "node bin/cli.js"
   },
   "bugs": {
     "url": "https://github.com/hengshanMWC/pkgs/issues"
