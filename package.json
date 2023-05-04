@@ -25,7 +25,7 @@
     "types"
   ],
   "bin": {
-    "pkgs": "bin/index.js"
+    "pkgs": "bin/cli.js"
   },
   "scripts": {
     "test": "vitest",
@@ -48,6 +48,7 @@
     "colors": "^1.4.0",
     "commander": "^10.0.1",
     "fs-extra": "^10.0.1",
+    "import-local": "^3.1.0",
     "js-yaml": "^4.1.0",
     "plugin-group": "^1.0.3",
     "simple-git": "^3.4.0"
