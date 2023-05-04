@@ -74,6 +74,7 @@
     "esno": "^0.14.1",
     "husky": "^7.0.4",
     "log-symbols": "^5.1.0",
+    "npmlog": "^7.0.1",
     "rimraf": "^3.0.2",
     "rollup": "^2.70.1",
     "rollup-plugin-esbuild": "^4.8.2",
