@@ -76,12 +76,12 @@ function assignOption (
     if (object.publish.tag !== undefined) {
       templateObject.publish.tag = object.publish.tag
     }
-    if (object.plugin !== undefined) {
-      if (templateObject.plugin === undefined) {
-        templateObject.plugin = []
-      }
-      templateObject.plugin = templateObject.plugin.concat(object.plugin)
+  }
+  if (object.plugin !== undefined) {
+    if (templateObject.plugin === undefined) {
+      templateObject.plugin = []
     }
+    templateObject.plugin = templateObject.plugin.concat(object.plugin)
   }
   return templateObject
 }
