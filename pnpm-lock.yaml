@@ -29,7 +29,7 @@ specifiers:
   js-yaml: ^4.1.0
   log-symbols: ^5.1.0
   npmlog: ^7.0.1
-  plugin-group: ^1.0.3
+  plugin-group: ^1.0.4
   rimraf: ^3.0.2
   rollup: ^2.70.1
   rollup-plugin-esbuild: ^4.8.2
@@ -49,7 +49,7 @@ dependencies:
   import-local: 3.1.0
   js-yaml: 4.1.0
   npmlog: 7.0.1
-  plugin-group: 1.0.3
+  plugin-group: 1.0.4
   simple-git: 3.4.0
 
 devDependencies:
@@ -3038,8 +3038,8 @@ packages:
       find-up: 4.1.0
     dev: false
 
-  /plugin-group/1.0.3:
-    resolution: {integrity: sha512-sUnk0AnxtLsRcjVpcZAacU7+e1JlkpxEU2z5823LpfhySacv7udyOCJf/ndyQTebaNa2GPdM05bjp+TAtxN8aw==}
+  /plugin-group/1.0.4:
+    resolution: {integrity: sha512-yaWNjxLR7/xU022PkFOI0gQg9JEXN/N0C8mHvc3QxbX7MnP9wFDI0L4Ib8qkP3QVWVArg/eWmS6NvYpE4fcujg==}
     dev: false
 
   /pluralize/8.0.0:
