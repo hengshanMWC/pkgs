@@ -1,11 +1,11 @@
 import { program } from 'commander'
+import { PluginGroup } from 'plugin-group'
 import pkg from '../package.json'
 import { cliVersion, cliSuccess } from './utils/tips'
-import { PluginStore } from './lib/plugin'
 import { Context } from './lib/context'
 import type { PluginData } from './defaultOptions'
 export async function cliMain (argv: NodeJS.Process['argv']) {
-  const pluginStore = new PluginStore<PluginData>()
+  const pluginStore = new PluginGroup<PluginData>()
   const config = await Context.assignConfig()
   pluginStore.use(...config.plugin)
   program
