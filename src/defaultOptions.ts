@@ -26,7 +26,7 @@ export interface ExecuteCommandConfig extends ExecuteCommandOption {
   rootPackage: Boolean
   version: ExecuteCommandVersionOption
   publish: ExecuteCommandPublishOption
-  plugin: Array<PluginData | string>
+  plugins: Array<PluginData | string>
 }
 export const defaultOptions: ExecuteCommandConfig = {
   packagesPath: undefined,
@@ -40,7 +40,7 @@ export const defaultOptions: ExecuteCommandConfig = {
     mode: undefined,
     tag: '',
   },
-  plugin: [
+  plugins: [
     createVersionPlugin(),
     createPublishPlugin(),
     createRunPlugin(),
