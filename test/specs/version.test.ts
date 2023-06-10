@@ -1,11 +1,11 @@
 import path from 'path'
 import { copy, readJSON } from 'fs-extra'
 import type { SimpleGit } from 'simple-git'
-import { executeCommand } from '../../index'
+import { commandVersion } from '../../src/index'
 import { tagExpect } from '../__fixtures__/commit'
 import {
   getNewestCommitId,
-} from '../../src/git'
+} from '../../src/utils/git'
 import type {
   SimpleGitTestContext,
 } from '../__fixtures__'
@@ -57,7 +57,7 @@ describe(cmd, () => {
     const { newCommitId } = await handleCommand(async function () {
       git = newSimpleGit(context.root)
       process.chdir(context.root)
-      await executeCommand(cmd, undefined, git, newVersion)
+      await commandVersion(undefined, git, newVersion)
       return git
     }, newVersion)
 
@@ -70,7 +70,7 @@ describe(cmd, () => {
 
     // version unchanged
     try {
-      await executeCommand(cmd, undefined, git, newVersion)
+      await commandVersion(undefined, git, newVersion)
     }
     catch (err) {
       expect(err.message).toBe(WARN_NOW_VERSION)
@@ -82,7 +82,7 @@ describe(cmd, () => {
     await handleCommand(async function () {
       git = newSimpleGit(context.root)
       process.chdir(context.root)
-      await executeCommand(cmd, {
+      await commandVersion({
         mode: 'diff',
       }, git, newVersion)
       return git
@@ -100,7 +100,7 @@ describe(cmd, () => {
     // add 1.1.0
     const addVersion = '1.1.0'
     await setUpFilesAdded(context, ['packages/b/test'])
-    await executeCommand(cmd, {
+    await commandVersion({
       mode: 'diff',
     }, git, addVersion)
     const [addA, addB, addC] = await getPackages()
@@ -119,7 +119,7 @@ describe(cmd, () => {
     const { newCommitId } = await handleCommand(async function () {
       git = newSimpleGit(context.root)
       process.chdir(context.root)
-      await executeCommand(cmd, {
+      await commandVersion({
         mode: 'diff',
         [cmd]: {
           mode: 'sync',
@@ -151,7 +151,7 @@ describe(cmd, () => {
     const { newCommitId } = await handleCommand(async function () {
       git = newSimpleGit(context.root)
       process.chdir(context.root)
-      await executeCommand(cmd, {
+      await commandVersion({
         [cmd]: {
           message,
         },

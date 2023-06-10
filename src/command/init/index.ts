@@ -1,8 +1,9 @@
 import path from 'path'
 import { access, mkdir, copyFile, stat } from 'fs-extra'
-export function cmdInit () {
+import type { PluginData } from '../../defaultOptions'
+export function commandInit () {
   const packagesName = 'packages'
-  const pkgsJsonName = 'pkgs.json'
+  const pkgsJsonName = 'pkgs.js'
   const packageJsonName = 'package.json'
   const dirPath = path.resolve(__dirname, './template')
   const pkgsJson = path.resolve(dirPath, pkgsJsonName)
@@ -12,6 +13,14 @@ export function cmdInit () {
     createFile(pkgsJsonName, pkgsJson),
     createFile(packageJsonName, packageJson),
   ])
+}
+export function createInitPlugin (): PluginData {
+  return {
+    id: 'init',
+    command: 'init',
+    description: 'create pkgs file',
+    action: commandInit,
+  }
 }
 async function createMkdir (dirName: string) {
   try {

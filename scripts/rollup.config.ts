@@ -16,6 +16,7 @@ import colors from 'colors'
 import { name } from '../package.json'
 const timeTag = '📦'
 console.time(timeTag)
+const isNpm = process.env.NODE_ENV === 'npm'
 let moduleName = name
 // 检查是否是合法的 npm 包名
 if (!validateNpmPackageName(moduleName)) {
@@ -33,13 +34,15 @@ moduleName = camelcase(moduleName)
 // 头信息
 const banner = '// * Released under the MIT License.\n'
 
-const esbuildPlugin = esbuild()
+const esbuildPlugin = esbuild({
+  minify: isNpm,
+})
 
 type Builds = Partial<Record<InternalModuleFormat, RollupOptions>>
 // rollup 配置
 const builds: Builds = {
   es: {
-    input: 'index.ts',
+    input: 'src/index.ts',
     output: {
       // 当文件名包含 .min 时将会自动启用 terser 进行压缩
       file: `dist/${moduleName}.esm.min.js`,
@@ -48,7 +51,7 @@ const builds: Builds = {
     },
   },
   cjs: {
-    input: 'index.ts',
+    input: 'src/index.ts',
     output: {
       // 当文件名包含 .min 时将会自动启用 terser 进行压缩
       file: `dist/${moduleName}.cjs.min.js`,
@@ -78,10 +81,6 @@ const genConfig = (key: keyof Builds): RollupOptions => {
       }),
       ...plugins,
     ],
-    // 监听
-    // watch: {
-    //   include: 'src/**',
-    // },
   }
   return config
 }

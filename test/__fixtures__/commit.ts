@@ -1,10 +1,10 @@
 import path from 'path'
 import type { SimpleGit } from 'simple-git'
-import type { TagType } from '../../index'
+import type { TagType } from '../../src/index'
 import {
   getTag,
   getTagCommitId,
-} from '../../src/git'
+} from '../../src/utils/git'
 import {
   io,
 } from '.'

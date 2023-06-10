@@ -1,6 +1,6 @@
 import path from 'path'
 import { writeFile, copy } from 'fs-extra'
-import { executeCommandRun } from '../../index'
+import { commandRun } from '../../src/index'
 import type {
   SimpleGitTestContext,
 } from '../__fixtures__'
@@ -9,7 +9,7 @@ import {
   setUpInit,
 } from '../__fixtures__'
 import testGlobal from '../../src/utils/test'
-import { getTag } from '../../src/git'
+import { getTag } from '../../src/utils/git'
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'run'
 const cmds = [
@@ -46,15 +46,15 @@ describe(cmd, () => {
     testGlobal.pkgsTestPublish = text => {
       expect(text).toBe(arr[i++])
     }
-    await executeCommandRun(cmd, 'work', rootPackage, context.git)
+    await commandRun(cmd, 'work', rootPackage, context.git)
 
     i = 0
     await context.git.add('.')
-    await executeCommandRun(cmd, 'stage', rootPackage, context.git)
+    await commandRun(cmd, 'stage', rootPackage, context.git)
 
     i = 0
     await context.git.commit('save')
-    await executeCommandRun(cmd, 'repository', rootPackage, context.git)
+    await commandRun(cmd, 'repository', rootPackage, context.git)
 
     const tag = await getTag(cmd)
     expect(tag && tag.includes(cmd)).toBeTruthy()
@@ -67,8 +67,8 @@ describe(cmd, () => {
   // 无依赖+rootPackage: false
   const quarantine = 'quarantine'
   test(quarantine, async () => {
-    const _cmds = cmds.slice(1)
-    await testMain(quarantine, _cmds, _cmds)
+    const _cmds = cmds.slice()
+    await testMain(quarantine, _cmds, _cmds.slice(1))
   })
   // 复杂依赖
   const many = 'many'

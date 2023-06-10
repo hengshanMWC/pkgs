@@ -1,14 +1,14 @@
 import path from 'path'
 import type { SimpleGit } from 'simple-git'
 import { copy, readJSON } from 'fs-extra'
-import { executeCommand } from '../../index'
+import { commandVersion, commandPublish } from '../../src/index'
 import { tagExpect } from '../__fixtures__/commit'
 import type {
   SimpleGitTestContext,
 } from '../__fixtures__'
 import {
   getNewestCommitId,
-} from '../../src/git'
+} from '../../src/utils/git'
 import {
   newSimpleGit,
   setUpFilesAdded,
@@ -60,7 +60,7 @@ describe(cmd, () => {
       testGlobal.pkgsTestPublish = function (text) {
         expect(text).toBe(packagesPublish[0])
       }
-      await executeCommand(cmd, undefined, git)
+      await commandPublish(undefined, git)
     })
   })
   test('root diff & version beta', async () => {
@@ -70,16 +70,16 @@ describe(cmd, () => {
       }
       // 先打上tag
       const syncVersion = '0.0.1'
-      await executeCommand('version', undefined, git, '0.0.1')
+      await commandVersion(undefined, git, '0.0.1')
 
-      await executeCommand(cmd, {
+      await commandPublish({
         mode: 'diff',
       }, git)
 
       // diff beta
       const newVersion = '0.0.1-beta.1'
       await setUpFilesAdded(context, ['packages/a/test'])
-      await executeCommand('version', {
+      await commandVersion({
         mode: 'diff',
       }, git, newVersion)
 
@@ -94,7 +94,7 @@ describe(cmd, () => {
           .map(item => `${item} --tag beta`)
         expect(diffPublishs.includes(text)).toBeTruthy()
       }
-      await executeCommand(cmd, {
+      await commandPublish({
         mode: 'diff',
       }, git)
     }, 'multiple')
@@ -105,7 +105,7 @@ describe(cmd, () => {
       testGlobal.pkgsTestPublish = function (text) {
         expect(packagesPublish.slice(1).includes(text)).toBeTruthy()
       }
-      await executeCommand(cmd, {
+      await commandPublish({
         mode: 'diff',
         [cmd]: {
           mode: 'sync',
@@ -124,7 +124,7 @@ describe(cmd, () => {
           .includes(text),
         ).toBeTruthy()
       }
-      await executeCommand(cmd, {
+      await commandPublish({
         [cmd]: {
           tag,
         },

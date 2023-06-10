@@ -1,4 +1,4 @@
-{
+export default {
   "rootPackage": true,
   "mode": "sync",
   "version": {

@@ -1,7 +1,7 @@
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
-import { WARN_NOW_CHANGE } from './constant'
-import { warn } from './utils'
+import { WARN_NOW_CHANGE } from '../constant'
+import { warn } from './index'
 
 export type TagType = 'publish' | 'version' | string
 const _tagMessage = 'pkgs update tag'
@@ -17,35 +17,30 @@ export async function gitSyncTag (
   version: string,
   git: SimpleGit = simpleGit(),
 ) {
-  await git.tag([
-    '-a',
-    `v${version}-version-pkg`,
-    '-m',
-    version,
-  ])
+  await git.tag(['-a', `v${version}-version-pkg`, '-m', version])
 }
 export async function gitSyncPublishTag (
   tagMessage: string = _tagMessage,
   git: SimpleGit = simpleGit(),
 ) {
-  await git.tag([
-    '-a',
-    `sync${Date.now()}-publish-pkg`,
-    '-m',
-    tagMessage,
-  ])
+  await git.tag(['-a', `sync${Date.now()}-publish-pkg`, '-m', tagMessage])
 }
 export async function gitDiffSave (
   nameAntVersionPackages: string[],
   message?: string,
   git: SimpleGit = simpleGit(),
 ) {
-  const packagesMessage = nameAntVersionPackages
-    .reduce((total, text) => `${total}\n- ${text}`, '\n')
+  const packagesMessage = nameAntVersionPackages.reduce(
+    (total, text) => `${total}\n- ${text}`,
+    '\n',
+  )
   await git.commit(`${message || ''}${packagesMessage || _tagMessage}`)
   await gitDiffTag('version', message, git)
 }
-export async function gitTemporary (files: string | string[], git: SimpleGit = simpleGit()) {
+export async function gitTemporary (
+  files: string | string[],
+  git: SimpleGit = simpleGit(),
+) {
   await git.add(files)
 }
 export async function gitDiffTag (
@@ -53,17 +48,9 @@ export async function gitDiffTag (
   packagesMessage = _tagMessage,
   git: SimpleGit = simpleGit(),
 ) {
-  await git.tag([
-    '-a',
-    `diff${Date.now()}-${type}-pkg`,
-    '-m',
-    packagesMessage,
-  ])
+  await git.tag(['-a', `diff${Date.now()}-${type}-pkg`, '-m', packagesMessage])
 }
-export async function getTag (
-  type: TagType,
-  git: SimpleGit = simpleGit(),
-) {
+export async function getTag (type: TagType, git: SimpleGit = simpleGit()) {
   const tags = await git.tag([
     '-l',
     `*-${type}-pkg`,
@@ -73,18 +60,13 @@ export async function getTag (
     '%(refname:short)',
   ])
   // 获取gittag
-  const versionRegExp = new RegExp(
-    `-${type}-pkg$`,
-  )
+  const versionRegExp = new RegExp(`-${type}-pkg$`)
   const tagArr = tags.trim().split('\n').reverse()
   return tagArr.find(item => versionRegExp.test(item))
 }
 
 export async function getNewestCommitId (git: SimpleGit = simpleGit()) {
-  const newestCommitId = await git.raw([
-    'rev-parse',
-    'HEAD',
-  ])
+  const newestCommitId = await git.raw(['rev-parse', 'HEAD'])
   return newestCommitId.replace('\n', '')
 }
 
@@ -92,11 +74,7 @@ export async function getTagCommitId (
   tag: string,
   git: SimpleGit = simpleGit(),
 ) {
-  const tagCommitInfo = await git.show([
-    tag,
-    '-s',
-    '--format=%h',
-  ])
+  const tagCommitInfo = await git.show([tag, '-s', '--format=%h'])
   const tagCommitInfoRows = tagCommitInfo.trim().split('\n')
   return tagCommitInfoRows[tagCommitInfoRows.length - 1]
 }
@@ -106,11 +84,7 @@ async function getChangeFiles (
   tagCommitId: string,
   git: SimpleGit = simpleGit(),
 ) {
-  const diffs = await git.diff([
-    newestCommitId,
-    tagCommitId,
-    '--stat',
-  ])
+  const diffs = await git.diff([newestCommitId, tagCommitId, '--stat'])
   const arr = diffs
     .trim()
     .split('\n')
@@ -126,7 +100,8 @@ async function getChangeFiles (
 }
 export type DiffFile = string[] | boolean | undefined
 export async function getRepositoryInfo (
-  type: TagType, git: SimpleGit = simpleGit(),
+  type: TagType,
+  git: SimpleGit = simpleGit(),
 ): Promise<DiffFile> {
   const tag = await getTag(type, git)
 
