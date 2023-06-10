@@ -10,13 +10,14 @@ import { defaultOptions } from '../defaultOptions'
 import { PACKAGES_PATH } from '../constant'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { StoreCommand } from './storeCommand'
+import { loadConfig } from '../config'
 
 export class Context {
   config: ExecuteCommandConfig
   contextAnalysisDiagram!: ContextAnalysisDiagram
   storeCommand!: StoreCommand
 
-  static configName = 'pkgs.json'
+  static cli = 'pkgs'
 
   static async create (
     config?: ConstructorParameters<typeof Context>[0],
@@ -44,9 +45,7 @@ export class Context {
   }
 
   static async assignConfig (...config: Partial<ExecuteCommandConfig>[]) {
-    const pkgsJson = (await getJSON(
-      Context.configName,
-    )) as Partial<ExecuteCommandConfig>
+    const pkgsJson = await loadConfig<ExecuteCommandConfig>(Context.cli) || {}
     return assignOptions(defaultOptions, pkgsJson, ...config)
   }
 

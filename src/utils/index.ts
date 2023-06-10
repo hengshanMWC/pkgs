@@ -131,3 +131,7 @@ export async function getYamlPackages (): Promise<string[]> {
 export function getArray<T> (params: T | T[]): T[] {
   return Array.isArray(params) ? params : [params]
 }
+
+export function getExportDefault (code: any) {
+  return code?.__esModule ? code.default : code
+}
