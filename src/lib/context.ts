@@ -3,7 +3,6 @@ import type { SimpleGit } from 'simple-git'
 import {
   assignOptions,
   getYamlPackages,
-  getJSON,
 } from '../utils'
 import type { ExecuteCommandConfig } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
