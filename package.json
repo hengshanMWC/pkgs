@@ -19,7 +19,7 @@
   },
   "main": "dist/pkgs.cjs.min.js",
   "module": "dist/pkgs.esm.min.js",
-  "types": "types",
+  "types": "types/src",
   "files": [
     "bin",
     "dist",
