@@ -7,9 +7,9 @@ import {
 import type { ExecuteCommandConfig } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
 import { PACKAGES_PATH } from '../constant'
+import { loadConfig } from '../config'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { StoreCommand } from './storeCommand'
-import { loadConfig } from '../config'
 
 export class Context {
   config: ExecuteCommandConfig
@@ -44,8 +44,8 @@ export class Context {
   }
 
   static async assignConfig (...config: Partial<ExecuteCommandConfig>[]) {
-    const pkgsJson = await loadConfig<ExecuteCommandConfig>(Context.cli) || {}
-    return assignOptions(defaultOptions, pkgsJson, ...config)
+    const configData = await loadConfig(Context.cli)
+    return assignOptions(defaultOptions, configData.data || {}, ...config)
   }
 
   constructor (

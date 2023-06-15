@@ -3,6 +3,7 @@ import { readJSON, writeJSON, readFile } from 'fs-extra'
 import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
+import strip from 'strip-json-comments'
 import { DEPENDENCY_PREFIX } from '../constant'
 import type { ExecuteCommandConfig } from '../defaultOptions'
 export async function getJSON (dir: string): Promise<IPackageJson> {
@@ -134,4 +135,15 @@ export function getArray<T> (params: T | T[]): T[] {
 
 export function getExportDefault (code: any) {
   return code?.__esModule ? code.default : code
+}
+
+export function jsoncParse (data: string) {
+  try {
+    return new Function(`return ${strip(data).trim()}`)()
+  }
+  catch {
+    // Silently ignore any error
+    // That's what tsc/jsonc-parser did after all
+    return {}
+  }
 }

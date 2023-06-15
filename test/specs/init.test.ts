@@ -9,7 +9,7 @@ const cmd = 'init'
 describe(cmd, () => {
   const prefix = 'init-test'
   const packagesName = 'packages'
-  const pkgsJsonName = 'pkgs.js'
+  const pkgsJsonName = 'pkgs.config.js'
   const packageJsonName = 'package.json'
 
   afterEach(() => {

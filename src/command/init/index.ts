@@ -3,7 +3,7 @@ import { access, mkdir, copyFile, stat } from 'fs-extra'
 import type { PluginData } from '../../defaultOptions'
 export function commandInit () {
   const packagesName = 'packages'
-  const pkgsJsonName = 'pkgs.js'
+  const pkgsJsonName = 'pkgs.config.js'
   const packageJsonName = 'package.json'
   const dirPath = path.resolve(__dirname, './template')
   const pkgsJson = path.resolve(dirPath, pkgsJsonName)
