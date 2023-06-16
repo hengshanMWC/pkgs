@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@abmao/bump": "^0.0.1",
-    "@abmao/forb": "^1.0.6",
+    "@abmao/forb": "^2.0.0",
     "bundle-require": "^4.0.1",
     "colors": "^1.4.0",
     "commander": "^10.0.1",
