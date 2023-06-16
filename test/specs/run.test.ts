@@ -8,7 +8,7 @@ import {
   createTestContext,
   setUpInit,
 } from '../__fixtures__'
-import testGlobal from '../../src/utils/test'
+import { testGlobal } from '../../src/utils/pkgsTest'
 import { getTag } from '../../src/utils/git'
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'run'
