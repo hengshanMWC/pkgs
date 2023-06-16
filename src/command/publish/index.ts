@@ -5,7 +5,7 @@ import simpleGit from 'simple-git'
 import { Context } from '../../lib/context'
 import { gitDiffTag, gitSyncPublishTag } from '../../utils/git'
 import { cdDir } from '../../utils'
-import testGlobal from '../../utils/test'
+import { testGlobal } from '../../utils/pkgsTest'
 import { organization, npmTag } from '../../utils/regExp'
 import type { ExecuteCommandConfig, PluginData } from '../../defaultOptions'
 function main (context: Context) {

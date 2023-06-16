@@ -4,7 +4,7 @@ import type { ExecuteCommandConfig } from '../defaultOptions'
 import type { DiffFile, TagType } from '../utils/git'
 import { getRepositoryInfo, getStageInfo, getWorkInfo, gitDiffTag } from '../utils/git'
 import { createCommand, runCmds, warn } from '../utils'
-import { testEmit } from '../utils/test'
+import { testEmit } from '../utils/pkgsTest'
 import { WARN_NOW_RUN } from '../constant'
 import type { AnalysisBlockItem, ContextAnalysisDiagram } from './analysisDiagram'
 export {

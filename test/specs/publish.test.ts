@@ -15,7 +15,7 @@ import {
   createTestContext,
   setUpInit,
 } from '../__fixtures__'
-import testGlobal from '../../src/utils/test'
+import { testGlobal } from '../../src/utils/pkgsTest'
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'publish'
 describe(cmd, () => {
