@@ -3,6 +3,7 @@ import { readJSON, writeJSON, readFile } from 'fs-extra'
 import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
+import strip from 'strip-json-comments'
 import { DEPENDENCY_PREFIX } from '../constant'
 import type { ExecuteCommandConfig } from '../defaultOptions'
 export async function getJSON (dir: string): Promise<IPackageJson> {
@@ -76,12 +77,12 @@ function assignOption (
     if (object.publish.tag !== undefined) {
       templateObject.publish.tag = object.publish.tag
     }
-  }
-  if (object.plugin !== undefined) {
-    if (templateObject.plugin === undefined) {
-      templateObject.plugin = []
+    if (object.plugins !== undefined) {
+      if (templateObject.plugins === undefined) {
+        templateObject.plugins = []
+      }
+      templateObject.plugins = templateObject.plugins.concat(object.plugins)
     }
-    templateObject.plugin = templateObject.plugin.concat(object.plugin)
   }
   return templateObject
 }
@@ -130,4 +131,19 @@ export async function getYamlPackages (): Promise<string[]> {
 
 export function getArray<T> (params: T | T[]): T[] {
   return Array.isArray(params) ? params : [params]
+}
+
+export function getExportDefault (code: any) {
+  return code?.__esModule ? code.default : code
+}
+
+export function jsoncParse (data: string) {
+  try {
+    return new Function(`return ${strip(data).trim()}`)()
+  }
+  catch {
+    // Silently ignore any error
+    // That's what tsc/jsonc-parser did after all
+    return {}
+  }
 }

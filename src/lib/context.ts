@@ -3,11 +3,11 @@ import type { SimpleGit } from 'simple-git'
 import {
   assignOptions,
   getYamlPackages,
-  getJSON,
 } from '../utils'
 import type { ExecuteCommandConfig } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
 import { PACKAGES_PATH } from '../constant'
+import { loadConfig } from '../config'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { StoreCommand } from './storeCommand'
 
@@ -16,7 +16,7 @@ export class Context {
   contextAnalysisDiagram!: ContextAnalysisDiagram
   storeCommand!: StoreCommand
 
-  static configName = 'pkgs.json'
+  static cli = 'pkgs'
 
   static async create (
     config?: ConstructorParameters<typeof Context>[0],
@@ -44,10 +44,8 @@ export class Context {
   }
 
   static async assignConfig (...config: Partial<ExecuteCommandConfig>[]) {
-    const pkgsJson = (await getJSON(
-      Context.configName,
-    )) as Partial<ExecuteCommandConfig>
-    return assignOptions(defaultOptions, pkgsJson, ...config)
+    const configData = await loadConfig(Context.cli)
+    return assignOptions(defaultOptions, configData.data || {}, ...config)
   }
 
   constructor (

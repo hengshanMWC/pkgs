@@ -6,7 +6,7 @@ import type { PluginData } from './defaultOptions'
 export async function cliMain (argv: NodeJS.Process['argv'], version: string) {
   const pluginGroup = new PluginGroup<PluginData>()
   const config = await Context.assignConfig()
-  pluginGroup.use(...config.plugin)
+  pluginGroup.use(...config.plugins)
   program
     .version(version, '-v, --version')
     .description('Simple monorepo combined with pnpm')

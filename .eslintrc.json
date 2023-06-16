@@ -3,6 +3,7 @@
   "rules": {
     "@typescript-eslint/no-var-requires": "off",
     "max-len": ["error", { "code": 120}],
-    "no-fallthrough": "off"
+    "no-fallthrough": "off",
+    "no-new-func": 0
   }
 }

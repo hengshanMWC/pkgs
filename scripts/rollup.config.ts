@@ -70,10 +70,14 @@ const genConfig = (key: keyof Builds): RollupOptions => {
   const config = {
     input,
     output,
+    external: ['esbuild'],
     plugins: [
       esbuildPlugin,
       nodeResolve(),
-      commonjs(),
+      commonjs({
+        transformMixedEsModules: true,
+        ignoreDynamicRequires: true,
+      }),
       json(),
       replace({
         preventAssignment: true,
