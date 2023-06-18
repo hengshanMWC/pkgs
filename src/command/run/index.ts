@@ -10,7 +10,8 @@ async function main (context: Context, cmd: string, mode: RunMode = 'work', root
   context.assignOptions({
     rootPackage,
   })
-  await context.storeCommand[`${mode}Command`](cmd)
+  const cmds = await context.storeCommand[`${mode}Command`](cmd)
+  return cmds
 }
 // all
 type RunMode = 'work' | 'stage' | 'repository'
@@ -25,7 +26,8 @@ async function commandRun (
     undefined,
     git,
   )
-  await main(context, cmd, mode, rootPackage)
+  const cmds = await main(context, cmd, mode, rootPackage)
+  return cmds
 }
 
 function createRunPlugin (): PluginData {

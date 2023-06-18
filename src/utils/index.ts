@@ -6,6 +6,7 @@ import type { IPackageJson } from '@ts-type/package-dts'
 import strip from 'strip-json-comments'
 import { DEPENDENCY_PREFIX } from '../constant'
 import type { ExecuteCommandConfig } from '../defaultOptions'
+export const isTest = process.env.NODE_ENV === 'test'
 export async function getJSON (dir: string): Promise<IPackageJson> {
   try {
     return await readJSON(dir)
@@ -101,27 +102,23 @@ export function createCommand (cmd: string, dirs: string[]) {
   return dirs
     .map(dir => `${dir ? `cd ${dir} && ` : ''}npm run ${cmd}`)
 }
-export type statusRunCmds = 'allSuccess' | 'allError' | 'error'
-export function runCmds (cmds: string[]): statusRunCmds {
-  let status: statusRunCmds = 'allSuccess'
-  let index = 1
+export function runCmds (cmds: string[]) {
+  const result: string[] = []
   cmds.forEach(cmd => {
     try {
-      execSync(cmd, {
-        stdio: 'inherit',
-      })
+      if (!isTest) {
+        execSync(cmd, {
+          stdio: 'inherit',
+        })
+      }
+
+      result.push(cmd)
     }
     catch (e) {
-      if (index++ < cmds.length) {
-        status = 'error'
-      }
-      else {
-        status = 'allError'
-      }
       err(`${e}`)
     }
   })
-  return status
+  return result
 }
 
 export async function getYamlPackages (): Promise<string[]> {
@@ -146,4 +143,8 @@ export function jsoncParse (data: string) {
     // That's what tsc/jsonc-parser did after all
     return {}
   }
+}
+
+export function sortFilesName (files: string[]) {
+  return files.slice().sort((a, b) => a.localeCompare(b))
 }

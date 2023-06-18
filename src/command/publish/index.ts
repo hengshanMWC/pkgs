@@ -4,8 +4,7 @@ import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
 import { Context } from '../../lib/context'
 import { gitDiffTag, gitSyncPublishTag } from '../../utils/git'
-import { cdDir } from '../../utils'
-import { testGlobal } from '../../utils/pkgsTest'
+import { cdDir, isTest } from '../../utils'
 import { organization, npmTag } from '../../utils/regExp'
 import type { ExecuteCommandConfig, PluginData } from '../../defaultOptions'
 function main (context: Context) {
@@ -24,7 +23,8 @@ export async function commandPublish (configParam: Partial<ExecuteCommandConfig>
     config,
     git,
   )
-  await main(context)
+  const result = await main(context)
+  return result
 }
 
 export function createPublishPlugin (): PluginData {
@@ -43,24 +43,30 @@ export function createPublishPlugin (): PluginData {
   }
 }
 async function handleSyncPublish (context: Context) {
+  const commands: string[] = []
   for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
-    await implementPublish(
+    const command = await implementPublish(
       context.contextAnalysisDiagram.allPackagesJSON[index],
       context.contextAnalysisDiagram.allDirs[index],
       context.config.publish.tag,
     )
+    command && commands.push(command)
   }
-  gitSyncPublishTag(undefined, context.storeCommand.git)
+  await gitSyncPublishTag(undefined, context.storeCommand.git)
+  return commands
 }
 async function handleDiffPublish (context: Context) {
+  const commands: string[] = []
   await context.storeCommand.forRepositoryDiffPack(async function (analysisBlock) {
-    await implementPublish(
+    const command = await implementPublish(
       analysisBlock.packageJson,
       analysisBlock.dir,
       context.config.publish.tag,
     )
+    command && commands.push(command)
   }, 'publish')
-  gitDiffTag('publish', undefined, context.storeCommand.git)
+  await gitDiffTag('publish', undefined, context.storeCommand.git)
+  return commands
 }
 async function implementPublish (
   packageJson: IPackageJson<any>,
@@ -83,13 +89,9 @@ async function implementPublish (
         command += ` --tag ${tagArr[1]}`
       }
     }
-    if (process.env.NODE_ENV === 'test') {
-      if (testGlobal.pkgsTestPublish) {
-        testGlobal.pkgsTestPublish(command)
-      }
-    }
-    else {
+    if (!isTest) {
       execSync(command)
     }
+    return command
   }
 }

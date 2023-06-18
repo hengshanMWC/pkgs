@@ -15,7 +15,6 @@ import {
   createTestContext,
   setUpInit,
 } from '../__fixtures__'
-import { testGlobal } from '../../src/utils/pkgsTest'
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'publish'
 describe(cmd, () => {
@@ -53,29 +52,32 @@ describe(cmd, () => {
   afterEach(() => {
     // Many of the tests in this file change the CWD, so change it back after each test
     process.chdir(ORIGINAL_CWD)
-    testGlobal.pkgsTestPublish = undefined
   })
   test('default', async () => {
     await handleCommand(async function (git) {
-      testGlobal.pkgsTestPublish = function (text) {
+      const cmds = await commandPublish(undefined, git)
+      expect(cmds).not.toBeUndefined()
+      cmds?.forEach(text => {
         expect(text).toBe(packagesPublish[0])
-      }
-      await commandPublish(undefined, git)
+      })
     })
   })
   test('root diff & version beta', async () => {
     await handleCommand(async function (git) {
-      testGlobal.pkgsTestPublish = function (text) {
-        expect(packagesPublish.includes(text)).toBeTruthy()
+      const testCmds1 = function (cmds?: string[]) {
+        cmds?.forEach(text => {
+          expect(packagesPublish.includes(text)).toBeTruthy()
+        })
       }
       // 先打上tag
       const syncVersion = '0.0.1'
       await commandVersion(undefined, git, '0.0.1')
 
-      await commandPublish({
+      const cmds1 = await commandPublish({
         mode: 'diff',
       }, git)
-
+      expect(cmds1).not.toBeUndefined()
+      testCmds1(cmds1)
       // diff beta
       const newVersion = '0.0.1-beta.1'
       await setUpFilesAdded(context, ['packages/a/test'])
@@ -89,46 +91,52 @@ describe(cmd, () => {
       expect(b.version).toBe(syncVersion)
       expect(c.version).toBe(newVersion)
 
-      testGlobal.pkgsTestPublish = function (text) {
-        const diffPublishs = [packagesPublish[1], packagesPublish[3]]
-          .map(item => `${item} --tag beta`)
-        expect(diffPublishs.includes(text)).toBeTruthy()
+      const testCmds2 = (cmds?: string[]) => {
+        cmds?.forEach(text => {
+          const diffPublishs = [packagesPublish[1], packagesPublish[3]]
+            .map(item => `${item} --tag beta`)
+          expect(diffPublishs.includes(text)).toBeTruthy()
+        })
       }
-      await commandPublish({
+      const cmds2 = await commandPublish({
         mode: 'diff',
       }, git)
+      expect(cmds2).not.toBeUndefined()
+      testCmds2(cmds2)
     }, 'multiple')
   })
 
   test(`root diff, ${cmd} sync`, async () => {
     await handleCommand(async function (git) {
-      testGlobal.pkgsTestPublish = function (text) {
-        expect(packagesPublish.slice(1).includes(text)).toBeTruthy()
-      }
-      await commandPublish({
+      const cmds = await commandPublish({
         mode: 'diff',
         [cmd]: {
           mode: 'sync',
         },
       }, git)
+      expect(cmds).not.toBeUndefined()
+      cmds?.forEach(text => {
+        expect(packagesPublish.slice(1).includes(text)).toBeTruthy()
+      })
     }, 'multiple')
   })
 
   test('message', async () => {
     const tag = 'test'
     await handleCommand(async function (git) {
-      testGlobal.pkgsTestPublish = function (text) {
+      const cmds = await commandPublish({
+        [cmd]: {
+          tag,
+        },
+      }, git)
+      expect(cmds).not.toBeUndefined()
+      cmds?.forEach(text => {
         expect(packagesPublish
           .slice(1)
           .map(item => `${item} --tag ${tag}`)
           .includes(text),
         ).toBeTruthy()
-      }
-      await commandPublish({
-        [cmd]: {
-          tag,
-        },
-      }, git)
+      })
     }, 'multiple')
   })
 })
