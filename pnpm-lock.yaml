@@ -139,9 +139,6 @@ devDependencies:
   vitest:
     specifier: ^0.32.0
     version: 0.32.0
-  vitest-when:
-    specifier: ^0.1.2
-    version: 0.1.2(@vitest/expect@0.32.0)(vitest@0.32.0)
 
 packages:
 
@@ -4552,16 +4549,6 @@ packages:
       rollup: 3.25.1
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
-
-  /vitest-when@0.1.2(@vitest/expect@0.32.0)(vitest@0.32.0):
-    resolution: {integrity: sha512-skMFHBsMZ1Dd0Q7Pw0CVF7+3TyQo4b0aogVd1R0cMhdeULE/Uk40Cxf6bouU5bur+tJriVJArWhk0olSHfmh7A==}
-    peerDependencies:
-      '@vitest/expect': '>=0.31.0 <1.0.0'
-      vitest: '>=0.31.0 <1.0.0'
-    dependencies:
-      '@vitest/expect': 0.32.0
-      vitest: 0.32.0
     dev: true
 
   /vitest@0.32.0:
