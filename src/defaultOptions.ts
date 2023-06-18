@@ -6,12 +6,12 @@ interface ExecuteCommandOption {
 }
 
 type PluginOption = [flags: string, description?: string, defaultValue?: string | boolean]
-export interface PluginData {
+export interface PluginData<T extends any[] = any[]> {
   id: string
   command: string
   description: string
   option?: PluginOption[]
-  action: (context: Context, ...args: any[]) => void
+  action: (context: Context, ...args: T) => void
 }
 interface ExecuteCommandVersionOption extends
   Partial<ExecuteCommandOption> {
@@ -26,7 +26,7 @@ export interface ExecuteCommandConfig extends ExecuteCommandOption {
   rootPackage: Boolean
   version: ExecuteCommandVersionOption
   publish: ExecuteCommandPublishOption
-  plugin: Array<PluginData | string>
+  plugins: Array<PluginData | string>
 }
 export const defaultOptions: ExecuteCommandConfig = {
   packagesPath: undefined,
@@ -40,7 +40,7 @@ export const defaultOptions: ExecuteCommandConfig = {
     mode: undefined,
     tag: '',
   },
-  plugin: [
+  plugins: [
     createVersionPlugin(),
     createPublishPlugin(),
     createRunPlugin(),

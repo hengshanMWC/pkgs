@@ -31,7 +31,7 @@ monorepo有两种模式
 根目录下定义`pkgs.json`，pkgs运行时会读取其配置
 
 ## Default
-以下是代码中的默认配置，会读取`pnpm-workspace.yaml`找到多包工作区，如果没找该文件到的话，会默认成`packages/**`
+以下是代码中的默认配置，会读取`pnpm-workspace.yaml`找到多包工作区，如果没找该文件到的话，会默认成`packages/*`
 ```JavaScript
 {
   rootPackage: true,

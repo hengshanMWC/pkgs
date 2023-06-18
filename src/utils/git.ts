@@ -1,7 +1,7 @@
 import simpleGit from 'simple-git'
-import type { SimpleGit } from 'simple-git'
+import type { SimpleGit, FileStatusResult } from 'simple-git'
 import { WARN_NOW_CHANGE } from '../constant'
-import { warn } from './index'
+import { sortFilesName, warn } from './index'
 
 export type TagType = 'publish' | 'version' | string
 const _tagMessage = 'pkgs update tag'
@@ -119,12 +119,16 @@ export async function getStageInfo (
   git: SimpleGit = simpleGit(),
 ): Promise<string[]> {
   const { files } = await git.status()
-  return files.filter(file => file.index).map(file => file.path)
+  return sortFilter(files.filter(file => file.index))
 }
 
 export async function getWorkInfo (
   git: SimpleGit = simpleGit(),
 ): Promise<string[]> {
   const { files } = await git.status()
-  return files.filter(file => file.working_dir).map(file => file.path)
+  return sortFilter(files.filter(file => file.working_dir))
+}
+
+function sortFilter (files: FileStatusResult[]) {
+  return sortFilesName(files.map(file => file.path))
 }

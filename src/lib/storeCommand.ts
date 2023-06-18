@@ -4,7 +4,6 @@ import type { ExecuteCommandConfig } from '../defaultOptions'
 import type { DiffFile, TagType } from '../utils/git'
 import { getRepositoryInfo, getStageInfo, getWorkInfo, gitDiffTag } from '../utils/git'
 import { createCommand, runCmds, warn } from '../utils'
-import { testEmit } from '../utils/test'
 import { WARN_NOW_RUN } from '../constant'
 import type { AnalysisBlockItem, ContextAnalysisDiagram } from './analysisDiagram'
 export {
@@ -33,20 +32,22 @@ class StoreCommand {
 
   async workCommand (type: string) {
     const diffDirs = await this.getWorkDiffFile()
-    await this.commandRun(diffDirs, type)
+    const result = this.commandRun(diffDirs, type)
+    return result
   }
 
   async stageCommand (type: string) {
     const diffDirs = await this.getStageDiffFile()
-    await this.commandRun(diffDirs, type)
+    const result = this.commandRun(diffDirs, type)
+    return result
   }
 
   async repositoryCommand (type: string) {
     const diffDirs = await this.getRepositoryDiffFile(type)
-    const status = await this.commandRun(diffDirs, type)
-    if (status === 'allSuccess') {
-      gitDiffTag(type)
-    }
+    const result = this.commandRun(diffDirs, type)
+    // TODO 到时候提出来给调用方
+    await gitDiffTag(type)
+    return result
   }
 
   async forRepositoryDiffPack (callback: ForPackCallback, type: TagType) {
@@ -84,7 +85,6 @@ class StoreCommand {
     const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
     for (let index = 0; index < relatedPackagesDir.length; index++) {
       const dir = relatedPackagesDir[index]
-
       await callback(this.contextAnalysisDiagram.analysisDiagram[dir], index)
     }
   }
@@ -93,19 +93,13 @@ class StoreCommand {
     return this.rootPackage ? dirs : dirs.filter(dir => dir)
   }
 
-  private async commandRun (diffDirs: string[], type: string) {
+  private commandRun (diffDirs: string[], type: string) {
     const dirs = this.getRunDirs(diffDirs)
     const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(dirs)
     const cmds = createCommand(type, orderDirs)
 
     if (cmds.length) {
-      if (process.env.NODE_ENV === 'test') {
-        testEmit(cmds)
-        return 'allSuccess'
-      }
-      else {
-        return runCmds(cmds)
-      }
+      return runCmds(cmds)
     }
     else {
       warn(WARN_NOW_RUN)

@@ -1,5 +1,6 @@
 import type { IPackageJson } from '@ts-type/package-dts'
 import { RELY_KEYS } from '../constant'
+import { sortFilesName } from '.'
 export function getPackagesName (packagesJSON: IPackageJson[]): string[] {
   return packagesJSON
     .map(item => item.name)
@@ -12,7 +13,7 @@ export function createRelyMyDirMap (packagesName: string[]) {
   })
   return result
 }
-export function setRelyMyDirhMap (
+export function setRelyMyDirMap (
   dir: string,
   packageJson: IPackageJson,
   relyMyMp: Record<string, string[]>,
@@ -24,7 +25,7 @@ export function setRelyMyDirhMap (
     return
   }
 
-  Object.keys(relyMyMp)
+  sortFilesName(Object.keys(relyMyMp))
     .forEach(key => {
       const dependenciesValue = dependencies[key]
 

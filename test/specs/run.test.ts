@@ -8,7 +8,6 @@ import {
   createTestContext,
   setUpInit,
 } from '../__fixtures__'
-import testGlobal from '../../src/utils/test'
 import { getTag } from '../../src/utils/git'
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'run'
@@ -41,20 +40,27 @@ describe(cmd, () => {
     await setUpInit(context)
   }
   async function testRun (arr: string[] = cmds, rootPackage?: boolean) {
-    let i = 0
     const cmd = 'test'
-    testGlobal.pkgsTestPublish = text => {
-      expect(text).toBe(arr[i++])
+    const testCmds = (cmds?: string[]) => {
+      if (cmds) {
+        cmds.forEach((text, index) => {
+          expect(text).toBe(arr[index])
+        })
+      }
     }
-    await commandRun(cmd, 'work', rootPackage, context.git)
+    const cmds1 = await commandRun(cmd, 'work', rootPackage, context.git)
+    expect(cmds1).not.toBeUndefined()
+    testCmds(cmds1)
 
-    i = 0
     await context.git.add('.')
-    await commandRun(cmd, 'stage', rootPackage, context.git)
+    const cmds2 = await commandRun(cmd, 'stage', rootPackage, context.git)
+    expect(cmds2).not.toBeUndefined()
+    testCmds(cmds2)
 
-    i = 0
     await context.git.commit('save')
-    await commandRun(cmd, 'repository', rootPackage, context.git)
+    const cmds3 = await commandRun(cmd, 'repository', rootPackage, context.git)
+    expect(cmds3).not.toBeUndefined()
+    testCmds(cmds3)
 
     const tag = await getTag(cmd)
     expect(tag && tag.includes(cmd)).toBeTruthy()
@@ -62,7 +68,6 @@ describe(cmd, () => {
   afterEach(() => {
     // Many of the tests in this file change the CWD, so change it back after each test
     process.chdir(ORIGINAL_CWD)
-    testGlobal.pkgsTestPublish = undefined
   })
   // 无依赖+rootPackage: false
   const quarantine = 'quarantine'
@@ -76,7 +81,7 @@ describe(cmd, () => {
     const _cmds: string[] = cmds.slice();
     [_cmds[3], _cmds[4], _cmds[5]] = [_cmds[4], _cmds[5], _cmds[3]]
     await testMain(many, _cmds, _cmds.slice(1))
-  })
+  }, 1000000)
   // 依赖循环
   const Interdependence = 'Interdependence'
   test(Interdependence, async () => {

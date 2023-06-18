@@ -3,8 +3,10 @@ import { readJSON, writeJSON, readFile } from 'fs-extra'
 import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
+import strip from 'strip-json-comments'
 import { DEPENDENCY_PREFIX } from '../constant'
 import type { ExecuteCommandConfig } from '../defaultOptions'
+export const isTest = process.env.NODE_ENV === 'test'
 export async function getJSON (dir: string): Promise<IPackageJson> {
   try {
     return await readJSON(dir)
@@ -76,11 +78,11 @@ function assignOption (
     if (object.publish.tag !== undefined) {
       templateObject.publish.tag = object.publish.tag
     }
-    if (object.plugin !== undefined) {
-      if (templateObject.plugin === undefined) {
-        templateObject.plugin = []
+    if (object.plugins !== undefined) {
+      if (templateObject.plugins === undefined) {
+        templateObject.plugins = []
       }
-      templateObject.plugin = templateObject.plugin.concat(object.plugin)
+      templateObject.plugins = templateObject.plugins.concat(object.plugins)
     }
   }
   return templateObject
@@ -100,27 +102,23 @@ export function createCommand (cmd: string, dirs: string[]) {
   return dirs
     .map(dir => `${dir ? `cd ${dir} && ` : ''}npm run ${cmd}`)
 }
-export type statusRunCmds = 'allSuccess' | 'allError' | 'error'
-export function runCmds (cmds: string[]): statusRunCmds {
-  let status: statusRunCmds = 'allSuccess'
-  let index = 1
+export function runCmds (cmds: string[]) {
+  const result: string[] = []
   cmds.forEach(cmd => {
     try {
-      execSync(cmd, {
-        stdio: 'inherit',
-      })
+      if (!isTest) {
+        execSync(cmd, {
+          stdio: 'inherit',
+        })
+      }
+
+      result.push(cmd)
     }
     catch (e) {
-      if (index++ < cmds.length) {
-        status = 'error'
-      }
-      else {
-        status = 'allError'
-      }
       err(`${e}`)
     }
   })
-  return status
+  return result
 }
 
 export async function getYamlPackages (): Promise<string[]> {
@@ -134,4 +132,19 @@ export function getArray<T> (params: T | T[]): T[] {
 
 export function getExportDefault (code: any) {
   return code?.__esModule ? code.default : code
+}
+
+export function jsoncParse (data: string) {
+  try {
+    return new Function(`return ${strip(data).trim()}`)()
+  }
+  catch {
+    // Silently ignore any error
+    // That's what tsc/jsonc-parser did after all
+    return {}
+  }
+}
+
+export function sortFilesName (files: string[]) {
+  return files.slice().sort((a, b) => a.localeCompare(b))
 }

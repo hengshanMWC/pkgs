@@ -1,5 +1,8 @@
-#!/usr/bin/env node
 const {
   cliMain,
 } = require('../dist/pkgs.cjs.min')
-cliMain(process.argv)
+const pakcage = require('../package.json')
+function main (argv) {
+  cliMain(argv, pakcage.version)
+}
+module.exports = main

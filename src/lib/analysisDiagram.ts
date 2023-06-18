@@ -1,13 +1,13 @@
 import type IPackageJson from '@ts-type/package-dts'
 import { readJSON } from 'fs-extra'
 import { getPackagesDir } from '@abmao/forb'
-import { getJSONs } from '../utils'
+import { getJSONs, sortFilesName } from '../utils'
 import {
   createRelyMyDirMap,
   getMyRelyPackageName,
   getPackagesName,
   getRelyAttrs,
-  setRelyMyDirhMap,
+  setRelyMyDirMap,
 } from '../utils/analysisDiagram'
 import type { ExecuteCommandConfig } from '../defaultOptions'
 
@@ -36,7 +36,7 @@ class ContextAnalysisDiagram {
   // 获取所有包目录路径
   get allDirs () {
     if (this.analysisDiagram) {
-      return Object.keys(this.analysisDiagram)
+      return sortFilesName(Object.keys(this.analysisDiagram))
     }
     else {
       return []
@@ -136,7 +136,7 @@ class ContextAnalysisDiagram {
   }
 
   getRelatedPackagesDir (files: string[] | boolean | undefined) {
-    const keys = Object.keys(this.analysisDiagram)
+    const keys = sortFilesName(Object.keys(this.analysisDiagram))
     if (files === true) {
       return keys
     }
@@ -185,7 +185,7 @@ class ContextAnalysisDiagram {
     // 组装依赖，生成图表信息
     dirs.forEach((dir, index) => {
       const packageJson = packagesJSON[index]
-      setRelyMyDirhMap(dir, packageJson, relyMyMap)
+      setRelyMyDirMap(dir, packageJson, relyMyMap)
       const names = getMyRelyPackageName(packagesName, packageJson)
       const myRelyDir = names.map(name => {
         const i = packagesJSON.findIndex(item => item.name === name)
@@ -244,7 +244,6 @@ class ContextAnalysisDiagram {
           cd()
         }
       })
-
       cd()
     })
   }
