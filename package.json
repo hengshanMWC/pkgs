@@ -17,25 +17,25 @@
     "type": "git",
     "url": "git+https://github.com/hengshanMWC/pkgs.git"
   },
-  "main": "dist/pkgs.cjs.min.js",
-  "module": "dist/pkgs.esm.min.js",
-  "types": "types/src",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "files": [
     "bin",
-    "dist",
-    "types"
+    "dist"
   ],
   "bin": {
     "pkgs": "bin/cli.js"
   },
   "scripts": {
+    "build:npm": "tsup src/index.ts --format esm,cjs --dts-resolve --target node12.20.0",
     "test": "vitest",
     "test:cov": "vitest --coverage",
     "prepare": "husky install",
     "lint": "eslint --ext=js,ts,json,md .",
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",
     "build": "esno ./scripts/build.ts && tsc --emitDeclarationOnly",
-    "build:npm": "cross-env NODE_ENV=npm npm run build",
+    "build:npm2": "cross-env NODE_ENV=npm npm run build",
     "release": "esno ./scripts/release.ts",
     "bin": "node bin/cli.js"
   },
@@ -88,6 +88,7 @@
     "rollup": "^2.70.1",
     "rollup-plugin-esbuild": "^4.8.2",
     "strip-ansi": "^7.0.1",
+    "tsup": "^7.0.0",
     "typescript": "^4.6.2",
     "validate-npm-package-name": "^3.0.0",
     "vite": "^4.3.9",
