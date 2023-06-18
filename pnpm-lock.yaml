@@ -9,8 +9,8 @@ dependencies:
     specifier: ^0.0.1
     version: 0.0.1
   '@abmao/forb':
-    specifier: ^2.0.2
-    version: 2.0.2
+    specifier: ^2.0.3
+    version: 2.0.3
   bundle-require:
     specifier: ^4.0.1
     version: 4.0.1(esbuild@0.18.3)
@@ -197,8 +197,8 @@ packages:
       - supports-color
     dev: true
 
-  /@abmao/forb@2.0.2:
-    resolution: {integrity: sha512-BufUE0hyoB7Fq2Q+CuJyOaz65EE/tqed46hm4x78Ztl40Hh0Doj2C4L0lOVGz2acmysED0Oj4K3FgoWO73nTAQ==}
+  /@abmao/forb@2.0.3:
+    resolution: {integrity: sha512-KWk3RKT5oxm0dKaZQlCN3PpVxw1vy8x6qwe6xpeYJftzf2Q3qTMUbF5QQ2XENqt8rtfKJC8LpdLhDZPa0RTJ/g==}
     dependencies:
       globby: 13.1.4
     dev: false
