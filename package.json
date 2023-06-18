@@ -1,6 +1,6 @@
 {
   "name": "@abmao/pkgs",
-  "version": "1.0.4-beta.5",
+  "version": "1.0.4-beta.6",
   "packageManager": "pnpm@7.21.0",
   "description": "Simple monorepo combined with pnpm",
   "keywords": [
