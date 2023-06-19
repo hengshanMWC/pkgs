@@ -33,7 +33,7 @@
     "pkgs": "bin/cli.js"
   },
   "scripts": {
-    "build:npm": "tsup src/index.ts --format esm,cjs --dts-resolve --target node14",
+    "build": "tsup src/index.ts --format esm,cjs --dts-resolve --target node14",
     "test": "vitest",
     "test:cov": "vitest --coverage",
     "prepare": "husky install",
@@ -46,9 +46,6 @@
     "url": "https://github.com/hengshanMWC/pkgs/issues"
   },
   "homepage": "https://github.com/hengshanMWC/pkgs#readme",
-  "peerDependencies": {
-    "esbuild": "*"
-  },
   "dependencies": {
     "@abmao/bump": "^0.0.1",
     "@abmao/forb": "^2.0.4",
@@ -73,8 +70,6 @@
     "@vitest/coverage-v8": "^0.32.0",
     "c8": "^7.11.0",
     "cross-env": "^7.0.3",
-    "esbuild": "^0.18.3",
-    "esbuild-register": "^3.3.2",
     "eslint": "^8.11.0",
     "esno": "^0.14.1",
     "husky": "^7.0.4",
