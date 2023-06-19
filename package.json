@@ -60,7 +60,7 @@
     "fs-extra": "^10.0.1",
     "joycon": "^3.1.1",
     "js-yaml": "^4.1.0",
-    "plugin-group": "^1.0.4",
+    "plugin-group": "^1.0.5",
     "simple-git": "^3.4.0"
   },
   "devDependencies": {
