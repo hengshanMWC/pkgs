@@ -1,6 +1,6 @@
 const {
   cliMain,
-} = require('../dist/pkgs.cjs.min')
+} = require('../dist/index.js')
 const pakcage = require('../package.json')
 function main (argv) {
   cliMain(argv, pakcage.version)
