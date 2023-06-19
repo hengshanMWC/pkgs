@@ -42,7 +42,8 @@ describe(cmd, () => {
 
     const tagCommitId = await tagExpect('publish', git)
     const newCommitId = await getNewestCommitId(git)
-    expect(newCommitId.includes(tagCommitId)).toBeTruthy()
+    expect(tagCommitId).not.toBeUndefined()
+    tagCommitId && expect(newCommitId.includes(tagCommitId)).toBeTruthy()
   }
   function getPackages () {
     return Promise.all(['a', 'b', 'c'].map(item => {
