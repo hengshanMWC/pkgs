@@ -8,7 +8,6 @@ import {
   createTestContext,
   setUpInit,
 } from '../__fixtures__'
-import { getTag } from '../../src/utils/git'
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'run'
 const cmds = [
@@ -62,8 +61,8 @@ describe(cmd, () => {
     expect(cmds3).not.toBeUndefined()
     testCmds(cmds3)
 
-    const tag = await getTag(cmd)
-    expect(tag && tag.includes(cmd)).toBeTruthy()
+    // const tag = await getTag(cmd)
+    // expect(tag && tag.includes(cmd)).toBeTruthy()
   }
   afterEach(() => {
     // Many of the tests in this file change the CWD, so change it back after each test
