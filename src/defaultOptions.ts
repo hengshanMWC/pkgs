@@ -1,4 +1,4 @@
-import { createInitPlugin, createRunPlugin, createTagPlugin, createVersionPlugin, createPublishPlugin } from './command'
+import { createInitPlugin, createRunPlugin, createVersionPlugin, createPublishPlugin } from './command'
 import type { Context } from './lib/context'
 type Type = 'sync' | 'diff'
 interface ExecuteCommandOption {
@@ -23,14 +23,12 @@ interface ExecuteCommandPublishOption extends
 }
 export interface ExecuteCommandConfig extends ExecuteCommandOption {
   packagesPath: string | string[] | undefined
-  rootPackage: Boolean
   version: ExecuteCommandVersionOption
   publish: ExecuteCommandPublishOption
   plugins: Array<PluginData | string>
 }
 export const defaultOptions: ExecuteCommandConfig = {
   packagesPath: undefined,
-  rootPackage: true,
   mode: 'sync',
   version: {
     mode: undefined,
@@ -45,6 +43,5 @@ export const defaultOptions: ExecuteCommandConfig = {
     createPublishPlugin(),
     createRunPlugin(),
     createInitPlugin(),
-    createTagPlugin(),
   ],
 }
