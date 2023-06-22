@@ -4,11 +4,11 @@ import colors from 'colors'
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
 import { gt } from 'semver'
-import { gitSyncSave, gitDiffSave, gitTemporary, getVersionTag } from '../../utils/git'
+import { gitSyncSave, gitDiffSave, gitTemporary, getTagVersion } from '../../utils/git'
 import {
   Context,
 } from '../../lib/context'
-import { warn, writeFiles } from '../../utils'
+import { isTest, warn, writeFiles } from '../../utils'
 import type { WriteObject } from '../../utils'
 import { dependentSearch } from '../../utils/packageJson'
 import { WARN_NOW_VERSION } from '../../constant'
@@ -54,9 +54,8 @@ export function createVersionPlugin (): PluginData {
 
 // 获取仓库最新版本对应的包路径
 async function versionTagToDir (context: Context) {
-  const versionTag = await getVersionTag('v*', context.storeCommand.git)
-  if (versionTag) {
-    const version = versionTag.slice(1)
+  const version = await getTagVersion(context)
+  if (version) {
     const index = context.contextAnalysisDiagram.allPackagesJSON
       .findIndex(packageJson => packageJson.version === version)
     if (index !== -1) {
@@ -67,7 +66,6 @@ async function versionTagToDir (context: Context) {
 
 // 获取包里面版本最高的包路径
 function getVersionMax (context: Context) {
-  // TODO 需要一个版本判断
   return context.contextAnalysisDiagram.allDirs.reduce((a, b) => {
     return gt(b, a) ? b : a
   })
@@ -81,14 +79,14 @@ async function getSyncTargetVersionDir (context: Context) {
   }
   return getVersionMax(context)
 }
-async function handleSyncVersion (context: Context, appointVersion?: string) {
+async function getChangeVersion (context: Context, appointVersion?: string) {
   const dir = await getSyncTargetVersionDir(context)
   const analysisBlock = context.contextAnalysisDiagram.analysisDiagram[dir]
   const oldVersion = analysisBlock.packageJson.version
   const version = await changeVersion(dir, appointVersion)
 
   if (oldVersion === version) {
-    if (process.env.NODE_ENV === 'test') {
+    if (isTest) {
       throw new Error(WARN_NOW_VERSION)
     }
     else {
@@ -96,6 +94,10 @@ async function handleSyncVersion (context: Context, appointVersion?: string) {
       process.exit()
     }
   }
+  return version
+}
+async function handleSyncVersion (context: Context, appointVersion?: string) {
+  const version = await getChangeVersion(context, appointVersion)
 
   const changes: WriteObject[] = []
 

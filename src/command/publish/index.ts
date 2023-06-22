@@ -3,10 +3,10 @@ import type { IPackageJson } from '@ts-type/package-dts'
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
 import { Context } from '../../lib/context'
-import { gitSyncPublishTag } from '../../utils/git'
 import { cdDir, isTest } from '../../utils'
 import { organization, npmTag } from '../../utils/regExp'
 import type { ExecuteCommandConfig, PluginData } from '../../defaultOptions'
+import { getTagVersion } from '../../utils/git'
 function main (context: Context) {
   const mode = context.getCorrectOptionValue('publish', 'mode')
 
@@ -43,16 +43,21 @@ export function createPublishPlugin (): PluginData {
   }
 }
 async function handleSyncPublish (context: Context) {
+  const version = await getTagVersion(context)
+  const { allPackagesJSON, allDirs } = context.contextAnalysisDiagram
   const commands: string[] = []
-  for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
-    const command = await implementPublish(
-      context.contextAnalysisDiagram.allPackagesJSON[index],
-      context.contextAnalysisDiagram.allDirs[index],
-      context.config.publish.tag,
-    )
-    command && commands.push(command)
+  for (let index = 0; index < allPackagesJSON.length; index++) {
+    const packageJson = allPackagesJSON[index]
+    // TODO 是否有必要设置成包的版本必须比git的版本高
+    if (version !== packageJson.version) {
+      const command = await implementPublish(
+        packageJson,
+        allDirs[index],
+        context.config.publish.tag,
+      )
+      command && commands.push(command)
+    }
   }
-  await gitSyncPublishTag(undefined, context.storeCommand.git)
   return commands
 }
 async function handleDiffPublish (context: Context) {
@@ -65,7 +70,6 @@ async function handleDiffPublish (context: Context) {
     )
     command && commands.push(command)
   })
-  // await gitDiffTag('publish', undefined, context.storeCommand.git)
   return commands
 }
 async function implementPublish (

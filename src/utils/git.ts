@@ -2,6 +2,7 @@ import simpleGit from 'simple-git'
 import type { SimpleGit, FileStatusResult } from 'simple-git'
 import type IPackageJson from '@ts-type/package-dts'
 import { WARN_NOW_CHANGE } from '../constant'
+import type { Context } from '../lib'
 import { sortFilesName, warn } from './index'
 
 export type TagType = 'publish' | 'version' | string
@@ -13,12 +14,6 @@ export async function gitSyncSave (
 ) {
   await git.commit(`${message} v${version}`)
   await gitTag(version, _tagMessage, git)
-}
-export async function gitSyncPublishTag (
-  tagMessage: string = _tagMessage,
-  git: SimpleGit = simpleGit(),
-) {
-  await git.tag(['-a', `sync${Date.now()}-publish-pkg`, '-m', tagMessage])
 }
 export async function gitDiffSave (
   packageJsonList: IPackageJson[],
@@ -142,4 +137,11 @@ export async function getWorkInfo (
 
 function sortFilter (files: FileStatusResult[]) {
   return sortFilesName(files.map(file => file.path))
+}
+
+export async function getTagVersion (context: Context) {
+  const versionTag = await getVersionTag('v*', context.storeCommand.git)
+  if (versionTag) {
+    return versionTag.slice(1)
+  }
 }
