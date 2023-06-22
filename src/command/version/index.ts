@@ -3,7 +3,8 @@ import { versionBumpInfo } from '@abmao/bump'
 import colors from 'colors'
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
-import { gitSyncSave, gitDiffSave, gitTemporary } from '../../utils/git'
+import { gt } from 'semver'
+import { gitSyncSave, gitDiffSave, gitTemporary, getVersionTag } from '../../utils/git'
 import {
   Context,
 } from '../../lib/context'
@@ -12,7 +13,6 @@ import type { WriteObject } from '../../utils'
 import { dependentSearch } from '../../utils/packageJson'
 import { WARN_NOW_VERSION } from '../../constant'
 import type { AnalysisBlockItem, SetAnalysisBlockObject } from '../../lib/analysisDiagram'
-import { ContextAnalysisDiagram } from '../../lib/analysisDiagram'
 import type { PluginData, ExecuteCommandConfig } from '../../defaultOptions'
 async function main (context: Context, appointVersion?: string) {
   const mode = context.getCorrectOptionValue('version', 'mode')
@@ -51,9 +51,41 @@ export function createVersionPlugin (): PluginData {
     },
   }
 }
+
+// 获取仓库最新版本对应的包路径
+async function versionTagToDir (context: Context) {
+  const versionTag = await getVersionTag('v*', context.storeCommand.git)
+  if (versionTag) {
+    const version = versionTag.slice(1)
+    const index = context.contextAnalysisDiagram.allPackagesJSON
+      .findIndex(packageJson => packageJson.version === version)
+    if (index !== -1) {
+      return context.contextAnalysisDiagram.allDirs[index]
+    }
+  }
+}
+
+// 获取包里面版本最高的包路径
+function getVersionMax (context: Context) {
+  // TODO 需要一个版本判断
+  return context.contextAnalysisDiagram.allDirs.reduce((a, b) => {
+    return gt(b, a) ? b : a
+  })
+}
+
+// 获取包路径用于做版本升级依据
+async function getSyncTargetVersionDir (context: Context) {
+  const dir = await versionTagToDir(context)
+  if (dir) {
+    return dir
+  }
+  return getVersionMax(context)
+}
 async function handleSyncVersion (context: Context, appointVersion?: string) {
-  const oldVersion = context.contextAnalysisDiagram.rootPackageJson.version
-  const version = await changeVersion(ContextAnalysisDiagram.rootDir, appointVersion)
+  const dir = await getSyncTargetVersionDir(context)
+  const analysisBlock = context.contextAnalysisDiagram.analysisDiagram[dir]
+  const oldVersion = analysisBlock.packageJson.version
+  const version = await changeVersion(dir, appointVersion)
 
   if (oldVersion === version) {
     if (process.env.NODE_ENV === 'test') {
@@ -64,24 +96,18 @@ async function handleSyncVersion (context: Context, appointVersion?: string) {
       process.exit()
     }
   }
-  context.contextAnalysisDiagram.rootPackageJson.version = version
 
-  const changes: WriteObject[] = [
-    {
-      filePath: ContextAnalysisDiagram.rootFilePath,
-      packageJson: context.contextAnalysisDiagram.rootPackageJson,
-    },
-  ]
+  const changes: WriteObject[] = []
 
   // 依赖更新
-  for (let index = 0; index < context.contextAnalysisDiagram.packagesJSON.length; index++) {
-    const packageJson = context.contextAnalysisDiagram.packagesJSON[index]
+  for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
+    const packageJson = context.contextAnalysisDiagram.allPackagesJSON[index]
     const analysisBlock = context.contextAnalysisDiagram.packageJsonToAnalysisBlock(packageJson)
     packageJson.version = version
 
     if (analysisBlock) {
       changes.push({
-        filePath: context.contextAnalysisDiagram.filesPath[index],
+        filePath: context.contextAnalysisDiagram.allFilesPath[index],
         packageJson,
       })
       await changeRelyMyVersion(context, analysisBlock)
@@ -109,20 +135,20 @@ async function handleDiffVersion (context: Context, appointVersion?: string) {
       triggerSign,
       appointVersion,
     )
-  }, 'version')
+  })
   await writeJSONs(triggerSign)
   await gitTemporary(
     [...triggerSign].map(item => item.filePath),
     context.storeCommand.git,
   )
   await gitDiffSave(
-    [...triggerSign].map(({ packageJson }) => {
-      return `${packageJson.name as string}@${packageJson.version}`
-    }),
+    [...triggerSign],
     context.config.version.message,
     context.storeCommand.git,
   )
 }
+
+// 升级包
 async function changeVersionResultItem (
   context: Context,
   analysisBlock: AnalysisBlockItem,
@@ -144,6 +170,8 @@ async function changeVersionResultItem (
     await changeRelyMyVersion(context, analysisBlock, triggerSign, appointVersion)
   }
 }
+
+// 用来升级依赖当前包的包
 async function changeRelyMyVersion (
   context: Context,
   analysisBlock: AnalysisBlockItem,
@@ -151,7 +179,7 @@ async function changeRelyMyVersion (
   appointVersion?: string,
 ) {
   const relyMyDir = analysisBlock.relyMyDir
-  // 没有依赖则跳出去
+  // 没有任务依赖当前包则跳出去
   if (!Array.isArray(relyMyDir)) return
 
   for (let i = 0; i < relyMyDir.length; i++) {

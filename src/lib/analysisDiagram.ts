@@ -1,5 +1,4 @@
 import type IPackageJson from '@ts-type/package-dts'
-import { readJSON } from 'fs-extra'
 import { getPackagesDir } from '@abmao/forb'
 import { getJSONs, sortFilesName } from '../utils'
 import {
@@ -25,9 +24,6 @@ type SetAnalysisBlockObject = Set<AnalysisBlockItem>
 class ContextAnalysisDiagram {
   packagesPath: ExecuteCommandConfig['packagesPath']
   analysisDiagram!: AnalysisDiagram
-  rootPackageJson!: IPackageJson
-  static rootFilePath = 'package.json'
-  static rootDir = ''
 
   constructor (packagesPath: ExecuteCommandConfig['packagesPath']) {
     this.packagesPath = packagesPath
@@ -67,45 +63,12 @@ class ContextAnalysisDiagram {
     }
   }
 
-  // 获取所有子包的所有目录路径
-  get dirs () {
-    if (this.analysisDiagram) {
-      return this.allDirs.filter(key => key)
-    }
-    else {
-      return []
-    }
-  }
-
-  // 获取所有子包package.json文件路径
-  get filesPath () {
-    if (this.analysisDiagram) {
-      return this.dirs
-        .map(key => this.analysisDiagram[key].filePath)
-    }
-    else {
-      return []
-    }
-  }
-
-  // 获取所有子包的package.json
-  get packagesJSON () {
-    if (this.analysisDiagram) {
-      return this.dirs
-        .map(key => this.analysisDiagram[key].packageJson)
-    }
-    else {
-      return []
-    }
-  }
-
   async initData () {
     // 根目录信息
-    this.rootPackageJson = await readJSON(ContextAnalysisDiagram.rootFilePath)
     const values: [string[], string[], IPackageJson[]] = [
-      [ContextAnalysisDiagram.rootDir],
-      [ContextAnalysisDiagram.rootFilePath],
-      [this.rootPackageJson],
+      [],
+      [],
+      [],
     ]
 
     // 子包目录信息
@@ -136,12 +99,8 @@ class ContextAnalysisDiagram {
   }
 
   getRelatedPackagesDir (files: string[] | boolean | undefined) {
-    const keys = sortFilesName(Object.keys(this.analysisDiagram))
-    if (files === true) {
-      return keys
-    }
-    else if (Array.isArray(files)) {
-      return keys.filter(key => files.some(file => file.includes(key)))
+    if (Array.isArray(files)) {
+      return this.allDirs.filter(key => files.some(file => file.includes(key)))
     }
     else {
       return []

@@ -54,9 +54,6 @@ function assignOption (
   if (object.packagesPath !== undefined) {
     templateObject.packagesPath = object.packagesPath
   }
-  if (object.rootPackage !== undefined) {
-    templateObject.rootPackage = object.rootPackage
-  }
   if (object.version !== undefined) {
     if (templateObject.version === undefined) {
       templateObject.version = {}
@@ -100,7 +97,7 @@ export function isVersionStar (version: string) {
 export function createCommand (cmd: string, dirs: string[]) {
   if (!dirs.length) return []
   return dirs
-    .map(dir => `${dir ? `cd ${dir} && ` : ''}npm run ${cmd}`)
+    .map(dir => `${dir ? `cd ${dir} && ` : ''}${cmd}`)
 }
 export function runCmds (cmds: string[]) {
   const result: string[] = []

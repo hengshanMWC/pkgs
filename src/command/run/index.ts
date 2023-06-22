@@ -6,11 +6,8 @@ export {
   commandRun,
   createRunPlugin,
 }
-async function main (context: Context, cmd: string, mode: RunMode = 'work', rootPackage = true) {
-  context.assignOptions({
-    rootPackage,
-  })
-  const cmds = await context.storeCommand[`${mode}Command`](cmd)
+async function main (context: Context, cmd: string, mode: RunMode = 'work') {
+  const cmds = await context.storeCommand[`${mode}Command`](`npm run ${cmd}`)
   return cmds
 }
 // all
@@ -19,14 +16,13 @@ type RunMode = 'work' | 'stage' | 'repository'
 async function commandRun (
   cmd: string,
   mode?: RunMode,
-  rootPackage?: boolean,
   git: SimpleGit = simpleGit(),
 ) {
   const context = await Context.create(
     undefined,
     git,
   )
-  const cmds = await main(context, cmd, mode, rootPackage)
+  const cmds = await main(context, cmd, mode)
   return cmds
 }
 
@@ -35,11 +31,8 @@ function createRunPlugin (): PluginData {
     id: 'run',
     command: 'run <cmd> [mode]',
     description: 'run diff scripts.\n mode: work | stage | repository, default: work',
-    option: [
-      ['-r <boolean>', 'Include rootPackage', 'true'],
-    ],
-    action: (context, cmd: string, mode?: RunMode, option: { r?: 'false' | 'true' } = {}) => {
-      return main(context, cmd, mode, option.r !== 'false')
+    action: (context, cmd: string, mode?: RunMode) => {
+      return main(context, cmd, mode)
     },
   }
 }

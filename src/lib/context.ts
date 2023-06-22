@@ -38,7 +38,7 @@ export class Context {
     context.contextAnalysisDiagram = contextAnalysisDiagram
 
     // 命令系统
-    context.storeCommand = new StoreCommand(contextAnalysisDiagram, context.config.rootPackage, git)
+    context.storeCommand = new StoreCommand(contextAnalysisDiagram, git)
 
     return context
   }
@@ -56,9 +56,6 @@ export class Context {
 
   assignOptions (...config: Partial<ExecuteCommandConfig>[]) {
     this.config = assignOptions(this.config, ...config)
-    if (this.storeCommand) {
-      this.storeCommand.rootPackage = this.config.rootPackage
-    }
     if (this.contextAnalysisDiagram) {
       this.contextAnalysisDiagram.packagesPath = this.config.packagesPath
     }

@@ -3,7 +3,7 @@ import type { IPackageJson } from '@ts-type/package-dts'
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
 import { Context } from '../../lib/context'
-import { gitDiffTag, gitSyncPublishTag } from '../../utils/git'
+import { gitSyncPublishTag } from '../../utils/git'
 import { cdDir, isTest } from '../../utils'
 import { organization, npmTag } from '../../utils/regExp'
 import type { ExecuteCommandConfig, PluginData } from '../../defaultOptions'
@@ -64,8 +64,8 @@ async function handleDiffPublish (context: Context) {
       context.config.publish.tag,
     )
     command && commands.push(command)
-  }, 'publish')
-  await gitDiffTag('publish', undefined, context.storeCommand.git)
+  })
+  // await gitDiffTag('publish', undefined, context.storeCommand.git)
   return commands
 }
 async function implementPublish (
