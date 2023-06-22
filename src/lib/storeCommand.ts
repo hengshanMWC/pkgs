@@ -21,24 +21,24 @@ class StoreCommand {
   }
 
   // async allCommand (type: string) {
-  //   const diffDirs = await this.getWorkDiffFile()
+  //   const diffDirs = await this.workDiffFile()
   //   await this.commandRun(diffDirs, type)
   // }
 
   async workCommand (cmd: string) {
-    const diffDirs = await this.getWorkDiffFile()
+    const diffDirs = await this.workDiffFile()
     const result = this.commandRun(diffDirs, cmd)
     return result
   }
 
   async stageCommand (cmd: string) {
-    const diffDirs = await this.getStageDiffFile()
+    const diffDirs = await this.stageDiffFile()
     const result = this.commandRun(diffDirs, cmd)
     return result
   }
 
   async repositoryCommand (cmd: string) {
-    const diffDirs = await this.getRepositoryDiffFile()
+    const diffDirs = await this.repositoryDiffFile()
     const result = this.commandRun(diffDirs, cmd)
     return result
   }
@@ -75,7 +75,7 @@ class StoreCommand {
     await this.forPack(relatedPackagesDir, callback)
   }
 
-  private async getWorkDiffFile () {
+  async workDiffFile () {
     const files = await getWorkInfo(this.git)
     const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
@@ -85,7 +85,7 @@ class StoreCommand {
     )
   }
 
-  private async getStageDiffFile () {
+  async stageDiffFile () {
     const files = await getStageInfo(this.git)
     const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
@@ -95,7 +95,7 @@ class StoreCommand {
     )
   }
 
-  private async getRepositoryDiffFile () {
+  async repositoryDiffFile () {
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
       this.forRepositoryDiffPack(source => {
         cd(source)
@@ -103,14 +103,7 @@ class StoreCommand {
     )
   }
 
-  private async forPack (relatedPackagesDir: string[], callback: ForPackCallback) {
-    for (let index = 0; index < relatedPackagesDir.length; index++) {
-      const dir = relatedPackagesDir[index]
-      await callback(this.contextAnalysisDiagram.analysisDiagram[dir], index)
-    }
-  }
-
-  private commandRun (diffDirs: string[], cmd: string) {
+  commandRun (diffDirs: string[], cmd: string) {
     const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(diffDirs)
     const cmds = createCommand(cmd, orderDirs)
 
@@ -119,6 +112,13 @@ class StoreCommand {
     }
     else {
       warn(WARN_NOW_RUN)
+    }
+  }
+
+  private async forPack (relatedPackagesDir: string[], callback: ForPackCallback) {
+    for (let index = 0; index < relatedPackagesDir.length; index++) {
+      const dir = relatedPackagesDir[index]
+      await callback(this.contextAnalysisDiagram.analysisDiagram[dir], index)
     }
   }
 }
