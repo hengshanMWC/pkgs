@@ -11,7 +11,6 @@ import {
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'run'
 const cmds = [
-  'npm run test',
   'cd packages/a && npm run test',
   'cd packages/b && npm run test',
   'cd packages/c && npm run test',
@@ -22,12 +21,11 @@ const cmds = [
 describe(cmd, () => {
   let context: SimpleGitTestContext
   const prefix = `${cmd}-test`
-  async function testMain (dir: string, arr: string[], arr2: string[]) {
+  async function testMain (dir: string, arr: string[]) {
     await handleCommand(dir)
     await testRun(arr)
     const filePath = path.resolve(context._root, dir, 'packages/a/a')
     await writeFile(filePath, context._root)
-    await testRun(arr2, false)
   }
   async function handleCommand (dir) {
     context = await createTestContext(prefix, dir)
@@ -38,7 +36,7 @@ describe(cmd, () => {
     process.chdir(path.resolve(context._root, dir))
     await setUpInit(context)
   }
-  async function testRun (arr: string[] = cmds, rootPackage?: boolean) {
+  async function testRun (arr: string[] = cmds) {
     const cmd = 'test'
     const testCmds = (cmds?: string[]) => {
       if (cmds) {
@@ -47,17 +45,17 @@ describe(cmd, () => {
         })
       }
     }
-    const cmds1 = await commandRun(cmd, 'work', rootPackage, context.git)
+    const cmds1 = await commandRun(cmd, 'work', context.git)
     expect(cmds1).not.toBeUndefined()
     testCmds(cmds1)
 
     await context.git.add('.')
-    const cmds2 = await commandRun(cmd, 'stage', rootPackage, context.git)
+    const cmds2 = await commandRun(cmd, 'stage', context.git)
     expect(cmds2).not.toBeUndefined()
     testCmds(cmds2)
 
     await context.git.commit('save')
-    const cmds3 = await commandRun(cmd, 'repository', rootPackage, context.git)
+    const cmds3 = await commandRun(cmd, 'repository', context.git)
     expect(cmds3).not.toBeUndefined()
     testCmds(cmds3)
 
@@ -71,20 +69,19 @@ describe(cmd, () => {
   // 无依赖+rootPackage: false
   const quarantine = 'quarantine'
   test(quarantine, async () => {
-    const _cmds = cmds.slice()
-    await testMain(quarantine, _cmds, _cmds.slice(1))
+    await testMain(quarantine, [cmds[0], cmds[1]])
   })
   // 复杂依赖
   const many = 'many'
   test(many, async () => {
     const _cmds: string[] = cmds.slice();
-    [_cmds[3], _cmds[4], _cmds[5]] = [_cmds[4], _cmds[5], _cmds[3]]
-    await testMain(many, _cmds, _cmds.slice(1))
-  }, 1000000)
+    [_cmds[2], _cmds[3], _cmds[4]] = [_cmds[3], _cmds[4], _cmds[2]]
+    await testMain(many, _cmds)
+  })
   // 依赖循环
   const Interdependence = 'Interdependence'
   test(Interdependence, async () => {
-    const _cmds: string[] = [cmds[0], ...cmds.slice(1, 4).reverse()]
-    await testMain(Interdependence, _cmds, _cmds.slice(1))
+    const _cmds: string[] = cmds.slice(0, 3).reverse()
+    await testMain(Interdependence, _cmds)
   })
 })
