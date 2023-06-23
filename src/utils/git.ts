@@ -13,7 +13,7 @@ export async function gitSyncSave (
   git: SimpleGit = simpleGit(),
 ) {
   await git.commit(`${message} v${version}`)
-  await gitTag(version, _tagMessage, git)
+  await gitTag(`v${version}`, _tagMessage, git)
 }
 export async function gitDiffSave (
   packageJsonList: IPackageJson[],
