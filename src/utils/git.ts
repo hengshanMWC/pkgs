@@ -53,22 +53,11 @@ export async function getVersionTag (version: string, git: SimpleGit = simpleGit
       version,
       '--abbrev=0',
     ])
-    return result
+    return result.replace(/\n$/, '')
   }
   catch {
 
   }
-}
-// 废弃
-export async function getTag (type: TagType, git: SimpleGit = simpleGit()) {
-  const tags = await git.tag([
-    '-l',
-    `*-${type}-pkg`,
-  ])
-  // 获取gittag
-  const versionRegExp = new RegExp(`-${type}-pkg$`)
-  const tagArr = tags.trim().split('\n').reverse()
-  return tagArr.find(item => versionRegExp.test(item))
 }
 
 export async function getNewestCommitId (git: SimpleGit = simpleGit()) {

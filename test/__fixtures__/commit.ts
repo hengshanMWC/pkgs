@@ -1,15 +1,15 @@
 import path from 'path'
 import type { SimpleGit } from 'simple-git'
-import type { TagType } from '../../src/utils/git'
 import {
-  getTag,
+  getVersionTag,
   getTagCommitId,
 } from '../../src/utils/git'
 import {
   io,
 } from '.'
-export async function tagExpect (type: TagType, git: SimpleGit) {
-  const tag = await getTag(type, git)
+export async function tagExpect (version: string, git: SimpleGit) {
+  const tag = await getVersionTag(version, git) as string
+  expect(tag).not.toBeUndefined()
   const tagCommitId = await getTagCommitId(tag, git)
   expect(tagCommitId).not.toBeUndefined()
   return tagCommitId
