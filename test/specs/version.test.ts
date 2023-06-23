@@ -77,7 +77,7 @@ describe(cmd, () => {
   //     expect(err.message).toBe(WARN_NOW_VERSION)
   //   }
   // }, 100000)
-  test.only('root diff', async () => {
+  test('root diff', async () => {
     const newVersion = '1.0.0'
     let git!: SimpleGit
     await handleCommand(async function () {
@@ -116,7 +116,7 @@ describe(cmd, () => {
   test(`root diff, ${cmd} sync`, async () => {
     const newVersion = '0.0.1'
     let git!: SimpleGit
-    const { newCommitId } = await handleCommand(async function () {
+    await handleCommand(async function () {
       git = newSimpleGit(context.root)
       process.chdir(context.root)
       await commandVersion({
@@ -129,6 +129,9 @@ describe(cmd, () => {
     })
 
     // packages test
+    const tagCommitId = await tagExpect(`v${newVersion}`, git)
+    const newCommitId = await getNewestCommitId(git)
+    expect(newCommitId.includes(tagCommitId)).toBeTruthy()
     const [a, b, c] = await getPackages()
     expect(a.version).toBe(newVersion)
     expect(b.version).toBe(newVersion)
@@ -173,5 +176,5 @@ describe(cmd, () => {
       '-s',
     ])
     expect(gitMessage.includes(message)).toBeTruthy()
-  })
+  }, 1000000)
 })
