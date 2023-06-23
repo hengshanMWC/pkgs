@@ -45,14 +45,19 @@ export async function gitTag (
   await git.tag(['-a', version, '-m', packagesMessage])
 }
 export async function getVersionTag (version: string, git: SimpleGit = simpleGit()) {
-  const result = await git.raw([
-    'describe',
-    '--tags',
-    '--match',
-    version,
-    '--abbrev=0',
-  ])
-  return result
+  try {
+    const result = await git.raw([
+      'describe',
+      '--tags',
+      '--match',
+      version,
+      '--abbrev=0',
+    ])
+    return result
+  }
+  catch {
+
+  }
 }
 // 废弃
 export async function getTag (type: TagType, git: SimpleGit = simpleGit()) {
