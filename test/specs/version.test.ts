@@ -33,6 +33,11 @@ describe(cmd, () => {
     })
     await list
   }
+  async function syncVersionDiff (version: string, git: SimpleGit) {
+    const tagCommitId = await tagExpect(`v${version}`, git)
+    const newCommitId = await getNewestCommitId(git)
+    expect(newCommitId.includes(tagCommitId)).toBeTruthy()
+  }
   afterEach(() => {
     // Many of the tests in this file change the CWD, so change it back after each test
     process.chdir(ORIGINAL_CWD)
@@ -63,52 +68,60 @@ describe(cmd, () => {
   //     expect(err.message).toBe(WARN_NOW_VERSION)
   //   }
   // }, 100000)
-  test.only('root diff', async () => {
+  const quarantine = 'quarantine'
+  test(`${quarantine}: default(sync)`, async () => {
     const newVersion = '1.0.0'
-    context = await handleCommand('quarantine', prefix)
+    context = await handleCommand(quarantine, prefix)
+    const git = newSimpleGit(context.root)
+    process.chdir(context.root)
+    await commandVersion({}, git, newVersion)
+
+    // packages test
+    const [a, b] = await getPackages(['a', 'b'])
+    await syncVersionDiff(newVersion, git)
+    expect(a.version).toBe(newVersion)
+    expect(b.version).toBe(newVersion)
+  }, 1000000)
+  test(`${quarantine}: diff`, async () => {
+    const newVersion = '1.0.0'
+    context = await handleCommand(quarantine, prefix)
     const git = newSimpleGit(context.root)
     process.chdir(context.root)
     await commandVersion({
       mode: 'diff',
     }, git, newVersion)
-
-    // packages test
     const [a, b] = await getPackages(['a', 'b'])
-    await tagCommit([a, b], newVersion, git)
     expect(a.version).toBe(newVersion)
     expect(b.version).toBe(newVersion)
 
-    // add 1.1.0
-    const addVersion = '1.1.0'
     await setUpFilesAdded(context, ['packages/b/test'])
+    const addVersion = '1.1.0'
     await commandVersion({
       mode: 'diff',
     }, git, addVersion)
-    const [addA, addB] = await getPackages(['a', 'b'])
-    expect(addA.version).toBe(newVersion)
-    expect(addB.version).toBe(addVersion)
+    const [aAdd, bAdd] = await getPackages(['a', 'b'])
+    expect(aAdd.version).toBe(newVersion)
+    expect(bAdd.version).toBe(addVersion)
   })
 
-  // test(`root diff, ${cmd} sync`, async () => {
-  //   const newVersion = '0.0.1'
-  //   let git!: SimpleGit
-  //   await handleCommand(async function () {
-  //     git = newSimpleGit(context.root)
-  //     process.chdir(context.root)
-  //     await commandVersion({
+  // const many = 'many'
+  // test.only(`${many}: diff`, async () => {
+  //   const newVersion = '1.0.0'
+  //   context = await handleCommand(quarantine, prefix)
+  //   const git = newSimpleGit(context.root)
+  //   process.chdir(context.root)
+  //   await commandVersion({
+  //     mode: 'sync',
+  //     [cmd]: {
   //       mode: 'diff',
-  //       [cmd]: {
-  //         mode: 'sync',
-  //       },
-  //     }, git, newVersion)
-  //     return git
-  //   })
+  //     },
+  //   }, git, newVersion)
 
   //   // packages test
   //   const tagCommitId = await tagExpect(`v${newVersion}`, git)
   //   const newCommitId = await getNewestCommitId(git)
   //   expect(newCommitId.includes(tagCommitId)).toBeTruthy()
-  //   const [a, b, c] = await getPackages()
+  //   const [a, b, c, d, e] = await getPackages(['a', 'b', 'c', 'd', 'e'])
   //   expect(a.version).toBe(newVersion)
   //   expect(b.version).toBe(newVersion)
   //   expect(b.dependencies['@test/a']).toBe('workspace:~0.0.0')
