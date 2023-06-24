@@ -1,12 +1,9 @@
 import path from 'path'
-import { writeFile, copy } from 'fs-extra'
+import { writeFile } from 'fs-extra'
 import { commandRun } from '../../src/index'
-import type {
-  SimpleGitTestContext,
-} from '../__fixtures__'
+import type { SimpleGitTestContext } from '../__fixtures__'
 import {
-  createTestContext,
-  setUpInit,
+  handleCommand,
 } from '../__fixtures__'
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'run'
@@ -22,19 +19,10 @@ describe(cmd, () => {
   let context: SimpleGitTestContext
   const prefix = `${cmd}-test`
   async function testMain (dir: string, arr: string[]) {
-    await handleCommand(dir)
+    context = await handleCommand(dir, prefix)
     await testRun(arr)
     const filePath = path.resolve(context._root, dir, 'packages/a/a')
     await writeFile(filePath, context._root)
-  }
-  async function handleCommand (dir) {
-    context = await createTestContext(prefix, dir)
-
-    process.chdir(context._root)
-    await copy(path.resolve(__dirname, '../template', dir), dir)
-
-    process.chdir(path.resolve(context._root, dir))
-    await setUpInit(context)
   }
   async function testRun (arr: string[] = cmds) {
     const cmd = 'test'
