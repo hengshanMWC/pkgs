@@ -33,6 +33,15 @@ describe(cmd, () => {
     })
     await list
   }
+  async function getCommitMessage (git: SimpleGit) {
+    const newCommitId = await getNewestCommitId(git)
+    const gitMessage = await git.log([
+      '-1',
+      '--format=%B',
+      newCommitId,
+    ])
+    return gitMessage.latest?.hash
+  }
   async function syncVersionDiff (version: string, git: SimpleGit) {
     const tagCommitId = await tagExpect(`v${version}`, git)
     const newCommitId = await getNewestCommitId(git)
@@ -69,19 +78,26 @@ describe(cmd, () => {
   //   }
   // }, 100000)
   const quarantine = 'quarantine'
-  test(`${quarantine}: default(sync)`, async () => {
+  test.only(`${quarantine}: default(sync)`, async () => {
     const newVersion = '1.0.0'
+    const message = 'chore: test'
     context = await handleCommand(quarantine, prefix)
     const git = newSimpleGit(context.root)
     process.chdir(context.root)
-    await commandVersion({}, git, newVersion)
+    await commandVersion({
+      [cmd]: {
+        message,
+      },
+    }, git, newVersion)
 
     // packages test
     const [a, b] = await getPackages(['a', 'b'])
     await syncVersionDiff(newVersion, git)
     expect(a.version).toBe(newVersion)
     expect(b.version).toBe(newVersion)
-  }, 1000000)
+    const gitMessage = await getCommitMessage(git)
+    expect(gitMessage).toBe(`${message} v${newVersion}`)
+  })
   test(`${quarantine}: diff`, async () => {
     const newVersion = '1.0.0'
     context = await handleCommand(quarantine, prefix)
