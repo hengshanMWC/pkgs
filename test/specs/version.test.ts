@@ -77,11 +77,10 @@ describe(cmd, () => {
   //     expect(err.message).toBe(WARN_NOW_VERSION)
   //   }
   // }, 100000)
-  const quarantine = 'quarantine'
-  test.only(`${quarantine}: default(sync)`, async () => {
+  async function syncTest (dir: string, arrFile: string[]) {
     const newVersion = '1.0.0'
     const message = 'chore: test'
-    context = await handleCommand(quarantine, prefix)
+    context = await handleCommand(dir, prefix)
     const git = newSimpleGit(context.root)
     process.chdir(context.root)
     await commandVersion({
@@ -91,12 +90,15 @@ describe(cmd, () => {
     }, git, newVersion)
 
     // packages test
-    const [a, b] = await getPackages(['a', 'b'])
+    const arr = await getPackages(arrFile)
     await syncVersionDiff(newVersion, git)
-    expect(a.version).toBe(newVersion)
-    expect(b.version).toBe(newVersion)
+    arr.forEach(({ version }) => expect(version).toBe(newVersion))
     const gitMessage = await getCommitMessage(git)
     expect(gitMessage).toBe(`${message} v${newVersion}`)
+  }
+  const quarantine = 'quarantine'
+  test(`${quarantine}: default(sync)`, async () => {
+    await syncTest(quarantine, ['a', 'b'])
   })
   test(`${quarantine}: diff`, async () => {
     const newVersion = '1.0.0'
@@ -119,6 +121,32 @@ describe(cmd, () => {
     expect(aAdd.version).toBe(newVersion)
     expect(bAdd.version).toBe(addVersion)
   })
+
+  const many = 'many'
+  test(`${many}: default(sync)`, async () => {
+    await syncTest(many, ['a', 'b', 'c', 'd', 'e'])
+  })
+  // test(`${many}: diff`, async () => {
+  //   const newVersion = '1.0.0'
+  //   context = await handleCommand(many, prefix)
+  //   const git = newSimpleGit(context.root)
+  //   process.chdir(context.root)
+  //   await commandVersion({
+  //     mode: 'diff',
+  //   }, git, newVersion)
+  //   const [a, b] = await getPackages(['a', 'b'])
+  //   expect(a.version).toBe(newVersion)
+  //   expect(b.version).toBe(newVersion)
+
+  //   await setUpFilesAdded(context, ['packages/b/test'])
+  //   const addVersion = '1.1.0'
+  //   await commandVersion({
+  //     mode: 'diff',
+  //   }, git, addVersion)
+  //   const [aAdd, bAdd] = await getPackages(['a', 'b'])
+  //   expect(aAdd.version).toBe(newVersion)
+  //   expect(bAdd.version).toBe(addVersion)
+  // })
 
   // const many = 'many'
   // test.only(`${many}: diff`, async () => {
