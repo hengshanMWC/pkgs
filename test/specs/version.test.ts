@@ -86,7 +86,7 @@ describe(cmd, () => {
     process.chdir(context.root)
     await commandVersion({
       [cmd]: {
-        message,
+        message: `${message} %s`,
       },
     }, git, newVersion)
 

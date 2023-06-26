@@ -3,7 +3,7 @@ import type { SimpleGit, FileStatusResult } from 'simple-git'
 import type IPackageJson from '@ts-type/package-dts'
 import { WARN_NOW_CHANGE } from '../constant'
 import type { Context } from '../lib'
-import { sortFilesName, warn } from './index'
+import { gitCommitMessageFormat, sortFilesName, warn } from './index'
 
 export type TagType = 'publish' | 'version' | string
 const _tagMessage = 'pkgs update tag'
@@ -12,12 +12,12 @@ export async function gitSyncSave (
   message = '',
   git: SimpleGit = simpleGit(),
 ) {
-  await git.commit(`${message} v${version}`)
+  await git.commit(gitCommitMessageFormat(message, `v${version}`))
   await gitTag(`v${version}`, _tagMessage, git)
 }
 export async function gitDiffSave (
   packageJsonList: IPackageJson[],
-  message?: string,
+  message = '',
   git: SimpleGit = simpleGit(),
 ) {
   const nameAntVersionPackages = packageJsonList.map(({ packageJson }) => {
@@ -27,7 +27,7 @@ export async function gitDiffSave (
     (total, text) => `${total}\n- ${text}`,
     '\n',
   )
-  await git.commit(`${message || ''}${packagesMessage || _tagMessage}`)
+  await git.commit(gitCommitMessageFormat(message, packagesMessage || _tagMessage))
   const tagList = nameAntVersionPackages.map(version => gitTag(version, message))
   await Promise.all(tagList)
 }

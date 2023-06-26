@@ -32,7 +32,7 @@ export const defaultOptions: ExecuteCommandConfig = {
   mode: 'sync',
   version: {
     mode: undefined,
-    message: 'chore: version',
+    message: 'chore: release %s',
   },
   publish: {
     mode: undefined,

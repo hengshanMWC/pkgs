@@ -37,7 +37,7 @@ monorepo有两种模式
   mode: 'sync',
   version: {
     mode: undefined,
-    message: 'chore: version',
+    message: 'chore: release %s',
   },
   publish: {
     mode: undefined,

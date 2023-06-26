@@ -6,6 +6,7 @@ import type { IPackageJson } from '@ts-type/package-dts'
 import strip from 'strip-json-comments'
 import { DEPENDENCY_PREFIX } from '../constant'
 import type { ExecuteCommandConfig } from '../defaultOptions'
+import { gitCommitMessage } from './regExp'
 export const isTest = process.env.NODE_ENV === 'test'
 export async function getJSON (dir: string): Promise<IPackageJson> {
   try {
@@ -144,4 +145,8 @@ export function jsoncParse (data: string) {
 
 export function sortFilesName (files: string[]) {
   return files.slice().sort((a, b) => a.localeCompare(b))
+}
+
+export function gitCommitMessageFormat (message: string, replaceMessage: string) {
+  return message.replace(gitCommitMessage, replaceMessage)
 }

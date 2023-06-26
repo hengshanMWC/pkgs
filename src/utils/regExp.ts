@@ -11,3 +11,5 @@ export const versionRangeText = range + versionText
 export const organization = '^@[^/]+\\/[^/]+'
 // npm tag
 export const npmTag = '^.+-(\\w+)\\.'
+
+export const gitCommitMessage = /%s/g
