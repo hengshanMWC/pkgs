@@ -78,7 +78,7 @@ async function implementPublish (
   tag?: string,
 ) {
   if (!packageJson.private) {
-    let command = `${cdDir(dir)}npm publish`
+    let command = `${cdDir(dir)}pnpm publish`
 
     if (new RegExp(organization).test(packageJson.name as string)) {
       command += ' --access public'
