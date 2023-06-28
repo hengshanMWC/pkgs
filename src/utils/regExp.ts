@@ -13,3 +13,5 @@ export const organization = '^@[^/]+\\/[^/]+'
 export const npmTag = '^.+-(\\w+)\\.'
 
 export const gitCommitMessage = /%s/g
+
+export const DEPENDENCY_PREFIX = /^workspace:.$/

@@ -7,8 +7,6 @@ export const RELY_KEYS = [
   'dependencies',
 ]
 
-export const DEPENDENCY_PREFIX = 'workspace:*'
-
 // export const PACKAGES_PATH = ['packages/*', '.']
 export const PACKAGES_PATH = ['packages/*']
 

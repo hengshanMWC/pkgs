@@ -4,9 +4,8 @@ import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 import strip from 'strip-json-comments'
-import { DEPENDENCY_PREFIX } from '../constant'
 import type { ExecuteCommandConfig } from '../defaultOptions'
-import { gitCommitMessage } from './regExp'
+import { DEPENDENCY_PREFIX, gitCommitMessage } from './regExp'
 export const isTest = process.env.NODE_ENV === 'test'
 export async function getJSON (dir: string): Promise<IPackageJson> {
   try {
@@ -92,7 +91,7 @@ export function err (text: string) {
   console.error(`${colors.red.bold(text)}`)
 }
 export function isVersionStar (version: string) {
-  return version.includes(DEPENDENCY_PREFIX)
+  return DEPENDENCY_PREFIX.test(version)
 }
 
 export function createCommand (cmd: string, dirs: string[]) {
