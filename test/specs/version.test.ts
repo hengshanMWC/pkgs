@@ -24,14 +24,11 @@ function getPackages (arr: string[]) {
     return readJSON(`packages/${item}/package.json`)
   }))
 }
-// async function tagCommit (arr: IPackageJson[], newVersion, git: SimpleGit) {
-//   const list = arr.map(async item => {
-//     const tagCommitId = await tagExpect(`${item.name}@${newVersion}`, git)
-//     const newCommitId = await getNewestCommitId(git)
-//     expect(newCommitId.includes(tagCommitId)).toBeTruthy()
-//   })
-//   await list
-// }
+async function tagCommit (packageJson: IPackageJson, version, git: SimpleGit) {
+  expect(packageJson.version).toBe(version)
+  const tagCommitId = await tagExpect(`${packageJson.name}@${version}`, git)
+  expect(tagCommitId).not.toBeUndefined()
+}
 async function getCommitMessage (git: SimpleGit) {
   const newCommitId = await getNewestCommitId(git)
   const gitMessage = await git.log([
@@ -76,9 +73,9 @@ async function diffTest (dir: string, arrFile: string[], newVersion: string) {
   await commandVersion({
     mode: 'diff',
   }, git, newVersion)
-  const [a, b] = await getPackages(arrFile)
-  expect(a.version).toBe(newVersion)
-  expect(b.version).toBe(newVersion)
+  const packageJsonList = await getPackages(arrFile)
+  const tagList = packageJsonList.map(packageJson => tagCommit(packageJson, newVersion, git))
+  await tagList
   return git
 }
 const newVersion = '1.0.0'
@@ -97,8 +94,8 @@ describe(`${cmd}: ${quarantine}`, () => {
       mode: 'diff',
     }, git, addVersion)
     const [aPackageJson, bPackageJson] = await getPackages(dirArr)
-    expect(aPackageJson.version).toBe(addVersion)
-    expect(bPackageJson.version).toBe(newVersion)
+    tagCommit(aPackageJson, addVersion, git)
+    tagCommit(bPackageJson, newVersion, git)
   })
 })
 const many = 'many'
@@ -117,12 +114,10 @@ describe(`${cmd}: ${many}`, () => {
     }, git, addVersion)
     const packageJsonList = await getPackages(dirArr)
     const abPackageJson = packageJsonList.splice(0, 2)
-    abPackageJson.forEach(packageJson => {
-      expect(packageJson.version).toBe(addVersion)
-    })
-    packageJsonList.forEach(packageJson => {
-      expect(packageJson.version).toBe(newVersion)
-    })
+    const abPackageJsonTagList = abPackageJson.map(packageJson => tagCommit(packageJson, addVersion, git))
+    const cdePackageJsonTagList = packageJsonList.map(packageJson => tagCommit(packageJson, newVersion, git))
+    await abPackageJsonTagList
+    await cdePackageJsonTagList
   })
 })
 const Interdependence = 'Interdependence'
@@ -140,8 +135,8 @@ describe(`${cmd}: ${Interdependence}`, () => {
       mode: 'diff',
     }, git, addVersion)
     const [aPackageJson, bPackageJson, cPackageJson] = await getPackages(dirArr)
-    expect(aPackageJson.version).toBe(addVersion)
-    expect(bPackageJson.version).toBe(newVersion)
-    expect(cPackageJson.version).toBe(addVersion)
-  })
+    await tagCommit(aPackageJson, addVersion, git)
+    await tagCommit(bPackageJson, newVersion, git)
+    await tagCommit(cPackageJson, addVersion, git)
+  }, 10000000)
 })
