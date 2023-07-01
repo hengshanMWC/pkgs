@@ -91,14 +91,14 @@ describe(`${cmd}: ${quarantine}`, () => {
   test(`${quarantine}`, async () => {
     const git = await diffTest(quarantine, dirArr, newVersion)
 
-    await setUpFilesAdded(context, ['packages/b/test'])
+    await setUpFilesAdded(context, ['packages/a/test'])
     const addVersion = '1.1.0'
     await commandVersion({
       mode: 'diff',
     }, git, addVersion)
     const [aAdd, bAdd] = await getPackages(dirArr)
-    expect(aAdd.version).toBe(newVersion)
-    expect(bAdd.version).toBe(addVersion)
+    expect(aAdd.version).toBe(addVersion)
+    expect(bAdd.version).toBe(newVersion)
   })
 })
 const many = 'many'
@@ -107,17 +107,22 @@ describe(`${cmd}: ${many}`, () => {
   test(`${many}: default(sync)`, async () => {
     await syncTest(many, dirArr, newVersion)
   })
-  // test(`${many}`, async () => {
-  //   const newVersion = '1.0.0'
-  //   const git = await diffTest(many, dirArr, newVersion)
+  test(`${many}`, async () => {
+    const git = await diffTest(many, dirArr, newVersion)
 
-  //   await setUpFilesAdded(context, ['packages/b/test'])
-  //   const addVersion = '1.1.0'
-  //   await commandVersion({
-  //     mode: 'diff',
-  //   }, git, addVersion)
-  //   const [aAdd, bAdd] = await getPackages(dirArr)
-  //   expect(aAdd.version).toBe(newVersion)
-  //   expect(bAdd.version).toBe(addVersion)
-  // })
+    await setUpFilesAdded(context, ['packages/a/test'])
+    const addVersion = '1.1.0'
+    await commandVersion({
+      mode: 'diff',
+    }, git, addVersion)
+    const packageJsonList = await getPackages(dirArr)
+    console.log(packageJsonList)
+    const abPackageJson = packageJsonList.splice(0, 2)
+    abPackageJson.forEach(packageJson => {
+      expect(packageJson.version).toBe(addVersion)
+    })
+    packageJsonList.forEach(packageJson => {
+      expect(packageJson.version).toBe(newVersion)
+    })
+  })
 })
