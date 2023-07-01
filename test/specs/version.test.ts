@@ -24,14 +24,14 @@ function getPackages (arr: string[]) {
     return readJSON(`packages/${item}/package.json`)
   }))
 }
-async function tagCommit (arr: IPackageJson[], newVersion, git: SimpleGit) {
-  const list = arr.map(async item => {
-    const tagCommitId = await tagExpect(`${item.name}@${newVersion}`, git)
-    const newCommitId = await getNewestCommitId(git)
-    expect(newCommitId.includes(tagCommitId)).toBeTruthy()
-  })
-  await list
-}
+// async function tagCommit (arr: IPackageJson[], newVersion, git: SimpleGit) {
+//   const list = arr.map(async item => {
+//     const tagCommitId = await tagExpect(`${item.name}@${newVersion}`, git)
+//     const newCommitId = await getNewestCommitId(git)
+//     expect(newCommitId.includes(tagCommitId)).toBeTruthy()
+//   })
+//   await list
+// }
 async function getCommitMessage (git: SimpleGit) {
   const newCommitId = await getNewestCommitId(git)
   const gitMessage = await git.log([
@@ -96,9 +96,9 @@ describe(`${cmd}: ${quarantine}`, () => {
     await commandVersion({
       mode: 'diff',
     }, git, addVersion)
-    const [aAdd, bAdd] = await getPackages(dirArr)
-    expect(aAdd.version).toBe(addVersion)
-    expect(bAdd.version).toBe(newVersion)
+    const [aPackageJson, bPackageJson] = await getPackages(dirArr)
+    expect(aPackageJson.version).toBe(addVersion)
+    expect(bPackageJson.version).toBe(newVersion)
   })
 })
 const many = 'many'
@@ -116,7 +116,6 @@ describe(`${cmd}: ${many}`, () => {
       mode: 'diff',
     }, git, addVersion)
     const packageJsonList = await getPackages(dirArr)
-    console.log(packageJsonList)
     const abPackageJson = packageJsonList.splice(0, 2)
     abPackageJson.forEach(packageJson => {
       expect(packageJson.version).toBe(addVersion)
@@ -124,5 +123,25 @@ describe(`${cmd}: ${many}`, () => {
     packageJsonList.forEach(packageJson => {
       expect(packageJson.version).toBe(newVersion)
     })
+  })
+})
+const Interdependence = 'Interdependence'
+describe(`${cmd}: ${Interdependence}`, () => {
+  const dirArr = ['a', 'b', 'c']
+  test(`${Interdependence}: default(sync)`, async () => {
+    await syncTest(Interdependence, dirArr, newVersion)
+  })
+  test(`${Interdependence}`, async () => {
+    const git = await diffTest(Interdependence, dirArr, newVersion)
+
+    await setUpFilesAdded(context, ['packages/a/test'])
+    const addVersion = '1.1.0'
+    await commandVersion({
+      mode: 'diff',
+    }, git, addVersion)
+    const [aPackageJson, bPackageJson, cPackageJson] = await getPackages(dirArr)
+    expect(aPackageJson.version).toBe(addVersion)
+    expect(bPackageJson.version).toBe(newVersion)
+    expect(cPackageJson.version).toBe(addVersion)
   })
 })
