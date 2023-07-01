@@ -1,8 +1,9 @@
 import type { IPackageJson } from '@ts-type/package-dts'
+import { satisfies } from 'semver'
 import type { AnalysisBlockItem } from '../lib/analysisDiagram'
 import { getRelyAttrs } from './analysisDiagram'
-import { versionText, versionRangeText } from './regExp'
-import { isVersionStar } from './index'
+import { versionText } from './regExp'
+import { getWorkspaceVersion, isVersionStar } from './index'
 
 export function dependentSearch (
   source: AnalysisBlockItem,
@@ -52,24 +53,8 @@ function isVersionLegalUpdate (
   oldVersion: string,
 ) {
   // *、~、^每次都会更新
-  if (isVersionStar(oldVersion)) return true
-
-  const versionRangTextRegExp = new RegExp(versionRangeText)
-  const versionMatchArray = version.match(versionRangTextRegExp)
-  const oldVersionMatchArray = oldVersion.match(versionRangTextRegExp)
-
-  if (versionMatchArray && oldVersionMatchArray) {
-    // TODO version为1.1.0，oldVersion，^1.0.0,生成的数组有问题
-    const minor = (+versionMatchArray[3] > +oldVersionMatchArray[3])
-    const major = (+versionMatchArray[2] > +oldVersionMatchArray[2])
-    if (oldVersionMatchArray[1] === '~') {
-      return minor || major
-    }
-    else if (oldVersionMatchArray[1] === '^') {
-      return major
-    }
-  }
-  return false
+  return isVersionStar(oldVersion) ||
+    satisfies(version, getWorkspaceVersion(oldVersion))
 }
 function dependencyUpdate (
   packageJson: IPackageJson,
