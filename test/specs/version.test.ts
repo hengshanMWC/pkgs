@@ -16,7 +16,7 @@ import {
   rootPackageJsonPath,
   single,
 } from '../__fixtures__/constant'
-import { cmd, diffTest, syncTest, tagCommit, testPackage, testPackages } from '../__fixtures__/cmd/version'
+import { cmd, diffTest, diffTestPackageList, syncTest, tagCommit, testPackage, testPackages } from '../__fixtures__/cmd/version'
 
 afterEach(() => {
   // Many of the tests in this file change the CWD, so change it back after each test
@@ -28,7 +28,8 @@ describe(`${cmd}: ${quarantine}`, () => {
     await testPackages(dirQuarantineArr, newVersion)
   })
   test(`${quarantine}`, async () => {
-    const { git, context } = await diffTest(quarantine, dirQuarantineArr, newVersion)
+    const { git, context } = await diffTest(quarantine, newVersion)
+    await diffTestPackageList(dirQuarantineArr, newVersion, git)
 
     await setUpFilesAdded(context, ['packages/a/test'])
     await commandVersion({
@@ -45,8 +46,8 @@ describe(`${cmd}: ${many}`, () => {
     await testPackages(dirManyArr, newVersion)
   })
   test(`${many}`, async () => {
-    const { git, context } = await diffTest(many, dirManyArr, newVersion)
-
+    const { git, context } = await diffTest(many, newVersion)
+    await diffTestPackageList(dirManyArr, newVersion, git)
     await setUpFilesAdded(context, ['packages/a/test'])
     await commandVersion({
       mode: 'diff',
@@ -65,7 +66,8 @@ describe(`${cmd}: ${Interdependence}`, () => {
     await testPackages(dirInterdependenceArr, newVersion)
   })
   test(`${Interdependence}`, async () => {
-    const { git, context } = await diffTest(Interdependence, dirInterdependenceArr, newVersion)
+    const { git, context } = await diffTest(Interdependence, newVersion)
+    await diffTestPackageList(dirInterdependenceArr, newVersion, git)
 
     await setUpFilesAdded(context, ['packages/a/test'])
     await commandVersion({
