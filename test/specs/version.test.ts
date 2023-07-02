@@ -1,15 +1,13 @@
-import { readJSON } from 'fs-extra'
 import type { SimpleGit } from 'simple-git'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { commandVersion } from '../../src/index'
-import { tagExpect } from '../__fixtures__/commit'
+import { getPackages, tagExpect } from '../__fixtures__/commit'
 import {
   getNewestCommitId,
 } from '../../src/utils/git'
 import type { SimpleGitTestContext } from '../__fixtures__'
 import {
   handleCommand,
-
   newSimpleGit,
   setUpFilesAdded,
 } from '../__fixtures__'
@@ -19,11 +17,6 @@ const cmd = 'version'
 let context: SimpleGitTestContext
 const prefix = 'version-test'
 
-function getPackages (arr: string[]) {
-  return Promise.all(arr.map(item => {
-    return readJSON(`packages/${item}/package.json`)
-  }))
-}
 async function tagCommit (packageJson: IPackageJson, version, git: SimpleGit) {
   expect(packageJson.version).toBe(version)
   const tagCommitId = await tagExpect(`${packageJson.name}@${version}`, git)
@@ -43,10 +36,7 @@ async function syncVersionDiff (version: string, git: SimpleGit) {
   const newCommitId = await getNewestCommitId(git)
   expect(newCommitId.includes(tagCommitId)).toBeTruthy()
 }
-afterEach(() => {
-  // Many of the tests in this file change the CWD, so change it back after each test
-  process.chdir(ORIGINAL_CWD)
-})
+
 async function syncTest (dir: string, arrFile: string[], newVersion: string) {
   const message = 'chore: test'
   context = await handleCommand(dir, prefix)
@@ -78,7 +68,12 @@ async function diffTest (dir: string, arrFile: string[], newVersion: string) {
   await tagList
   return git
 }
+afterEach(() => {
+  // Many of the tests in this file change the CWD, so change it back after each test
+  process.chdir(ORIGINAL_CWD)
+})
 const newVersion = '1.0.0'
+const addVersion = '1.1.0'
 const quarantine = 'quarantine'
 describe(`${cmd}: ${quarantine}`, () => {
   const dirArr = ['a', 'b']
@@ -89,7 +84,6 @@ describe(`${cmd}: ${quarantine}`, () => {
     const git = await diffTest(quarantine, dirArr, newVersion)
 
     await setUpFilesAdded(context, ['packages/a/test'])
-    const addVersion = '1.1.0'
     await commandVersion({
       mode: 'diff',
     }, git, addVersion)
@@ -108,7 +102,6 @@ describe(`${cmd}: ${many}`, () => {
     const git = await diffTest(many, dirArr, newVersion)
 
     await setUpFilesAdded(context, ['packages/a/test'])
-    const addVersion = '1.1.0'
     await commandVersion({
       mode: 'diff',
     }, git, addVersion)
@@ -130,7 +123,6 @@ describe(`${cmd}: ${Interdependence}`, () => {
     const git = await diffTest(Interdependence, dirArr, newVersion)
 
     await setUpFilesAdded(context, ['packages/a/test'])
-    const addVersion = '1.1.0'
     await commandVersion({
       mode: 'diff',
     }, git, addVersion)
