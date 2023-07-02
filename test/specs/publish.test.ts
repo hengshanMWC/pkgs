@@ -1,5 +1,15 @@
 import { cmd, syncTest } from '../__fixtures__/cmd/publish'
-import { ORIGINAL_CWD, quarantine } from '../__fixtures__/constant'
+import {
+  Interdependence,
+  ORIGINAL_CWD,
+  addVersion,
+  dirInterdependenceArr,
+  dirManyArr,
+  dirQuarantineArr,
+  many,
+  newVersion,
+  quarantine,
+} from '../__fixtures__/constant'
 
 afterEach(() => {
   // Many of the tests in this file change the CWD, so change it back after each test
@@ -11,6 +21,17 @@ describe(`${cmd}: ${quarantine}`, () => {
   test(`${quarantine}: default(sync)`, async () => {
     await syncTest(quarantine, dirArr)
   })
+  // test(`${quarantine}`, async () => {
+  //   const { git, context } = await diffTest(quarantine, dirQuarantineArr, newVersion)
+
+  //   await setUpFilesAdded(context, ['packages/a/test'])
+  //   await commandVersion({
+  //     mode: 'diff',
+  //   }, git, addVersion)
+  //   const [aPackageJson, bPackageJson] = await getPackages(dirQuarantineArr)
+  //   tagCommit(aPackageJson, addVersion, git)
+  //   tagCommit(bPackageJson, newVersion, git)
+  // })
 })
 //   test(`${quarantine}`, async () => {
 //     const git = await diffTest(quarantine, dirArr, newVersion)

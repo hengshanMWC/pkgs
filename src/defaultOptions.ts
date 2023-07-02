@@ -13,11 +13,11 @@ export interface PluginData<T extends any[] = any[]> {
   option?: PluginOption[]
   action: (context: Context, ...args: T) => void
 }
-interface ExecuteCommandVersionOption extends
+export interface ExecuteCommandVersionOption extends
   Partial<ExecuteCommandOption> {
   message?: string
 }
-interface ExecuteCommandPublishOption extends
+export interface ExecuteCommandPublishOption extends
   Partial<ExecuteCommandOption> {
   tag?: string
 }

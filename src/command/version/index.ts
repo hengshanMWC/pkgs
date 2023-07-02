@@ -13,7 +13,7 @@ import type { WriteObject } from '../../utils'
 import { dependentSearch } from '../../utils/packageJson'
 import { WARN_NOW_VERSION } from '../../constant'
 import type { AnalysisBlockItem, SetAnalysisBlockObject } from '../../lib/analysisDiagram'
-import type { PluginData, ExecuteCommandConfig } from '../../defaultOptions'
+import type { PluginData, ExecuteCommandConfig, ExecuteCommandVersionOption } from '../../defaultOptions'
 async function main (context: Context, appointVersion?: string) {
   const mode = context.getCorrectOptionValue('version', 'mode')
 
@@ -25,11 +25,13 @@ async function main (context: Context, appointVersion?: string) {
   }
 }
 export async function commandVersion (
-  configParam: Partial<ExecuteCommandConfig> = {},
+  configParam: ExecuteCommandVersionOption = {},
   git: SimpleGit = simpleGit(),
   appointVersion?: string,
 ) {
-  const config = await Context.assignConfig(configParam)
+  const config = await Context.assignConfig({
+    version: configParam,
+  })
   const context = await Context.create(
     config,
     git,

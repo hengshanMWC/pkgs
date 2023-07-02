@@ -34,9 +34,7 @@ export async function syncTest (dir: string, arrFile: string[], newVersion: stri
   const git = newSimpleGit(context.root)
   process.chdir(context.root)
   await commandVersion({
-    [cmd]: {
-      message: `${message} %s`,
-    },
+    message: `${message} %s`,
   }, git, newVersion)
 
   // packages test

@@ -5,7 +5,7 @@ import simpleGit from 'simple-git'
 import { Context } from '../../lib/context'
 import { cdDir, isTest } from '../../utils'
 import { organization, npmTag } from '../../utils/regExp'
-import type { ExecuteCommandConfig, PluginData } from '../../defaultOptions'
+import type { ExecuteCommandConfig, ExecuteCommandPublishOption, PluginData } from '../../defaultOptions'
 import { getTagVersion } from '../../utils/git'
 function main (context: Context) {
   const mode = context.getCorrectOptionValue('publish', 'mode')
@@ -17,8 +17,10 @@ function main (context: Context) {
     return handleDiffPublish(context)
   }
 }
-export async function commandPublish (configParam: Partial<ExecuteCommandConfig> = {}, git: SimpleGit = simpleGit()) {
-  const config = await Context.assignConfig(configParam)
+export async function commandPublish (configParam: ExecuteCommandPublishOption = {}, git: SimpleGit = simpleGit()) {
+  const config = await Context.assignConfig({
+    publish: configParam,
+  })
   const context = await Context.create(
     config,
     git,
