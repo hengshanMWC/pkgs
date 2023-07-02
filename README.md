@@ -32,18 +32,13 @@ monorepo有两种模式
   version: {
     mode: undefined,
     message: 'chore: version %s',
-  },
-  publish: {
-    tag: '',
-  },
+  }
 }
 ```
 ## Options
 - **version**: `pkgs version`命令配置
   - **mode**: `sync` | `diff`。决定命令模式
   - **message**: 运行\``git commit -m '${message} v${version}'`\`的message
-- **publish**: `pkgs version`命令配置
-  - **tag**: 运行\``npm publish --tag ${tag}`\`的tag。如果不传，会分析你的version是否需要添加--tag。例如: version: '1.0.0-beta.1', 发布命令会变成`npm publish --tag beta`
 # Commands
 可以使用`pkgs -h`查看具体指令
 ## version

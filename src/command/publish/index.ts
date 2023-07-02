@@ -61,6 +61,7 @@ function createPublishCmd (
   if (!packageJson.private) {
     let command = `${cdDir(dir)}pnpm publish`
 
+    // 是否命令化
     if (new RegExp(organization).test(packageJson.name as string)) {
       command += ' --access public'
     }
