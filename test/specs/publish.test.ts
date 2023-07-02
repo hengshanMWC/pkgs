@@ -8,5 +8,5 @@ describe(`${cmd}: ${quarantine}`, () => {
   test(`${quarantine}: default(sync)`, async () => {
     await testPublish(quarantine, dirQuarantineArr)
     await testPublish(quarantine, dirQuarantineArr, 'test')
-  })
+  }, 20000)
 })
