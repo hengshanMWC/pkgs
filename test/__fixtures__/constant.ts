@@ -4,3 +4,6 @@ export const quarantine = 'quarantine'
 export const many = 'many'
 export const Interdependence = 'Interdependence'
 export const ORIGINAL_CWD = process.cwd()
+export const dirQuarantineArr = ['a', 'b']
+export const dirManyArr = ['a', 'b', 'c', 'd', 'e']
+export const dirInterdependenceArr = ['a', 'b', 'c']
