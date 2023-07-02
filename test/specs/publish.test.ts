@@ -8,8 +8,13 @@ import {
 } from '../__fixtures__/constant'
 
 describe(`${cmd}: ${quarantine}`, () => {
-  test(`${quarantine}: default(sync)`, async () => {
+  test('default', async () => {
     await testPublish(quarantine, dirQuarantineArr, newVersion)
+  }, 10000)
+  test('tag', async () => {
     await testPublish(quarantine, dirQuarantineArr, newVersionBeta, bate)
-  }, 20000)
+  }, 10000)
+  test('tag test', async () => {
+    await testPublish(quarantine, dirQuarantineArr, newVersionBeta, 'test', true)
+  }, 10000)
 })
