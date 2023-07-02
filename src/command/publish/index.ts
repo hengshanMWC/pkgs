@@ -1,86 +1,72 @@
-import { execSync } from 'child_process'
+import type { ExecaError } from 'execa'
+import { execa } from 'execa'
 import type { IPackageJson } from '@ts-type/package-dts'
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
+import { gt } from 'semver'
 import { Context } from '../../lib/context'
-import { gitDiffTag, gitSyncPublishTag } from '../../utils/git'
-import { cdDir, isTest } from '../../utils'
+import { cdDir, runCmdList } from '../../utils'
 import { organization, npmTag } from '../../utils/regExp'
-import type { ExecuteCommandConfig, PluginData } from '../../defaultOptions'
-function main (context: Context) {
-  const mode = context.getCorrectOptionValue('publish', 'mode')
+import type { ExecuteCommandPublishOption, PluginData } from '../../defaultOptions'
+import type { AnalysisBlockItem } from '../../lib'
 
-  if (mode === 'sync') {
-    return handleSyncPublish(context)
-  }
-  else if (mode === 'diff') {
-    return handleDiffPublish(context)
-  }
+async function main (context: Context, tag?: string) {
+  const editAnalysisBlockList = await getEditPackagePublish(context)
+  const publishCmdStrList = editAnalysisBlockList
+    .map(analysisBlockItem => createPublishCmd(
+      analysisBlockItem?.packageJson,
+      analysisBlockItem.dir,
+      tag,
+    ))
+    .filter(cmd => cmd) as string[]
+  const result = await runCmdList(publishCmdStrList)
+  return result
 }
-export async function commandPublish (configParam: Partial<ExecuteCommandConfig> = {}, git: SimpleGit = simpleGit()) {
-  const config = await Context.assignConfig(configParam)
+export async function commandPublish (publishOption: ExecuteCommandPublishOption = {}, git: SimpleGit = simpleGit()) {
+  const config = await Context.assignConfig()
   const context = await Context.create(
     config,
     git,
   )
-  const result = await main(context)
+  const result = await main(context, publishOption.tag)
   return result
 }
+async function validationPackageVersion (packageName: string, version: string) {
+  try {
+    const lineVersion = await execa('pnpm', ['view', packageName, 'version'])
+    return gt(lineVersion.stdout, version)
+  }
+  catch (error: unknown) {
+    const execaError = error as ExecaError
+    return execaError.exitCode === 1 && execaError.stderr.includes('404')
+  }
+}
+async function getEditPackagePublish (context: Context) {
+  const contextAnalysisDiagram = context.contextAnalysisDiagram
+  const validationList = contextAnalysisDiagram.allDirs.map((dir: string) => {
+    const analysisBlockItem = contextAnalysisDiagram.analysisDiagram[dir]
+    const { name, version } = analysisBlockItem.packageJson
+    return validationPackageVersion(name as string, version as string)
+      .then(b => b ? analysisBlockItem : undefined)
+  })
+  const analysisBlockItemList = await Promise.all(validationList)
+  return analysisBlockItemList.filter(item => !!item) as AnalysisBlockItem[]
+}
 
-export function createPublishPlugin (): PluginData {
-  return {
-    id: 'publish',
-    command: 'publish',
-    description: 'publish package',
-    option: [
-      ['--mode <type>', 'sync | diff'],
-      ['-tag <type>', 'npm publish --tag <type>'],
-    ],
-    action (context: Context, config: ExecuteCommandConfig['publish'] = {}) {
-      context.assignOptions(config)
-      main(context)
-    },
-  }
-}
-async function handleSyncPublish (context: Context) {
-  const commands: string[] = []
-  for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
-    const command = await implementPublish(
-      context.contextAnalysisDiagram.allPackagesJSON[index],
-      context.contextAnalysisDiagram.allDirs[index],
-      context.config.publish.tag,
-    )
-    command && commands.push(command)
-  }
-  await gitSyncPublishTag(undefined, context.storeCommand.git)
-  return commands
-}
-async function handleDiffPublish (context: Context) {
-  const commands: string[] = []
-  await context.storeCommand.forRepositoryDiffPack(async function (analysisBlock) {
-    const command = await implementPublish(
-      analysisBlock.packageJson,
-      analysisBlock.dir,
-      context.config.publish.tag,
-    )
-    command && commands.push(command)
-  }, 'publish')
-  await gitDiffTag('publish', undefined, context.storeCommand.git)
-  return commands
-}
-async function implementPublish (
+function createPublishCmd (
   packageJson: IPackageJson<any>,
   dir?: string,
   tag?: string,
 ) {
   if (!packageJson.private) {
-    let command = `${cdDir(dir)}npm publish`
+    let command = `${cdDir(dir)}pnpm publish`
 
+    // 是否命令化
     if (new RegExp(organization).test(packageJson.name as string)) {
       command += ' --access public'
     }
 
-    if (tag) {
+    if (tag !== undefined) {
       command += ` --tag ${tag}`
     }
     else if (packageJson.version) {
@@ -89,9 +75,20 @@ async function implementPublish (
         command += ` --tag ${tagArr[1]}`
       }
     }
-    if (!isTest) {
-      execSync(command)
-    }
     return command
+  }
+}
+
+export function createPublishPlugin (): PluginData {
+  return {
+    id: 'publish',
+    command: 'publish',
+    description: 'publish package',
+    option: [
+      ['-tag <type>', 'npm publish --tag <type>'],
+    ],
+    action (context: Context, config: ExecuteCommandPublishOption = {}) {
+      main(context, config.tag)
+    },
   }
 }

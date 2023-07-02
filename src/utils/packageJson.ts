@@ -1,8 +1,9 @@
 import type { IPackageJson } from '@ts-type/package-dts'
+import { satisfies } from 'semver'
 import type { AnalysisBlockItem } from '../lib/analysisDiagram'
 import { getRelyAttrs } from './analysisDiagram'
-import { versionText, versionRangeText } from './regExp'
-import { isVersionStar } from './index'
+import { versionText } from './regExp'
+import { getWorkspaceVersion, isVersionStar } from './index'
 
 export function dependentSearch (
   source: AnalysisBlockItem,
@@ -51,24 +52,9 @@ function isVersionLegalUpdate (
   version: string,
   oldVersion: string,
 ) {
-  // *每次都会更新
-  if (isVersionStar(oldVersion)) return true
-
-  const versionRangTextRegExp = new RegExp(versionRangeText)
-  const versionMatchArray = version.match(versionRangTextRegExp)
-  const oldVersionMatchArray = oldVersion.match(versionRangTextRegExp)
-
-  if (versionMatchArray && oldVersionMatchArray) {
-    const minor = (+versionMatchArray[3] > +oldVersionMatchArray[3])
-    const major = (+versionMatchArray[2] > +oldVersionMatchArray[2])
-    if (oldVersionMatchArray[1] === '~') {
-      return minor || major
-    }
-    else if (oldVersionMatchArray[1] === '^') {
-      return major
-    }
-  }
-  return false
+  // *、~、^每次都会更新
+  return isVersionStar(oldVersion) ||
+    satisfies(version, getWorkspaceVersion(oldVersion))
 }
 function dependencyUpdate (
   packageJson: IPackageJson,

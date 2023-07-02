@@ -1,7 +1,9 @@
 import simpleGit from 'simple-git'
 import type { SimpleGit, FileStatusResult } from 'simple-git'
+import type IPackageJson from '@ts-type/package-dts'
 import { WARN_NOW_CHANGE } from '../constant'
-import { sortFilesName, warn } from './index'
+import type { Context } from '../lib'
+import { gitCommitMessageFormat, sortFilesName, warn } from './index'
 
 export type TagType = 'publish' | 'version' | string
 const _tagMessage = 'pkgs update tag'
@@ -10,32 +12,24 @@ export async function gitSyncSave (
   message = '',
   git: SimpleGit = simpleGit(),
 ) {
-  await git.commit(`${message} v${version}`)
-  await gitSyncTag(version, git)
-}
-export async function gitSyncTag (
-  version: string,
-  git: SimpleGit = simpleGit(),
-) {
-  await git.tag(['-a', `v${version}-version-pkg`, '-m', version])
-}
-export async function gitSyncPublishTag (
-  tagMessage: string = _tagMessage,
-  git: SimpleGit = simpleGit(),
-) {
-  await git.tag(['-a', `sync${Date.now()}-publish-pkg`, '-m', tagMessage])
+  await git.commit(gitCommitMessageFormat(message, `v${version}`))
+  await gitTag(`v${version}`, _tagMessage, git)
 }
 export async function gitDiffSave (
-  nameAntVersionPackages: string[],
-  message?: string,
+  packageJsonList: IPackageJson[],
+  message = '',
   git: SimpleGit = simpleGit(),
 ) {
+  const nameAntVersionPackages = packageJsonList.map(({ packageJson }) => {
+    return `${packageJson.name as string}@${packageJson.version}`
+  })
   const packagesMessage = nameAntVersionPackages.reduce(
     (total, text) => `${total}\n- ${text}`,
     '\n',
   )
-  await git.commit(`${message || ''}${packagesMessage || _tagMessage}`)
-  await gitDiffTag('version', message, git)
+  await git.commit(gitCommitMessageFormat(message, packagesMessage || _tagMessage))
+  const tagList = nameAntVersionPackages.map(version => gitTag(version, message))
+  await Promise.all(tagList)
 }
 export async function gitTemporary (
   files: string | string[],
@@ -43,26 +37,27 @@ export async function gitTemporary (
 ) {
   await git.add(files)
 }
-export async function gitDiffTag (
-  type: TagType,
+export async function gitTag (
+  version: string,
   packagesMessage = _tagMessage,
   git: SimpleGit = simpleGit(),
 ) {
-  await git.tag(['-a', `diff${Date.now()}-${type}-pkg`, '-m', packagesMessage])
+  await git.tag(['-a', version, '-m', packagesMessage])
 }
-export async function getTag (type: TagType, git: SimpleGit = simpleGit()) {
-  const tags = await git.tag([
-    '-l',
-    `*-${type}-pkg`,
-    '-n',
-    '--sort=taggerdate',
-    '--format',
-    '%(refname:short)',
-  ])
-  // 获取gittag
-  const versionRegExp = new RegExp(`-${type}-pkg$`)
-  const tagArr = tags.trim().split('\n').reverse()
-  return tagArr.find(item => versionRegExp.test(item))
+export async function getVersionTag (version: string, git: SimpleGit = simpleGit()) {
+  try {
+    const result = await git.raw([
+      'describe',
+      '--tags',
+      '--match',
+      version,
+      '--abbrev=0',
+    ])
+    return result.replace(/\n$/, '')
+  }
+  catch {
+
+  }
 }
 
 export async function getNewestCommitId (git: SimpleGit = simpleGit()) {
@@ -99,22 +94,27 @@ async function getChangeFiles (
   return arr
 }
 export type DiffFile = string[] | boolean | undefined
-export async function getRepositoryInfo (
-  type: TagType,
+export async function getVersionDiffFile (
+  version: string,
   git: SimpleGit = simpleGit(),
 ): Promise<DiffFile> {
-  const tag = await getTag(type, git)
-
-  // 没有打过标记
-  if (!tag) {
+  const versionTag = await getVersionTag(version)
+  if (!versionTag) {
     return true
   }
-
+  const result = await getCommitDiffFile(versionTag, git)
+  return result
+}
+export async function getCommitDiffFile (tag: string, git: SimpleGit = simpleGit()): Promise<string[]> {
+  if (!tag) {
+    return []
+  }
   const tagCommitId = await getTagCommitId(tag, git)
   const newestCommitId = await getNewestCommitId(git)
 
   return getChangeFiles(newestCommitId, tagCommitId as string, git)
 }
+
 export async function getStageInfo (
   git: SimpleGit = simpleGit(),
 ): Promise<string[]> {
@@ -131,4 +131,11 @@ export async function getWorkInfo (
 
 function sortFilter (files: FileStatusResult[]) {
   return sortFilesName(files.map(file => file.path))
+}
+
+export async function getTagVersion (context: Context) {
+  const versionTag = await getVersionTag('v*', context.storeCommand.git)
+  if (versionTag) {
+    return versionTag.slice(1)
+  }
 }

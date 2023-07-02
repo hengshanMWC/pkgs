@@ -1,8 +1,10 @@
-import { join } from 'path'
+import path, { join } from 'path'
 import type { WriteFileOptions } from 'fs'
 import { existsSync, mkdir, mkdtemp, realpathSync, writeFile } from 'fs'
 import type { SimpleGit } from 'simple-git'
+import { copy } from 'fs-extra'
 import { newSimpleGit } from './instance'
+import { setUpInit } from './setup-init'
 
 export interface SimpleGitTestContext {
   /** Creates a directory under the repo root at the given path(s) */
@@ -94,5 +96,16 @@ export async function createTestContext (prefix: string, dir?: string): Promise<
     },
   }
 
+  return context
+}
+
+export async function handleCommand (dir: string, prefix: string) {
+  const context: SimpleGitTestContext = await createTestContext(prefix, dir)
+
+  process.chdir(context._root)
+  await copy(path.resolve(__dirname, '../template', dir), dir)
+
+  process.chdir(path.resolve(context._root, dir))
+  await setUpInit(context)
   return context
 }

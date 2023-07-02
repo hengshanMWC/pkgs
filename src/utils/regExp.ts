@@ -11,3 +11,9 @@ export const versionRangeText = range + versionText
 export const organization = '^@[^/]+\\/[^/]+'
 // npm tag
 export const npmTag = '^.+-(\\w+)\\.'
+
+export const gitCommitMessage = /%s/g
+
+export const DEPENDENCY_PREFIX = /^workspace:.$/
+
+export const WORK_SPACE_REG_EXP = /^workspace:/

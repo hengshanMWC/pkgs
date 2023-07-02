@@ -1,9 +1,6 @@
-import { createInitPlugin, createRunPlugin, createTagPlugin, createVersionPlugin, createPublishPlugin } from './command'
+import { createInitPlugin, createRunPlugin, createVersionPlugin, createPublishPlugin } from './command'
 import type { Context } from './lib/context'
 type Type = 'sync' | 'diff'
-interface ExecuteCommandOption {
-  mode: Type
-}
 
 type PluginOption = [flags: string, description?: string, defaultValue?: string | boolean]
 export interface PluginData<T extends any[] = any[]> {
@@ -13,38 +10,32 @@ export interface PluginData<T extends any[] = any[]> {
   option?: PluginOption[]
   action: (context: Context, ...args: T) => void
 }
-interface ExecuteCommandVersionOption extends
-  Partial<ExecuteCommandOption> {
+export interface ExecuteCommandVersionOption {
+  mode?: Type
   message?: string
 }
-interface ExecuteCommandPublishOption extends
-  Partial<ExecuteCommandOption> {
+export interface ExecuteCommandPublishOption {
   tag?: string
 }
-export interface ExecuteCommandConfig extends ExecuteCommandOption {
+export interface ExecuteCommandConfig {
   packagesPath: string | string[] | undefined
-  rootPackage: Boolean
   version: ExecuteCommandVersionOption
-  publish: ExecuteCommandPublishOption
+  // publish: ExecuteCommandPublishOption
   plugins: Array<PluginData | string>
 }
 export const defaultOptions: ExecuteCommandConfig = {
   packagesPath: undefined,
-  rootPackage: true,
-  mode: 'sync',
   version: {
-    mode: undefined,
-    message: 'chore: version',
+    mode: 'sync',
+    message: 'chore: version %s',
   },
-  publish: {
-    mode: undefined,
-    tag: '',
-  },
+  // publish: {
+  // tag: '',
+  // },
   plugins: [
     createVersionPlugin(),
     createPublishPlugin(),
     createRunPlugin(),
     createInitPlugin(),
-    createTagPlugin(),
   ],
 }

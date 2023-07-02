@@ -6,12 +6,14 @@ export {
   commandRun,
   createRunPlugin,
 }
-async function main (context: Context, cmd: string, mode: RunMode = 'work', rootPackage = true) {
-  context.assignOptions({
-    rootPackage,
-  })
-  const cmds = await context.storeCommand[`${mode}Command`](cmd)
-  return cmds
+async function main (context: Context, cmd: string, mode: RunMode = 'work') {
+  const runCmd = `npm run ${cmd}`
+  const diffDirs = await context.storeCommand[`${mode}DiffFile`]()
+  const analysisDiagram = context.contextAnalysisDiagram.analysisDiagram
+  // scripts有该功能才触发
+  const dirs = diffDirs.filter(dir => !!analysisDiagram[dir].packageJson?.scripts?.[cmd])
+  const result = context.storeCommand.commandBatchRun(dirs, runCmd)
+  return result
 }
 // all
 type RunMode = 'work' | 'stage' | 'repository'
@@ -19,14 +21,13 @@ type RunMode = 'work' | 'stage' | 'repository'
 async function commandRun (
   cmd: string,
   mode?: RunMode,
-  rootPackage?: boolean,
   git: SimpleGit = simpleGit(),
 ) {
   const context = await Context.create(
     undefined,
     git,
   )
-  const cmds = await main(context, cmd, mode, rootPackage)
+  const cmds = await main(context, cmd, mode)
   return cmds
 }
 
@@ -35,11 +36,8 @@ function createRunPlugin (): PluginData {
     id: 'run',
     command: 'run <cmd> [mode]',
     description: 'run diff scripts.\n mode: work | stage | repository, default: work',
-    option: [
-      ['-r <boolean>', 'Include rootPackage', 'true'],
-    ],
-    action: (context, cmd: string, mode?: RunMode, option: { r?: 'false' | 'true' } = {}) => {
-      return main(context, cmd, mode, option.r !== 'false')
+    action: (context, cmd: string, mode?: RunMode) => {
+      return main(context, cmd, mode)
     },
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@abmao/pkgs",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "packageManager": "pnpm@7.21.0",
   "description": "Simple monorepo combined with pnpm",
   "keywords": [
@@ -47,16 +47,18 @@
   "homepage": "https://github.com/hengshanMWC/pkgs#readme",
   "dependencies": {
     "@abmao/bump": "^0.0.1",
-    "@abmao/forb": "^2.0.4",
+    "@abmao/forb": "^2.0.5",
     "bundle-require": "^4.0.1",
     "colors": "^1.4.0",
     "commander": "^10.0.1",
+    "execa": "^7.1.1",
     "fs-extra": "^11.1.1",
     "import-local": "^3.1.0",
     "joycon": "^3.1.1",
     "js-yaml": "^4.1.0",
     "npmlog": "^7.0.1",
     "plugin-group": "^1.0.5",
+    "semver": "^7.5.2",
     "simple-git": "^3.4.0"
   },
   "devDependencies": {
@@ -68,6 +70,7 @@
     "@types/import-local": "^3.1.0",
     "@types/js-yaml": "^4.0.5",
     "@types/npmlog": "^4.1.4",
+    "@types/semver": "^7.5.0",
     "@vitest/coverage-v8": "^0.32.0",
     "c8": "^7.11.0",
     "eslint": "^8.11.0",

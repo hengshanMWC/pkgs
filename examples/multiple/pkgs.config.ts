@@ -1,6 +1,5 @@
 export default {
-  mode: 'sync',
   version: {
-    message: 'chore: test',
+    message: 'chore: multiple %s',
   },
 }

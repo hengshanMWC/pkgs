@@ -1,0 +1,11 @@
+{
+  "name": "root",
+  "version": "0.0.0",
+  "scripts": {
+    "pkgs:version": "pkgs version",
+    "pkgs:publish": "pkgs publish"
+  },
+  "devDependencies": {
+    "@abmao/pkgs": "latest"
+  }
+}

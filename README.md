@@ -7,7 +7,6 @@ npm i -g @abmao/pkgs
 pkgs version // 升级版本
 pkgs publish // 发布包
 ```
-monorepo项目切换成pkgs，应该先运行`pkgs tag`，防止错误的`version`和`publish`
 
 # Features
 
@@ -16,45 +15,30 @@ monorepo有两种模式
 - **sync**: 命令将同步所有包
 - **diff**: 命令只会对更改过的文件触发
 
-## Semantic
-
-对`packages.json`进行版本分析，对于`workspace`的`*`、`^`、`~`都有对应的语意化处理
-## CreateTag
-使用`version`和`publish`命令会打上不同的`git tag`，而`diff mode`则是根据这些`git tag`进行分析。（👇🏻运行命令后，cli打上的tag
-- pkgs version: v`${version}`-version-pkg
-- pkgs publish: sync`${Date.now()}`-publish-pkg
-- pkgs version -m diff: sync`${Date.now()}`-version-pkg
-- pkgs publish -m diff: sync`${Date.now()}`-publish-pkg
-
-
 # Config
-根目录下定义`pkgs.json`，pkgs运行时会读取其配置
-
+支持的配置方式如下:
+- 根目录
+  - pkgs.config.ts
+  - pkgs.config.js
+  - pkgs.config.cjs
+  - pkgs.config.mjs
+  - pkgs.config.json
+- package.json的字段
+  - pkgs
 ## Default
 以下是代码中的默认配置，会读取`pnpm-workspace.yaml`找到多包工作区，如果没找该文件到的话，会默认成`packages/*`
 ```JavaScript
 {
-  rootPackage: true,
-  mode: 'sync',
   version: {
     mode: undefined,
-    message: 'chore: version',
-  },
-  publish: {
-    mode: undefined,
-    tag: '',
-  },
+    message: 'chore: version %s',
+  }
 }
 ```
 ## Options
-- **rootPackage**: `pkgs run`是否包括根目录下的命令
-- **mode**: `sync` | `diff`。决定`version`和`publish`的模式
 - **version**: `pkgs version`命令配置
   - **mode**: `sync` | `diff`。决定命令模式
   - **message**: 运行\``git commit -m '${message} v${version}'`\`的message
-- **publish**: `pkgs version`命令配置
-  - **mode**: `sync` | `diff`。决定命令模式
-  - **tag**: 运行\``npm publish --tag ${tag}`\`的tag。如果不传，会分析你的version是否需要添加--tag。例如: version: '1.0.0-beta.1', 发布命令会变成`npm publish --tag beta`
 # Commands
 可以使用`pkgs -h`查看具体指令
 ## version
@@ -72,19 +56,7 @@ monorepo有两种模式
 
 发布package
 
-- --mode \<type>:
-  - sync: 发布所有package
-  - diff: 发布更改过的package
 - --tag \<type>: npm publish --tag \<type>
-
-## tag
-打上pkgs tag。
-
-diff模式是基于git tag进行文件更改分析。场景：当monorepo项目切换成`pkgs`，为了防止错误的`version`和`publish`，请先打上tag
-
-不带参数则相当于打上两种一下tag
-- -p: pkgs tag -p(打上publish标签)
-- -v: pkgs tag -v(打上version标签)
 
 ## init
 创建pkgs相关文件
@@ -103,4 +75,3 @@ pkgs run test work
 pkgs run test stage
 pkgs run test repository
 ```
-- -r: 是否包括根目录的package，默认是true

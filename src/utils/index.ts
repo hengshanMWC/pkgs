@@ -1,11 +1,11 @@
-import { execSync } from 'child_process'
+import { $ } from 'execa'
 import { readJSON, writeJSON, readFile } from 'fs-extra'
 import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 import strip from 'strip-json-comments'
-import { DEPENDENCY_PREFIX } from '../constant'
 import type { ExecuteCommandConfig } from '../defaultOptions'
+import { DEPENDENCY_PREFIX, WORK_SPACE_REG_EXP, gitCommitMessage } from './regExp'
 export const isTest = process.env.NODE_ENV === 'test'
 export async function getJSON (dir: string): Promise<IPackageJson> {
   try {
@@ -48,14 +48,8 @@ function assignOption (
   templateObject: Partial<ExecuteCommandConfig>,
   object: Partial<ExecuteCommandConfig>,
 ): Partial<ExecuteCommandConfig> {
-  if (object.mode !== undefined) {
-    templateObject.mode = object.mode
-  }
   if (object.packagesPath !== undefined) {
     templateObject.packagesPath = object.packagesPath
-  }
-  if (object.rootPackage !== undefined) {
-    templateObject.rootPackage = object.rootPackage
   }
   if (object.version !== undefined) {
     if (templateObject.version === undefined) {
@@ -68,17 +62,14 @@ function assignOption (
       templateObject.version.message = object.version.message
     }
   }
-  if (object.publish !== undefined) {
-    if (templateObject.publish === undefined) {
-      templateObject.publish = {}
-    }
-    if (object.publish.mode !== undefined) {
-      templateObject.publish.mode = object.publish.mode
-    }
-    if (object.publish.tag !== undefined) {
-      templateObject.publish.tag = object.publish.tag
-    }
-  }
+  // if (object.publish !== undefined) {
+  //   if (templateObject.publish === undefined) {
+  //     templateObject.publish = {}
+  //   }
+  //   if (object.publish.tag !== undefined) {
+  //     templateObject.publish.tag = object.publish.tag
+  //   }
+  // }
   if (object.plugins !== undefined) {
     if (templateObject.plugins === undefined) {
       templateObject.plugins = []
@@ -94,28 +85,35 @@ export function err (text: string) {
   console.error(`${colors.red.bold(text)}`)
 }
 export function isVersionStar (version: string) {
-  return version.includes(DEPENDENCY_PREFIX)
+  return DEPENDENCY_PREFIX.test(version)
 }
-
+export function getWorkspaceVersion (version: string) {
+  return version.replace(WORK_SPACE_REG_EXP, '')
+}
 export function createCommand (cmd: string, dirs: string[]) {
   if (!dirs.length) return []
   return dirs
-    .map(dir => `${dir ? `cd ${dir} && ` : ''}npm run ${cmd}`)
+    .map(dir => `${dir ? `cd ${dir} && ` : ''}${cmd}`)
 }
-export function runCmds (cmds: string[]) {
+export async function runCmdList (cmdStrList: string[]) {
   const result: string[] = []
-  cmds.forEach(cmd => {
-    try {
-      if (!isTest) {
-        execSync(cmd, {
-          stdio: 'inherit',
-        })
-      }
-
-      result.push(cmd)
+  const cmdList = cmdStrList.map(cmd => {
+    if (isTest) {
+      return Promise.resolve(cmd)
     }
-    catch (e) {
-      err(`${e}`)
+    else {
+      return $({ stdio: 'inherit' })`${cmd}`
+        .then(() => cmd)
+        .catch(e => {
+          err(`${e}`)
+          return Promise.reject(e)
+        })
+    }
+  })
+  const cmdResultList = await Promise.allSettled(cmdList)
+  cmdResultList.forEach(item => {
+    if (item.status === 'fulfilled') {
+      result.push(item.value)
     }
   })
   return result
@@ -147,4 +145,8 @@ export function jsoncParse (data: string) {
 
 export function sortFilesName (files: string[]) {
   return files.slice().sort((a, b) => a.localeCompare(b))
+}
+
+export function gitCommitMessageFormat (message: string, replaceMessage: string) {
+  return message.replace(gitCommitMessage, replaceMessage)
 }

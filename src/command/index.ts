@@ -1,5 +1,4 @@
 export * from './version'
 export * from './publish'
 export * from './init'
-export * from './tag'
 export * from './run'

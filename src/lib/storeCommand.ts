@@ -1,9 +1,7 @@
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
-import type { ExecuteCommandConfig } from '../defaultOptions'
-import type { DiffFile, TagType } from '../utils/git'
-import { getRepositoryInfo, getStageInfo, getWorkInfo, gitDiffTag } from '../utils/git'
-import { createCommand, runCmds, warn } from '../utils'
+import { getStageInfo, getWorkInfo, getVersionDiffFile } from '../utils/git'
+import { createCommand, runCmdList, warn } from '../utils'
 import { WARN_NOW_RUN } from '../constant'
 import type { AnalysisBlockItem, ContextAnalysisDiagram } from './analysisDiagram'
 export {
@@ -13,96 +11,115 @@ export {
 
 class StoreCommand {
   contextAnalysisDiagram: ContextAnalysisDiagram
-  rootPackage: ExecuteCommandConfig['rootPackage']
   git: SimpleGit
   constructor (
     contextAnalysisDiagram: ContextAnalysisDiagram,
-    rootPackage: ExecuteCommandConfig['rootPackage'],
     git: SimpleGit = simpleGit(),
   ) {
     this.contextAnalysisDiagram = contextAnalysisDiagram
-    this.rootPackage = rootPackage
     this.git = git
   }
 
   // async allCommand (type: string) {
-  //   const diffDirs = await this.getWorkDiffFile()
+  //   const diffDirs = await this.workDiffFile()
   //   await this.commandRun(diffDirs, type)
   // }
 
-  async workCommand (type: string) {
-    const diffDirs = await this.getWorkDiffFile()
-    const result = this.commandRun(diffDirs, type)
+  async workCommand (cmd: string) {
+    const diffDirs = await this.workDiffFile()
+    const result = await this.commandBatchRun(diffDirs, cmd)
     return result
   }
 
-  async stageCommand (type: string) {
-    const diffDirs = await this.getStageDiffFile()
-    const result = this.commandRun(diffDirs, type)
+  async stageCommand (cmd: string) {
+    const diffDirs = await this.stageDiffFile()
+    const result = await this.commandBatchRun(diffDirs, cmd)
     return result
   }
 
-  async repositoryCommand (type: string) {
-    const diffDirs = await this.getRepositoryDiffFile(type)
-    const result = this.commandRun(diffDirs, type)
-    // TODO 到时候提出来给调用方
-    await gitDiffTag(type)
+  async repositoryCommand (cmd: string) {
+    const diffDirs = await this.repositoryDiffFile()
+    const result = await this.commandBatchRun(diffDirs, cmd)
     return result
   }
 
-  async forRepositoryDiffPack (callback: ForPackCallback, type: TagType) {
-    const files = await getRepositoryInfo(type, this.git)
-    await this.forPack(files, callback)
+  // 拿到相关包的文件修改范围
+  async getFileList () {
+    const getFileList = this.contextAnalysisDiagram.allPackagesJSON
+      .map(({ name, version }) => getVersionDiffFile(`${name}@${version}`, this.git))
+    const result = await Promise.all(getFileList)
+    return result
   }
 
-  private async getWorkDiffFile () {
+  async getRepositoryInfo () {
+    const fileList = await this.getFileList()
+
+    const relatedPackagesDir: Set<string> = new Set()
+    const dirs = this.contextAnalysisDiagram.allDirs
+
+    // 收集包对应的dir
+    fileList.forEach((file, index) => {
+      if (file === true) {
+        relatedPackagesDir.add(dirs[index])
+      }
+      else {
+        const dirList = this.contextAnalysisDiagram.getRelatedPackagesDir(file)
+        dirList.forEach(dir => relatedPackagesDir.add(dir))
+      }
+    })
+    return [...relatedPackagesDir]
+  }
+
+  async forRepositoryDiffPack (callback: ForPackCallback) {
+    const relatedPackagesDir = await this.getRepositoryInfo()
+    await this.forPack(relatedPackagesDir, callback)
+  }
+
+  async workDiffFile () {
     const files = await getWorkInfo(this.git)
+    const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
-      this.forPack(files, source => {
+      this.forPack(relatedPackagesDir, source => {
         cd(source)
       }),
     )
   }
 
-  private async getStageDiffFile () {
+  async stageDiffFile () {
     const files = await getStageInfo(this.git)
+    const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
-      this.forPack(files, source => {
+      this.forPack(relatedPackagesDir, source => {
         cd(source)
       }),
     )
   }
 
-  private async getRepositoryDiffFile (type: string) {
+  async repositoryDiffFile () {
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
       this.forRepositoryDiffPack(source => {
         cd(source)
-      }, type),
+      }),
     )
   }
 
-  private async forPack (files: DiffFile, callback: ForPackCallback) {
-    const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
-    for (let index = 0; index < relatedPackagesDir.length; index++) {
-      const dir = relatedPackagesDir[index]
-      await callback(this.contextAnalysisDiagram.analysisDiagram[dir], index)
-    }
-  }
+  async commandBatchRun (diffDirs: string[], cmdStr: string) {
+    const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(diffDirs)
+    const cmd = createCommand(cmdStr, orderDirs)
 
-  private getRunDirs (dirs: string[]) {
-    return this.rootPackage ? dirs : dirs.filter(dir => dir)
-  }
-
-  private commandRun (diffDirs: string[], type: string) {
-    const dirs = this.getRunDirs(diffDirs)
-    const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(dirs)
-    const cmds = createCommand(type, orderDirs)
-
-    if (cmds.length) {
-      return runCmds(cmds)
+    if (cmd.length) {
+      const cmdStrList = await runCmdList(cmd)
+      return cmdStrList
     }
     else {
       warn(WARN_NOW_RUN)
+    }
+  }
+
+  private async forPack (relatedPackagesDir: string[], callback: ForPackCallback) {
+    for (let index = 0; index < relatedPackagesDir.length; index++) {
+      const dir = relatedPackagesDir[index]
+      await callback(this.contextAnalysisDiagram.analysisDiagram[dir], index)
     }
   }
 }
