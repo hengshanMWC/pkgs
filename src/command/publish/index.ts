@@ -1,4 +1,4 @@
-import { execSync } from 'child_process'
+import { $ } from 'execa'
 import type { IPackageJson } from '@ts-type/package-dts'
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
@@ -7,6 +7,7 @@ import { cdDir, isTest } from '../../utils'
 import { organization, npmTag } from '../../utils/regExp'
 import type { ExecuteCommandConfig, ExecuteCommandPublishOption, PluginData } from '../../defaultOptions'
 import { getTagVersion } from '../../utils/git'
+
 function main (context: Context) {
   const mode = context.getCorrectOptionValue('publish', 'mode')
 
@@ -96,7 +97,7 @@ async function implementPublish (
       }
     }
     if (!isTest) {
-      execSync(command)
+      await $`${command}`
     }
     return command
   }

@@ -11,9 +11,7 @@ export async function syncTest (dir: string, arrFile: string[]) {
   process.chdir(context.root)
   await commandVersion(undefined, git, newVersion)
   const publishCmdList = await commandPublish({
-    publish: {
-      tag: 'test',
-    },
+    tag: 'test',
   })
   publishListTest(arrFile, publishCmdList)
   return git
@@ -25,21 +23,21 @@ function publishListTest (fileNameList: string[], cmdList?: string[]) {
   })
 }
 
-// export async function diffTest (dir: string, arrFile: string[], newVersion: string) {
-//   const context = await handleCommand(dir, prefix)
-//   const git = newSimpleGit(context.root)
-//   process.chdir(context.root)
-//   await commandVersion({
-//     mode: 'diff',
-//   }, git, newVersion)
-//   const publishCmdList = await commandPublish({
-//     tag: 'test',
-//   })
-//   const packageJsonList = await getPackages(arrFile)
-//   const tagList = packageJsonList.map(packageJson => tagCommit(packageJson, newVersion, git))
-//   await tagList
-//   return {
-//     context,
-//     git,
-//   }
-// }
+export async function diffTest (dir: string, arrFile: string[], newVersion: string) {
+  const context = await handleCommand(dir, prefix)
+  const git = newSimpleGit(context.root)
+  console.log('context.root', context.root)
+  process.chdir(context.root)
+  await commandVersion({
+    mode: 'diff',
+  }, git, newVersion)
+  const publishCmdList = await commandPublish({
+    mode: 'diff',
+    tag: 'test',
+  })
+  publishListTest(arrFile, publishCmdList)
+  return {
+    context,
+    git,
+  }
+}

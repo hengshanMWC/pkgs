@@ -12,7 +12,7 @@ async function main (context: Context, cmd: string, mode: RunMode = 'work') {
   const analysisDiagram = context.contextAnalysisDiagram.analysisDiagram
   // scripts有该功能才触发
   const dirs = diffDirs.filter(dir => !!analysisDiagram[dir].packageJson?.scripts?.[cmd])
-  const result = context.storeCommand.commandRun(dirs, runCmd)
+  const result = context.storeCommand.commandBatchRun(dirs, runCmd)
   return result
 }
 // all

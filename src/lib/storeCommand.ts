@@ -1,7 +1,7 @@
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
 import { getStageInfo, getWorkInfo, getVersionDiffFile } from '../utils/git'
-import { createCommand, runCmds, warn } from '../utils'
+import { createCommand, runCmdList, warn } from '../utils'
 import { WARN_NOW_RUN } from '../constant'
 import type { AnalysisBlockItem, ContextAnalysisDiagram } from './analysisDiagram'
 export {
@@ -27,19 +27,19 @@ class StoreCommand {
 
   async workCommand (cmd: string) {
     const diffDirs = await this.workDiffFile()
-    const result = this.commandRun(diffDirs, cmd)
+    const result = await this.commandBatchRun(diffDirs, cmd)
     return result
   }
 
   async stageCommand (cmd: string) {
     const diffDirs = await this.stageDiffFile()
-    const result = this.commandRun(diffDirs, cmd)
+    const result = await this.commandBatchRun(diffDirs, cmd)
     return result
   }
 
   async repositoryCommand (cmd: string) {
     const diffDirs = await this.repositoryDiffFile()
-    const result = this.commandRun(diffDirs, cmd)
+    const result = await this.commandBatchRun(diffDirs, cmd)
     return result
   }
 
@@ -103,12 +103,13 @@ class StoreCommand {
     )
   }
 
-  commandRun (diffDirs: string[], cmd: string) {
+  async commandBatchRun (diffDirs: string[], cmdStr: string) {
     const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(diffDirs)
-    const cmds = createCommand(cmd, orderDirs)
+    const cmd = createCommand(cmdStr, orderDirs)
 
-    if (cmds.length) {
-      return runCmds(cmds)
+    if (cmd.length) {
+      const cmdStrList = await runCmdList(cmd)
+      return cmdStrList
     }
     else {
       warn(WARN_NOW_RUN)

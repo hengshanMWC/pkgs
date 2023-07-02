@@ -1,4 +1,4 @@
-import { cmd, syncTest } from '../__fixtures__/cmd/publish'
+import { cmd, diffTest, syncTest } from '../__fixtures__/cmd/publish'
 import {
   Interdependence,
   ORIGINAL_CWD,
@@ -17,21 +17,20 @@ afterEach(() => {
 })
 
 describe(`${cmd}: ${quarantine}`, () => {
-  const dirArr = ['a', 'b']
   test(`${quarantine}: default(sync)`, async () => {
-    await syncTest(quarantine, dirArr)
+    await syncTest(quarantine, dirQuarantineArr)
   })
   // test(`${quarantine}`, async () => {
-  //   const { git, context } = await diffTest(quarantine, dirQuarantineArr, newVersion)
+  // const { git, context } = await diffTest(quarantine, dirQuarantineArr, newVersion)
 
-  //   await setUpFilesAdded(context, ['packages/a/test'])
-  //   await commandVersion({
-  //     mode: 'diff',
-  //   }, git, addVersion)
-  //   const [aPackageJson, bPackageJson] = await getPackages(dirQuarantineArr)
-  //   tagCommit(aPackageJson, addVersion, git)
-  //   tagCommit(bPackageJson, newVersion, git)
-  // })
+  // await setUpFilesAdded(context, ['packages/a/test'])
+  // await commandVersion({
+  //   mode: 'diff',
+  // }, git, addVersion)
+  // const [aPackageJson, bPackageJson] = await getPackages(dirQuarantineArr)
+  // tagCommit(aPackageJson, addVersion, git)
+  // tagCommit(bPackageJson, newVersion, git)
+  // }, 10000000)
 })
 //   test(`${quarantine}`, async () => {
 //     const git = await diffTest(quarantine, dirArr, newVersion)

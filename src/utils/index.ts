@@ -1,4 +1,4 @@
-import { execSync } from 'child_process'
+import { $ } from 'execa'
 import { readJSON, writeJSON, readFile } from 'fs-extra'
 import yaml from 'js-yaml'
 import colors from 'colors'
@@ -101,20 +101,25 @@ export function createCommand (cmd: string, dirs: string[]) {
   return dirs
     .map(dir => `${dir ? `cd ${dir} && ` : ''}${cmd}`)
 }
-export function runCmds (cmds: string[]) {
+export async function runCmdList (cmdStrList: string[]) {
   const result: string[] = []
-  cmds.forEach(cmd => {
-    try {
-      if (!isTest) {
-        execSync(cmd, {
-          stdio: 'inherit',
-        })
-      }
-
-      result.push(cmd)
+  const cmdList = cmdStrList.map(cmd => {
+    if (isTest) {
+      return Promise.resolve(cmd)
     }
-    catch (e) {
-      err(`${e}`)
+    else {
+      return $({ stdio: 'inherit' })`${cmd}`
+        .then(() => cmd)
+        .catch(e => {
+          err(`${e}`)
+          return Promise.reject(e)
+        })
+    }
+  })
+  const cmdResultList = await Promise.allSettled(cmdList)
+  cmdResultList.forEach(item => {
+    if (item.status === 'fulfilled') {
+      result.push(item.value)
     }
   })
   return result
