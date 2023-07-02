@@ -1,18 +1,15 @@
 import { commandPublish, commandVersion } from '../../../src'
-import { newVersion } from '../constant'
 import { handleCommand } from '../create-test-context'
 import { newSimpleGit } from '../instance'
 const prefix = 'publish-test'
 export const cmd = 'publish'
 
-export async function testPublish (dir: string, arrFile: string[], tag?: string) {
+export async function testPublish (dir: string, arrFile: string[], version: string, tag?: string) {
   const context = await handleCommand(dir, prefix)
   const git = newSimpleGit(context.root)
   process.chdir(context.root)
-  await commandVersion(undefined, git, newVersion)
-  const publishCmdList = await commandPublish({
-    tag,
-  })
+  await commandVersion(undefined, git, version)
+  const publishCmdList = await commandPublish()
   publishListTest(arrFile, publishCmdList, tag)
   return git
 }

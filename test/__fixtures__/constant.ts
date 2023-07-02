@@ -1,3 +1,5 @@
+export const bate = 'beta'
+export const newVersionBeta = `0.0.1-${bate}.1`
 export const newVersion = '1.0.0'
 export const addVersion = '1.1.0'
 export const quarantine = 'quarantine'
