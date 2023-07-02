@@ -4,6 +4,7 @@ import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 import strip from 'strip-json-comments'
+import { getPackagesDir } from '@abmao/forb'
 import type { ExecuteCommandConfig } from '../defaultOptions'
 import { DEPENDENCY_PREFIX, WORK_SPACE_REG_EXP, gitCommitMessage } from './regExp'
 export const isTest = process.env.NODE_ENV === 'test'
@@ -93,7 +94,7 @@ export function getWorkspaceVersion (version: string) {
 export function createCommand (cmd: string, dirs: string[]) {
   if (!dirs.length) return []
   return dirs
-    .map(dir => `${dir ? `cd ${dir} && ` : ''}${cmd}`)
+    .map(dir => `${cdDir(dir)}${cmd}`)
 }
 export async function runCmdList (cmdStrList: string[]) {
   const result: string[] = []
@@ -149,4 +150,17 @@ export function sortFilesName (files: string[]) {
 
 export function gitCommitMessageFormat (message: string, replaceMessage: string) {
   return message.replace(gitCommitMessage, replaceMessage)
+}
+
+export async function getDirPackageInfo (packagesPath: string) {
+  try {
+    const dirPath = await getPackagesDir(packagesPath)
+    return dirPath
+  }
+  catch {
+    return {
+      dirs: '',
+      filesPath: 'package.json',
+    }
+  }
 }
