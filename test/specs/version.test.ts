@@ -16,7 +16,16 @@ import {
   rootPackageJsonPath,
   single,
 } from '../__fixtures__/constant'
-import { cmd, diffTest, diffTestPackageList, syncTest, tagCommit, testPackage, testPackages } from '../__fixtures__/cmd/version'
+import {
+  cmd,
+  diffTest,
+  diffTestPackage,
+  diffTestPackageList,
+  syncTest,
+  tagCommit,
+  testPackage,
+  testPackages,
+} from '../__fixtures__/cmd/version'
 
 afterEach(() => {
   // Many of the tests in this file change the CWD, so change it back after each test
@@ -85,16 +94,13 @@ describe(`${cmd}: ${single}`, () => {
     await syncTest(single, newVersion)
     await testPackage(rootPackageJsonPath, newVersion)
   })
-  // test(`${single}`, async () => {
-  //   const { git, context } = await diffTest(single, dirInterdependenceArr, newVersion)
-
-  //   await setUpFilesAdded(context, ['packages/a/test'])
-  //   await commandVersion({
-  //     mode: 'diff',
-  //   }, git, addVersion)
-  //   const [aPackageJson, bPackageJson, cPackageJson] = await getPackages(dirInterdependenceArr)
-  //   await tagCommit(aPackageJson, addVersion, git)
-  //   await tagCommit(bPackageJson, newVersion, git)
-  //   await tagCommit(cPackageJson, addVersion, git)
-  // })
+  test(`${single}`, async () => {
+    const { git, context } = await diffTest(single, newVersion)
+    await diffTestPackage(rootPackageJsonPath, newVersion, git)
+    await setUpFilesAdded(context, ['test'])
+    await commandVersion({
+      mode: 'diff',
+    }, git, addVersion)
+    await diffTestPackage(rootPackageJsonPath, addVersion, git)
+  })
 })

@@ -74,3 +74,8 @@ export async function diffTestPackageList (arrFile: string[], newVersion: string
   const tagList = packageJsonList.map(packageJson => tagCommit(packageJson, newVersion, git))
   await tagList
 }
+
+export async function diffTestPackage (filePath: string, newVersion: string, git: SimpleGit) {
+  const json = await readJSON(filePath)
+  await tagCommit(json, newVersion, git)
+}
