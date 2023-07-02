@@ -13,8 +13,10 @@ import {
   many,
   newVersion,
   quarantine,
+  rootPackageJsonPath,
+  single,
 } from '../__fixtures__/constant'
-import { cmd, diffTest, syncTest, tagCommit } from '../__fixtures__/cmd/version'
+import { cmd, diffTest, syncTest, tagCommit, testPackage, testPackages } from '../__fixtures__/cmd/version'
 
 afterEach(() => {
   // Many of the tests in this file change the CWD, so change it back after each test
@@ -22,7 +24,8 @@ afterEach(() => {
 })
 describe(`${cmd}: ${quarantine}`, () => {
   test(`${quarantine}: default(sync)`, async () => {
-    await syncTest(quarantine, dirQuarantineArr, newVersion)
+    await syncTest(quarantine, newVersion)
+    await testPackages(dirQuarantineArr, newVersion)
   })
   test(`${quarantine}`, async () => {
     const { git, context } = await diffTest(quarantine, dirQuarantineArr, newVersion)
@@ -38,7 +41,8 @@ describe(`${cmd}: ${quarantine}`, () => {
 })
 describe(`${cmd}: ${many}`, () => {
   test(`${many}: default(sync)`, async () => {
-    await syncTest(many, dirManyArr, newVersion)
+    await syncTest(many, newVersion)
+    await testPackages(dirManyArr, newVersion)
   })
   test(`${many}`, async () => {
     const { git, context } = await diffTest(many, dirManyArr, newVersion)
@@ -57,7 +61,8 @@ describe(`${cmd}: ${many}`, () => {
 })
 describe(`${cmd}: ${Interdependence}`, () => {
   test(`${Interdependence}: default(sync)`, async () => {
-    await syncTest(Interdependence, dirInterdependenceArr, newVersion)
+    await syncTest(Interdependence, newVersion)
+    await testPackages(dirInterdependenceArr, newVersion)
   })
   test(`${Interdependence}`, async () => {
     const { git, context } = await diffTest(Interdependence, dirInterdependenceArr, newVersion)
@@ -71,4 +76,23 @@ describe(`${cmd}: ${Interdependence}`, () => {
     await tagCommit(bPackageJson, newVersion, git)
     await tagCommit(cPackageJson, addVersion, git)
   })
+})
+
+describe(`${cmd}: ${single}`, () => {
+  test(`${single}: default(sync)`, async () => {
+    await syncTest(single, newVersion)
+    await testPackage(rootPackageJsonPath, newVersion)
+  })
+  // test(`${single}`, async () => {
+  //   const { git, context } = await diffTest(single, dirInterdependenceArr, newVersion)
+
+  //   await setUpFilesAdded(context, ['packages/a/test'])
+  //   await commandVersion({
+  //     mode: 'diff',
+  //   }, git, addVersion)
+  //   const [aPackageJson, bPackageJson, cPackageJson] = await getPackages(dirInterdependenceArr)
+  //   await tagCommit(aPackageJson, addVersion, git)
+  //   await tagCommit(bPackageJson, newVersion, git)
+  //   await tagCommit(cPackageJson, addVersion, git)
+  // })
 })

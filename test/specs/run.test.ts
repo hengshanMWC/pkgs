@@ -59,7 +59,7 @@ describe(cmd, () => {
     await testMain(Interdependence, _cmds)
   })
   // 单项目
-  test.only(single, async () => {
+  test(single, async () => {
     await testMain(single, rootCmd)
-  }, 100000000)
+  })
 })

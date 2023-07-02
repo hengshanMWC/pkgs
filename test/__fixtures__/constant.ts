@@ -10,3 +10,4 @@ export const ORIGINAL_CWD = process.cwd()
 export const dirQuarantineArr = ['a', 'b']
 export const dirManyArr = ['a', 'b', 'c', 'd', 'e']
 export const dirInterdependenceArr = ['a', 'b', 'c']
+export const rootPackageJsonPath = 'package.json'
