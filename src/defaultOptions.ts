@@ -20,7 +20,7 @@ export interface ExecuteCommandPublishOption {
 export interface ExecuteCommandConfig {
   packagesPath: string | string[] | undefined
   version: ExecuteCommandVersionOption
-  publish: ExecuteCommandPublishOption
+  // publish: ExecuteCommandPublishOption
   plugins: Array<PluginData | string>
 }
 export const defaultOptions: ExecuteCommandConfig = {
@@ -29,9 +29,9 @@ export const defaultOptions: ExecuteCommandConfig = {
     mode: 'sync',
     message: 'chore: version %s',
   },
-  publish: {
-    tag: '',
-  },
+  // publish: {
+  // tag: '',
+  // },
   plugins: [
     createVersionPlugin(),
     createPublishPlugin(),

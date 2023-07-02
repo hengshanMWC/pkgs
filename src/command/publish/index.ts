@@ -7,30 +7,28 @@ import { gt } from 'semver'
 import { Context } from '../../lib/context'
 import { cdDir, runCmdList } from '../../utils'
 import { organization, npmTag } from '../../utils/regExp'
-import type { ExecuteCommandConfig, ExecuteCommandPublishOption, PluginData } from '../../defaultOptions'
+import type { ExecuteCommandPublishOption, PluginData } from '../../defaultOptions'
 import type { AnalysisBlockItem } from '../../lib'
 
-async function main (context: Context) {
+async function main (context: Context, tag?: string) {
   const editAnalysisBlockList = await getEditPackagePublish(context)
   const publishCmdStrList = editAnalysisBlockList
     .map(analysisBlockItem => createPublishCmd(
       analysisBlockItem?.packageJson,
       analysisBlockItem.dir,
-      context.config.publish.tag,
+      tag,
     ))
     .filter(cmd => cmd) as string[]
   const result = await runCmdList(publishCmdStrList)
   return result
 }
-export async function commandPublish (configParam: ExecuteCommandPublishOption = {}, git: SimpleGit = simpleGit()) {
-  const config = await Context.assignConfig({
-    publish: configParam,
-  })
+export async function commandPublish (publishOption: ExecuteCommandPublishOption = {}, git: SimpleGit = simpleGit()) {
+  const config = await Context.assignConfig()
   const context = await Context.create(
     config,
     git,
   )
-  const result = await main(context)
+  const result = await main(context, publishOption.tag)
   return result
 }
 async function validationPackageVersion (packageName: string, version: string) {
@@ -88,11 +86,8 @@ export function createPublishPlugin (): PluginData {
     option: [
       ['-tag <type>', 'npm publish --tag <type>'],
     ],
-    action (context: Context, config: ExecuteCommandConfig['publish'] = {}) {
-      context.assignOptions({
-        publish: config,
-      })
-      main(context)
+    action (context: Context, config: ExecuteCommandPublishOption = {}) {
+      main(context, config.tag)
     },
   }
 }

@@ -62,14 +62,14 @@ function assignOption (
       templateObject.version.message = object.version.message
     }
   }
-  if (object.publish !== undefined) {
-    if (templateObject.publish === undefined) {
-      templateObject.publish = {}
-    }
-    if (object.publish.tag !== undefined) {
-      templateObject.publish.tag = object.publish.tag
-    }
-  }
+  // if (object.publish !== undefined) {
+  //   if (templateObject.publish === undefined) {
+  //     templateObject.publish = {}
+  //   }
+  //   if (object.publish.tag !== undefined) {
+  //     templateObject.publish.tag = object.publish.tag
+  //   }
+  // }
   if (object.plugins !== undefined) {
     if (templateObject.plugins === undefined) {
       templateObject.plugins = []
