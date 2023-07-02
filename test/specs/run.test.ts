@@ -1,10 +1,8 @@
-import path from 'path'
-import { writeFile } from 'fs-extra'
 import { commandRun } from '../../src/index'
-import type { SimpleGitTestContext } from '../__fixtures__'
 import {
   handleCommand,
 } from '../__fixtures__'
+import { Interdependence, many, quarantine, single } from '../__fixtures__/constant'
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'run'
 const cmds = [
@@ -14,17 +12,11 @@ const cmds = [
   'cd packages/d && npm run test',
   'cd packages/e && npm run test',
 ]
-
+const rootCmd = ['npm run test']
 describe(cmd, () => {
-  let context: SimpleGitTestContext
   const prefix = `${cmd}-test`
   async function testMain (dir: string, arr: string[]) {
-    context = await handleCommand(dir, prefix)
-    await testRun(arr)
-    const filePath = path.resolve(context._root, dir, 'packages/a/a')
-    await writeFile(filePath, context._root)
-  }
-  async function testRun (arr: string[] = cmds) {
+    const context = await handleCommand(dir, prefix)
     const cmd = 'test'
     const testCmds = (cmds?: string[]) => {
       if (cmds) {
@@ -46,30 +38,28 @@ describe(cmd, () => {
     const cmds3 = await commandRun(cmd, 'repository', context.git)
     expect(cmds3).not.toBeUndefined()
     testCmds(cmds3)
-
-    // const tag = await getTag(cmd)
-    // expect(tag && tag.includes(cmd)).toBeTruthy()
   }
   afterEach(() => {
     // Many of the tests in this file change the CWD, so change it back after each test
     process.chdir(ORIGINAL_CWD)
   })
   // 无依赖+rootPackage: false
-  const quarantine = 'quarantine'
   test(quarantine, async () => {
     await testMain(quarantine, [cmds[0], cmds[1]])
   })
   // 复杂依赖
-  const many = 'many'
   test(many, async () => {
     const _cmds: string[] = cmds.slice();
     [_cmds[2], _cmds[3], _cmds[4]] = [_cmds[3], _cmds[4], _cmds[2]]
     await testMain(many, _cmds)
   })
   // 依赖循环
-  const Interdependence = 'Interdependence'
   test(Interdependence, async () => {
     const _cmds: string[] = cmds.slice(0, 3).reverse()
     await testMain(Interdependence, _cmds)
+  })
+  // 单项目
+  test(single, async () => {
+    await testMain(single, rootCmd)
   })
 })

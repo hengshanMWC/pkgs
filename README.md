@@ -1,6 +1,8 @@
 # Overview
 结合`pnpm`的`monorepo`工具，提供了基本的`version`升级和`publish`发布功能。并且有`sync`和`diff`模式，默认`sync`
 
+同时支持monorepo和multirepo架构
+
 # Usage
 ```
 npm i -g @abmao/pkgs

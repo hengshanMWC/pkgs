@@ -1,6 +1,5 @@
 import type IPackageJson from '@ts-type/package-dts'
-import { getPackagesDir } from '@abmao/forb'
-import { getJSONs, sortFilesName } from '../utils'
+import { getDirPackageInfo, getJSONs, sortFilesName } from '../utils'
 import {
   createRelyMyDirMap,
   getMyRelyPackageName,
@@ -74,7 +73,7 @@ class ContextAnalysisDiagram {
     // 子包目录信息
     if (this.packagesPath) {
       try {
-        const { dirs, filesPath } = await getPackagesDir(this.packagesPath)
+        const { dirs, filesPath } = await getDirPackageInfo(this.packagesPath)
         const packagesJSON = await getJSONs(filesPath)
         values[0].push(...dirs)
         values[1].push(...filesPath)
