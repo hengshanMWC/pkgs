@@ -11,6 +11,7 @@ import {
   newSimpleGit,
   setUpFilesAdded,
 } from '../__fixtures__'
+import { Interdependence, addVersion, many, newVersion, quarantine } from '../__fixtures__/constant'
 
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'version'
@@ -72,9 +73,6 @@ afterEach(() => {
   // Many of the tests in this file change the CWD, so change it back after each test
   process.chdir(ORIGINAL_CWD)
 })
-const newVersion = '1.0.0'
-const addVersion = '1.1.0'
-const quarantine = 'quarantine'
 describe(`${cmd}: ${quarantine}`, () => {
   const dirArr = ['a', 'b']
   test(`${quarantine}: default(sync)`, async () => {
@@ -92,7 +90,6 @@ describe(`${cmd}: ${quarantine}`, () => {
     tagCommit(bPackageJson, newVersion, git)
   })
 })
-const many = 'many'
 describe(`${cmd}: ${many}`, () => {
   const dirArr = ['a', 'b', 'c', 'd', 'e']
   test(`${many}: default(sync)`, async () => {
@@ -113,7 +110,6 @@ describe(`${cmd}: ${many}`, () => {
     await cdePackageJsonTagList
   })
 })
-const Interdependence = 'Interdependence'
 describe(`${cmd}: ${Interdependence}`, () => {
   const dirArr = ['a', 'b', 'c']
   test(`${Interdependence}: default(sync)`, async () => {
