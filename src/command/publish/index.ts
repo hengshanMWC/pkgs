@@ -65,7 +65,7 @@ function createPublishCmd (
       command += ' --access public'
     }
 
-    if (tag) {
+    if (tag !== undefined) {
       command += ` --tag ${tag}`
     }
     else if (packageJson.version) {
