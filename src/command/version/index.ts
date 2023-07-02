@@ -15,12 +15,10 @@ import { WARN_NOW_VERSION } from '../../constant'
 import type { AnalysisBlockItem, SetAnalysisBlockObject } from '../../lib/analysisDiagram'
 import type { PluginData, ExecuteCommandConfig, ExecuteCommandVersionOption } from '../../defaultOptions'
 async function main (context: Context, appointVersion?: string) {
-  const mode = context.getCorrectOptionValue('version', 'mode')
-
-  if (mode === 'sync') {
+  if (context.config.version.mode === 'sync') {
     return handleSyncVersion(context, appointVersion)
   }
-  else if (mode === 'diff') {
+  else {
     return handleDiffVersion(context, appointVersion)
   }
 }
@@ -48,7 +46,9 @@ export function createVersionPlugin (): PluginData {
       ['-m, --message <message>', 'commit message'],
     ],
     action (context: Context, config: ExecuteCommandConfig['version'] = {}) {
-      context.assignOptions(config)
+      context.assignOptions({
+        version: config,
+      })
       main(context)
     },
   }

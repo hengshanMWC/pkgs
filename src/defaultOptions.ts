@@ -1,9 +1,6 @@
 import { createInitPlugin, createRunPlugin, createVersionPlugin, createPublishPlugin } from './command'
 import type { Context } from './lib/context'
 type Type = 'sync' | 'diff'
-interface ExecuteCommandOption {
-  mode: Type
-}
 
 type PluginOption = [flags: string, description?: string, defaultValue?: string | boolean]
 export interface PluginData<T extends any[] = any[]> {
@@ -13,15 +10,14 @@ export interface PluginData<T extends any[] = any[]> {
   option?: PluginOption[]
   action: (context: Context, ...args: T) => void
 }
-export interface ExecuteCommandVersionOption extends
-  Partial<ExecuteCommandOption> {
+export interface ExecuteCommandVersionOption {
+  mode: Type
   message?: string
 }
-export interface ExecuteCommandPublishOption extends
-  Partial<ExecuteCommandOption> {
+export interface ExecuteCommandPublishOption {
   tag?: string
 }
-export interface ExecuteCommandConfig extends ExecuteCommandOption {
+export interface ExecuteCommandConfig {
   packagesPath: string | string[] | undefined
   version: ExecuteCommandVersionOption
   publish: ExecuteCommandPublishOption
@@ -29,13 +25,11 @@ export interface ExecuteCommandConfig extends ExecuteCommandOption {
 }
 export const defaultOptions: ExecuteCommandConfig = {
   packagesPath: undefined,
-  mode: 'sync',
   version: {
-    mode: undefined,
+    mode: 'sync',
     message: 'chore: release %s',
   },
   publish: {
-    mode: undefined,
     tag: '',
   },
   plugins: [

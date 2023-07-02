@@ -86,11 +86,12 @@ export function createPublishPlugin (): PluginData {
     command: 'publish',
     description: 'publish package',
     option: [
-      ['--mode <type>', 'sync | diff'],
       ['-tag <type>', 'npm publish --tag <type>'],
     ],
     action (context: Context, config: ExecuteCommandConfig['publish'] = {}) {
-      context.assignOptions(config)
+      context.assignOptions({
+        publish: config,
+      })
       main(context)
     },
   }

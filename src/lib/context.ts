@@ -61,23 +61,6 @@ export class Context {
     }
   }
 
-  getCorrectOptionValue (
-    cmd: CMD,
-    key: keyof ExecuteCommandConfig &
-    keyof ExecuteCommandConfig['version'] &
-    keyof ExecuteCommandConfig['publish'],
-  ) {
-    const config = this.config
-    const cmdObject = config[cmd]
-
-    if (typeof cmdObject === 'object') {
-      return cmdObject[key] === undefined ? config[key] : cmdObject[key]
-    }
-    else {
-      return config[key]
-    }
-  }
-
   private async readDefaultPackagesPath () {
     if (!this.config.packagesPath) {
       try {

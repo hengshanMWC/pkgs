@@ -34,24 +34,20 @@ monorepo有两种模式
 以下是代码中的默认配置，会读取`pnpm-workspace.yaml`找到多包工作区，如果没找该文件到的话，会默认成`packages/*`
 ```JavaScript
 {
-  mode: 'sync',
   version: {
     mode: undefined,
     message: 'chore: release %s',
   },
   publish: {
-    mode: undefined,
     tag: '',
   },
 }
 ```
 ## Options
-- **mode**: `sync` | `diff`。决定`version`和`publish`的模式
 - **version**: `pkgs version`命令配置
   - **mode**: `sync` | `diff`。决定命令模式
   - **message**: 运行\``git commit -m '${message} v${version}'`\`的message
 - **publish**: `pkgs version`命令配置
-  - **mode**: `sync` | `diff`。决定命令模式
   - **tag**: 运行\``npm publish --tag ${tag}`\`的tag。如果不传，会分析你的version是否需要添加--tag。例如: version: '1.0.0-beta.1', 发布命令会变成`npm publish --tag beta`
 # Commands
 可以使用`pkgs -h`查看具体指令
@@ -70,9 +66,6 @@ monorepo有两种模式
 
 发布package
 
-- --mode \<type>:
-  - sync: 发布所有package
-  - diff: 发布更改过的package
 - --tag \<type>: npm publish --tag \<type>
 
 ## tag

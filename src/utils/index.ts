@@ -48,9 +48,6 @@ function assignOption (
   templateObject: Partial<ExecuteCommandConfig>,
   object: Partial<ExecuteCommandConfig>,
 ): Partial<ExecuteCommandConfig> {
-  if (object.mode !== undefined) {
-    templateObject.mode = object.mode
-  }
   if (object.packagesPath !== undefined) {
     templateObject.packagesPath = object.packagesPath
   }
@@ -68,9 +65,6 @@ function assignOption (
   if (object.publish !== undefined) {
     if (templateObject.publish === undefined) {
       templateObject.publish = {}
-    }
-    if (object.publish.mode !== undefined) {
-      templateObject.publish.mode = object.publish.mode
     }
     if (object.publish.tag !== undefined) {
       templateObject.publish.tag = object.publish.tag
