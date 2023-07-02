@@ -152,15 +152,21 @@ export function gitCommitMessageFormat (message: string, replaceMessage: string)
   return message.replace(gitCommitMessage, replaceMessage)
 }
 
-export async function getDirPackageInfo (packagesPath: string) {
+export async function getDirPackageInfo (packagesPath: string | string[]) {
+  const defaultDirPath = {
+    dirs: [''],
+    filesPath: ['package.json'],
+  }
   try {
     const dirPath = await getPackagesDir(packagesPath)
-    return dirPath
+    if (dirPath.dirs.length) {
+      return dirPath
+    }
+    else {
+      return defaultDirPath
+    }
   }
   catch {
-    return {
-      dirs: '',
-      filesPath: 'package.json',
-    }
+    return defaultDirPath
   }
 }

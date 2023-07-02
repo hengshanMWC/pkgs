@@ -1,7 +1,4 @@
-import path from 'path'
-import { writeFile } from 'fs-extra'
 import { commandRun } from '../../src/index'
-import type { SimpleGitTestContext } from '../__fixtures__'
 import {
   handleCommand,
 } from '../__fixtures__'
@@ -61,8 +58,8 @@ describe(cmd, () => {
     const _cmds: string[] = cmds.slice(0, 3).reverse()
     await testMain(Interdependence, _cmds)
   })
-  // // 单项目
-  // test(single, async () => {
-  //   await testMain(single, rootCmd)
-  // })
+  // 单项目
+  test.only(single, async () => {
+    await testMain(single, rootCmd)
+  }, 100000000)
 })
