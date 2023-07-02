@@ -1,37 +1,11 @@
-import { commandVersion, commandPublish } from '../../src/index'
-import type { SimpleGitTestContext } from '../__fixtures__'
-import {
-  handleCommand,
-  newSimpleGit,
-} from '../__fixtures__'
-import { newVersion, quarantine } from '../__fixtures__/constant'
-const prefix = 'publish-test'
-let context: SimpleGitTestContext
-async function syncTest (dir: string, arrFile: string[]) {
-  context = await handleCommand(dir, prefix)
-  const git = newSimpleGit(context.root)
-  process.chdir(context.root)
-  await commandVersion(undefined, git, newVersion)
-  const publishCmdList = await commandPublish({
-    publish: {
-      tag: 'test',
-    },
-  })
-  publishListTest(arrFile, publishCmdList)
-  return git
-}
-const ORIGINAL_CWD = process.cwd()
+import { cmd, syncTest } from '../__fixtures__/cmd/publish'
+import { ORIGINAL_CWD, quarantine } from '../__fixtures__/constant'
+
 afterEach(() => {
   // Many of the tests in this file change the CWD, so change it back after each test
   process.chdir(ORIGINAL_CWD)
 })
-const cmd = 'publish'
-function publishListTest (fileNameList: string[], cmdList?: string[]) {
-  expect(cmdList).not.toBeUndefined
-  cmdList && cmdList.forEach((cmd, index) => {
-    expect(cmd).toBe(`cd packages/${fileNameList[index]} && pnpm publish --access public`)
-  })
-}
+
 describe(`${cmd}: ${quarantine}`, () => {
   const dirArr = ['a', 'b']
   test(`${quarantine}: default(sync)`, async () => {
