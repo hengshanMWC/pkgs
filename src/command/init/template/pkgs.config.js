@@ -1,6 +1,6 @@
 export default {
   version: {
-    message: 'chore: release %s',
+    message: 'chore: version %s',
   },
   publish: {
     tag: '',

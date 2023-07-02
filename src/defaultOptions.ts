@@ -11,7 +11,7 @@ export interface PluginData<T extends any[] = any[]> {
   action: (context: Context, ...args: T) => void
 }
 export interface ExecuteCommandVersionOption {
-  mode: Type
+  mode?: Type
   message?: string
 }
 export interface ExecuteCommandPublishOption {
@@ -27,7 +27,7 @@ export const defaultOptions: ExecuteCommandConfig = {
   packagesPath: undefined,
   version: {
     mode: 'sync',
-    message: 'chore: release %s',
+    message: 'chore: version %s',
   },
   publish: {
     tag: '',
