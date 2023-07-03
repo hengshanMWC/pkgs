@@ -71,7 +71,7 @@ export async function getTagCommitId (
 ) {
   const tagCommitInfo = await git.show([tag, '-s', '--format=%h'])
   const tagCommitInfoRows = tagCommitInfo.trim().split('\n')
-  return tagCommitInfoRows[tagCommitInfoRows.length - 1]
+  return tagCommitInfoRows.at(-1)
 }
 
 async function getChangeFiles (
