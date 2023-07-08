@@ -9,12 +9,12 @@ import { defaultOptions } from '../defaultOptions'
 import { PACKAGES_PATH } from '../constant'
 import { loadConfig } from '../config'
 import { ContextAnalysisDiagram } from './analysisDiagram'
-import { StoreCommand } from './storeCommand'
+import { FileStore } from './fileStore'
 
 export class Context {
   config: ExecuteCommandConfig
   contextAnalysisDiagram!: ContextAnalysisDiagram
-  storeCommand!: StoreCommand
+  fileStore!: FileStore
 
   static cli = 'pkgs'
 
@@ -38,7 +38,7 @@ export class Context {
     context.contextAnalysisDiagram = contextAnalysisDiagram
 
     // 命令系统
-    context.storeCommand = new StoreCommand(contextAnalysisDiagram, git)
+    context.fileStore = new FileStore(contextAnalysisDiagram, git)
 
     return context
   }

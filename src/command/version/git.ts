@@ -15,7 +15,7 @@ export async function gitSyncSave (
 }
 
 export async function getTagVersion (context: Context, separator = '') {
-  const versionTag = await getVersionTag(`${separator}*`, context.storeCommand.git)
+  const versionTag = await getVersionTag(`${separator}*`, context.fileStore.git)
   if (versionTag) {
     return versionTag.slice(1)
   }

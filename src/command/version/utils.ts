@@ -30,19 +30,19 @@ export async function handleSyncVersion (context: Context, appointVersion?: stri
     }
   }
   await writeFiles(changes)
-  await context.storeCommand.git.add(changes.map(item => item.filePath))
+  await context.fileStore.git.add(changes.map(item => item.filePath))
   await gitSyncSave(
     `v${version}`,
     context.config.version.message,
     getPackageNameVersionStr(changes.map(item => item.packageJson), 'v'),
-    context.storeCommand.git,
+    context.fileStore.git,
   )
 }
 
 export async function handleDiffVersion (context: Context, appointVersion?: string) {
   const triggerSign: SetAnalysisBlockObject = new Set()
 
-  await context.storeCommand.forRepositoryDiffPack(async function (analysisBlock) {
+  await context.fileStore.forRepositoryDiffPack(async function (analysisBlock) {
     await changeVersionResultItem(
       context,
       analysisBlock,
@@ -52,12 +52,12 @@ export async function handleDiffVersion (context: Context, appointVersion?: stri
     )
   })
   await writeJSONs(triggerSign)
-  await context.storeCommand.git.add([...triggerSign].map(item => item.filePath))
+  await context.fileStore.git.add([...triggerSign].map(item => item.filePath))
   await gitDiffSave(
     [...triggerSign],
     context.config.version.message,
     'v',
-    context.storeCommand.git,
+    context.fileStore.git,
   )
 }
 

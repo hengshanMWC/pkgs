@@ -9,11 +9,11 @@ import { WARN_NOW_RUN } from '../constant'
 import { getPackageNameVersion } from '../utils/packageJson'
 import type { AnalysisBlockItem, ContextAnalysisDiagram } from './analysisDiagram'
 export {
-  StoreCommand,
+  FileStore,
   ForPackCallback,
 }
 
-class StoreCommand {
+class FileStore {
   contextAnalysisDiagram: ContextAnalysisDiagram
   git: SimpleGit
   constructor (

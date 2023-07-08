@@ -2,12 +2,12 @@ import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../l
 import { dependentSearch } from '../../utils/packageJson'
 
 export async function handleSyncRun (context: Context) {
-  const result = await context.storeCommand[`${context.config.run.type}DiffFile`]()
+  const result = await context.fileStore[`${context.config.run.type}DiffFile`]()
   return result
 }
 
 export async function handleDiffRun (context: Context) {
-  const result = await context.storeCommand[`${context.config.run.type}DiffFile`]()
+  const result = await context.fileStore[`${context.config.run.type}DiffFile`]()
   return result
 }
 
