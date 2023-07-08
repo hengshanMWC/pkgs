@@ -4,7 +4,7 @@ import {
   assignOptions,
   getYamlPackages,
 } from '../utils'
-import type { ExecuteCommandConfig } from '../defaultOptions'
+import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
 import { PACKAGES_PATH } from '../constant'
 import { loadConfig } from '../config'
@@ -43,7 +43,7 @@ export class Context {
     return context
   }
 
-  static async assignConfig (...config: Partial<ExecuteCommandConfig>[]) {
+  static async assignConfig (...config: ExecuteCommandCli[]) {
     const configData = await loadConfig(Context.cli)
     return assignOptions(defaultOptions, configData.data || {}, ...config)
   }
@@ -54,7 +54,7 @@ export class Context {
     this.config = config
   }
 
-  assignOptions (...config: Partial<ExecuteCommandConfig>[]) {
+  assignOptions (...config: ExecuteCommandCli[]) {
     this.config = assignOptions(this.config, ...config)
     if (this.contextAnalysisDiagram) {
       this.contextAnalysisDiagram.packagesPath = this.config.packagesPath

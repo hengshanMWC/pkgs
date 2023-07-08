@@ -11,6 +11,6 @@ export default defineConfig({
     watch: false,
     includeSource: ['src/**/*.{js,ts}'],
     // include: ['test/specs/*.ts'],
-    // include: ['test/specs/publish.*.ts'],
+    include: ['test/specs/version.*.ts'],
   },
 })

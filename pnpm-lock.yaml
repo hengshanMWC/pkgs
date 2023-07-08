@@ -32,6 +32,9 @@ dependencies:
   js-yaml:
     specifier: ^4.1.0
     version: 4.1.0
+  lodash:
+    specifier: ^4.17.21
+    version: 4.17.21
   npmlog:
     specifier: ^7.0.1
     version: 7.0.1
@@ -67,6 +70,9 @@ devDependencies:
   '@types/js-yaml':
     specifier: ^4.0.5
     version: 4.0.5
+  '@types/lodash':
+    specifier: ^4.14.195
+    version: 4.14.195
   '@types/npmlog':
     specifier: ^4.1.4
     version: 4.1.4
@@ -959,6 +965,10 @@ packages:
     resolution: {integrity: sha512-GSgiRCVeapDN+3pqA35IkQwasaCh/0YFH5dEF6S88iDvEn901DjOeH3/QPY+XYP1DFzDZPvIvfeEgk+7br5png==}
     dependencies:
       '@types/node': 17.0.21
+    dev: true
+
+  /@types/lodash@4.14.195:
+    resolution: {integrity: sha512-Hwx9EUgdwf2GLarOjQp5ZH8ZmblzcbTBC2wtQWNKARBSxM9ezRIAUpeDTgoQRAFB0+8CNWXVA9+MaSOzOF3nPg==}
     dev: true
 
   /@types/mdast@3.0.10:
@@ -3220,7 +3230,6 @@ packages:
 
   /lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: true
 
   /log-update@4.0.0:
     resolution: {integrity: sha512-9fkkDevMefjg0mmzWFBW8YkFP91OrizzkW3diF7CpG+S2EYdy4+TVfGwz1zeF8x7hCx1ovSPTOE9Ngib74qqUg==}

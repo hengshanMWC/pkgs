@@ -5,7 +5,7 @@ import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 import strip from 'strip-json-comments'
 import { getPackagesDir } from '@abmao/forb'
-import type { ExecuteCommandConfig } from '../defaultOptions'
+import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import { DEPENDENCY_PREFIX, WORK_SPACE_REG_EXP, gitCommitMessage } from './regExp'
 export const isTest = process.env.NODE_ENV === 'test'
 export async function getJSON (dir: string): Promise<IPackageJson> {
@@ -36,7 +36,7 @@ export function cdDir (dir?: string) {
   return dir ? `cd ${dir} && ` : ''
 }
 export function assignOptions (
-  ...objects: Partial<ExecuteCommandConfig>[]
+  ...objects: ExecuteCommandCli[]
 ): ExecuteCommandConfig {
   return objects.reduce((previousValue, currentValue) => {
     return assignOption(
@@ -46,31 +46,39 @@ export function assignOptions (
   }, {}) as ExecuteCommandConfig
 }
 function assignOption (
-  templateObject: Partial<ExecuteCommandConfig>,
-  object: Partial<ExecuteCommandConfig>,
-): Partial<ExecuteCommandConfig> {
+  templateObject: ExecuteCommandCli,
+  object: ExecuteCommandCli,
+): ExecuteCommandCli {
   if (object.packagesPath !== undefined) {
     templateObject.packagesPath = object.packagesPath
+  }
+  if (object.mode !== undefined) {
+    templateObject.mode = object.mode
   }
   if (object.version !== undefined) {
     if (templateObject.version === undefined) {
       templateObject.version = {}
     }
-    if (object.version.mode !== undefined) {
-      templateObject.version.mode = object.version.mode
+  }
+  if (object.publish !== undefined) {
+    if (templateObject.publish === undefined) {
+      templateObject.publish = {}
     }
-    if (object.version.message !== undefined) {
-      templateObject.version.message = object.version.message
+    if (object.publish.message !== undefined) {
+      templateObject.publish.message = object.publish.message
+    }
+    if (object.publish.tag !== undefined) {
+      templateObject.publish.tag = object.publish.tag
     }
   }
-  // if (object.publish !== undefined) {
-  //   if (templateObject.publish === undefined) {
-  //     templateObject.publish = {}
-  //   }
-  //   if (object.publish.tag !== undefined) {
-  //     templateObject.publish.tag = object.publish.tag
-  //   }
-  // }
+  if (object.run !== undefined) {
+    if (templateObject.run === undefined) {
+      templateObject.run = {}
+    }
+    if (object.run.type !== undefined) {
+      templateObject.run.type = object.run.type
+    }
+  }
   if (object.plugins !== undefined) {
     if (templateObject.plugins === undefined) {
       templateObject.plugins = []
