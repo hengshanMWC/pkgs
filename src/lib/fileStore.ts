@@ -4,8 +4,6 @@ import type IPackageJson from '@ts-type/package-dts'
 import { gt } from 'lodash'
 import type { DiffFile } from '../utils/git'
 import { getStageInfo, getWorkInfo, getVersionDiffFile } from '../utils/git'
-import { createCommand, runCmdList, warn } from '../utils'
-import { WARN_NOW_RUN } from '../constant'
 import { getPackageNameVersion } from '../utils/packageJson'
 import type { AnalysisBlockItem, ContextAnalysisDiagram } from './analysisDiagram'
 export {
@@ -24,22 +22,7 @@ class FileStore {
     this.git = git
   }
 
-  async forRepositorySyncPack (callback: ForPackCallback, separator = 'v') {
-    const file = await this.getFileSyncList(separator)
-    if (file) {
-      const relatedPackagesDir = await this.getRepositoryInfo([file])
-      await this.forPack(relatedPackagesDir, callback)
-    }
-  }
-
-  async forRepositoryDiffPack (callback: ForPackCallback, separator = 'v') {
-    const files = await this.getFileList(packageJson => getPackageNameVersion(
-      packageJson, separator,
-    ))
-    const relatedPackagesDir = await this.getRepositoryInfo(files)
-    await this.forPack(relatedPackagesDir, callback)
-  }
-
+  // 工作区
   async workDiffFile () {
     const files = await getWorkInfo(this.git)
     const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
@@ -50,6 +33,7 @@ class FileStore {
     )
   }
 
+  // 暂存区
   async stageDiffFile () {
     const files = await getStageInfo(this.git)
     const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
@@ -60,6 +44,7 @@ class FileStore {
     )
   }
 
+  // 版本库diff
   async repositoryDiffFile (separator?: string) {
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
       this.forRepositoryDiffPack(source => {
@@ -68,17 +53,29 @@ class FileStore {
     )
   }
 
-  async commandBatchRun (diffDirs: string[], cmdStr: string) {
-    const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(diffDirs)
-    const cmd = createCommand(cmdStr, orderDirs)
+  // 版本库sync
+  async repositorySyncFile (separator?: string) {
+    return this.contextAnalysisDiagram.getRelatedDir(cd =>
+      this.forRepositorySyncPack(source => {
+        cd(source)
+      }, separator),
+    )
+  }
 
-    if (cmd.length) {
-      const cmdStrList = await runCmdList(cmd)
-      return cmdStrList
+  async forRepositorySyncPack (callback: ForPackCallback, separator = 'v') {
+    const file = await this.getFileSyncList(separator)
+    if (file) {
+      const relatedPackagesDir = await this.getRepositoryInfo([file])
+      await this.forPack(relatedPackagesDir, callback)
     }
-    else {
-      warn(WARN_NOW_RUN)
-    }
+  }
+
+  async forRepositoryDiffPack (callback: ForPackCallback, separator = 'v') {
+    const files = await this.getDiffFileList(packageJson => getPackageNameVersion(
+      packageJson, separator,
+    ))
+    const relatedPackagesDir = await this.getRepositoryInfo(files)
+    await this.forPack(relatedPackagesDir, callback)
   }
 
   async getFileSyncList (separator?: string) {
@@ -96,7 +93,7 @@ class FileStore {
   }
 
   // 拿到相关包的文件修改范围
-  async getFileList (createVersion: (packageJson: IPackageJson) => string) {
+  async getDiffFileList (createVersion: (packageJson: IPackageJson) => string) {
     const fileList = this.contextAnalysisDiagram.allPackagesJSON
       .map(packageJson => getVersionDiffFile(
         createVersion(packageJson),

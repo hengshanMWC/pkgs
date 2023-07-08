@@ -3,14 +3,16 @@ import type { SimpleGit } from 'simple-git'
 import {
   assignOptions,
   getYamlPackages,
+  createCommand,
+  runCmdList,
+  warn,
 } from '../utils'
 import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
-import { PACKAGES_PATH } from '../constant'
+import { PACKAGES_PATH, WARN_NOW_RUN } from '../constant'
 import { loadConfig } from '../config'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
-
 export class Context {
   config: ExecuteCommandConfig
   contextAnalysisDiagram!: ContextAnalysisDiagram
@@ -58,6 +60,19 @@ export class Context {
     this.config = assignOptions(this.config, ...config)
     if (this.contextAnalysisDiagram) {
       this.contextAnalysisDiagram.packagesPath = this.config.packagesPath
+    }
+  }
+
+  async commandBatchRun (diffDirs: string[], cmdStr: string) {
+    const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(diffDirs)
+    const cmd = createCommand(cmdStr, orderDirs)
+
+    if (cmd.length) {
+      const cmdStrList = await runCmdList(cmd)
+      return cmdStrList
+    }
+    else {
+      warn(WARN_NOW_RUN)
     }
   }
 
