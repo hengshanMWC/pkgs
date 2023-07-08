@@ -12,7 +12,10 @@ export async function handleDiffRun (context: Context) {
 }
 
 function handleRun (context: Context) {
-  if (context.config.run.type === 'work') {
+  if (context.config.run.type === 'all') {
+    return context.fileStore.allDiffFile()
+  }
+  else if (context.config.run.type === 'work') {
     return context.fileStore.workDiffFile()
   }
   else if (context.config.run.type === 'stage') {

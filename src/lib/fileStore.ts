@@ -22,7 +22,12 @@ class FileStore {
     this.git = git
   }
 
-  // 工作区
+  // 所有包路径
+  async allDiffFile () {
+    return this.contextAnalysisDiagram.allDirs
+  }
+
+  // 工作区包路径
   async workDiffFile () {
     const files = await getWorkInfo(this.git)
     const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
@@ -33,7 +38,7 @@ class FileStore {
     )
   }
 
-  // 暂存区
+  // 暂存区包路径
   async stageDiffFile () {
     const files = await getStageInfo(this.git)
     const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
@@ -44,7 +49,7 @@ class FileStore {
     )
   }
 
-  // 版本库diff
+  // 版本库diff包路径
   async repositoryDiffFile (separator?: string) {
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
       this.forRepositoryDiffPack(source => {
@@ -53,7 +58,7 @@ class FileStore {
     )
   }
 
-  // 版本库sync
+  // 版本库sync包路径
   async repositorySyncFile (separator?: string) {
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
       this.forRepositorySyncPack(source => {

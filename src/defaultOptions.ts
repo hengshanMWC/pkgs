@@ -31,7 +31,7 @@ export const defaultOptions: ExecuteCommandConfig = {
     message: 'release %s',
   },
   run: {
-    type: 'work',
+    type: 'all',
   },
   plugins: [
     createVersionPlugin(),
