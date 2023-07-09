@@ -23,7 +23,7 @@ class FileStore {
   }
 
   // 所有包路径
-  async allDiffFile () {
+  getAllFIle () {
     return this.contextAnalysisDiagram.allDirs
   }
 

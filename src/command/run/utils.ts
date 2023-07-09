@@ -1,19 +1,31 @@
 import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../lib'
 import { dependentSearch } from '../../utils/packageJson'
 
-export function handleSyncRun (context: Context) {
+export async function handleSyncRun (context: Context) {
   const p = handleRun(context)
-  return p ?? context.fileStore.repositorySyncFile()
+  if (p) {
+    return p
+  }
+  else {
+    const result = await context.fileStore.repositorySyncFile()
+    return result
+  }
 }
 
 export async function handleDiffRun (context: Context) {
   const p = handleRun(context)
-  return p ?? context.fileStore.repositoryDiffFile()
+  if (p) {
+    return p
+  }
+  else {
+    const result = await context.fileStore.repositoryDiffFile()
+    return result
+  }
 }
 
 function handleRun (context: Context) {
   if (context.config.run.type === 'all') {
-    return context.fileStore.allDiffFile()
+    return context.fileStore.getAllFIle()
   }
   else if (context.config.run.type === 'work') {
     return context.fileStore.workDiffFile()
