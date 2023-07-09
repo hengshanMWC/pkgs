@@ -3,7 +3,7 @@ import type { SimpleGit, FileStatusResult } from 'simple-git'
 import type IPackageJson from '@ts-type/package-dts'
 import { WARN_NOW_CHANGE } from '../constant'
 import { getPackageNameVersionList } from './packageJson'
-import { gitCommitMessageFormat, sortFilesName, warn } from './index'
+import { gitCommitMessageFormat, isTest, sortFilesName, warn } from './index'
 
 export type TagType = 'publish' | 'version' | string
 const _tagMessage = 'pkgs update tag'
@@ -73,7 +73,7 @@ async function getChangeFiles (
 
   arr.pop()
 
-  if (!arr.length) {
+  if (!arr.length && !isTest) {
     warn(WARN_NOW_CHANGE)
     process.exit()
   }
@@ -98,7 +98,7 @@ export async function getCommitDiffFile (tag: string, git: SimpleGit = simpleGit
   const tagCommitId = await getTagCommitId(tag, git)
   const newestCommitId = await getNewestCommitId(git)
 
-  return getChangeFiles(newestCommitId, tagCommitId as string, git)
+  return getChangeFiles(newestCommitId, tagCommitId, git)
 }
 
 export async function getStageInfo (

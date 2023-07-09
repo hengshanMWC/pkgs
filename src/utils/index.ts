@@ -59,6 +59,9 @@ function assignOption (
     if (templateObject.version === undefined) {
       templateObject.version = {}
     }
+    if (object.version.message !== undefined) {
+      templateObject.version.message = object.version.message
+    }
   }
   if (object.publish !== undefined) {
     if (templateObject.publish === undefined) {

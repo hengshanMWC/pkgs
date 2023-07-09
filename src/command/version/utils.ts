@@ -54,7 +54,7 @@ export async function handleDiffVersion (context: Context, appointVersion?: stri
   await writeJSONs(triggerSign)
   await context.fileStore.git.add([...triggerSign].map(item => item.filePath))
   await gitDiffSave(
-    [...triggerSign],
+    [...triggerSign].map(item => item.packageJson),
     context.config.version.message,
     'v',
     context.fileStore.git,

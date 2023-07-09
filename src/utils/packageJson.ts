@@ -81,5 +81,5 @@ export function getPackageNameVersionList (packageJsonList: IPackageJson[], sepa
 }
 
 export function getPackageNameVersionStr (packageJsonList: IPackageJson[], separator = '') {
-  return getPackageNameVersionList(packageJsonList, separator).join(',')
+  return getPackageNameVersionList(packageJsonList, separator).join(', ')
 }

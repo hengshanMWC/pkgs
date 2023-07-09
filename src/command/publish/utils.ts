@@ -35,7 +35,7 @@ export async function handleSyncPublish (context: Context) {
   }
 
   if (versionTag) {
-    gitTag(versionTag, packageJsonList.map(item => item.version).join(','))
+    gitTag(versionTag, packageJsonList.map(item => item.version).join(', '))
   }
 
   return commands
