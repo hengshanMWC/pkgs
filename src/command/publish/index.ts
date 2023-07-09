@@ -1,7 +1,7 @@
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
 import { Context } from '../../lib/context'
-import type { ExecuteCommandPublishOption, PluginData } from '../../defaultOptions'
+import type { CommandPublishParams, PluginData } from '../type'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
 function main (context: Context) {
@@ -12,7 +12,7 @@ function main (context: Context) {
     return handleSyncPublish(context)
   }
 }
-export async function commandPublish (configParam: ExecuteCommandPublishOption = {}, git: SimpleGit = simpleGit()) {
+export async function commandPublish (configParam: CommandPublishParams = {}, git: SimpleGit = simpleGit()) {
   const config = await Context.assignConfig({
     publish: configParam,
   })
@@ -33,7 +33,7 @@ export function createPublishPlugin (): PluginData {
       ['-message <message>', 'npm publish --message <message>'],
       ['-tag <type>', 'npm publish --tag <tag>'],
     ],
-    action (context: Context, config: ExecuteCommandPublishOption = {}) {
+    action (context: Context, config: CommandPublishParams = {}) {
       context.assignOptions({
         publish: config,
       })

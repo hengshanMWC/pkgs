@@ -1,11 +1,10 @@
 import { gt } from 'semver'
 import type IPackageJson from '@ts-type/package-dts'
 import { $ } from 'execa'
-import { gitTag } from '../../utils/git'
+import { gitDiffSave, gitTag } from '../../utils/git'
 import { cdDir, isTest } from '../../utils'
 import { npmTag, organization } from '../../utils/regExp'
-import type { Context } from '../../lib'
-import { getPackageNameVersionStr } from '../../utils/packageJson'
+import type { Context, SetAnalysisBlockObject } from '../../lib'
 import { getTagPublish } from './git'
 
 export async function handleSyncPublish (context: Context) {
@@ -14,6 +13,7 @@ export async function handleSyncPublish (context: Context) {
   const commands: string[] = []
   const packageJsonList: IPackageJson[] = []
   let versionTag = ''
+
   for (let index = 0; index < allPackagesJSON.length; index++) {
     const packageJson = allPackagesJSON[index]
     const currentVersion = packageJson.version as string
@@ -33,14 +33,37 @@ export async function handleSyncPublish (context: Context) {
         : currentVersion
     }
   }
+
   if (versionTag) {
-    gitTag(versionTag, getPackageNameVersionStr(packageJsonList))
+    gitTag(versionTag, packageJsonList.map(item => item.version).join(','))
   }
+
   return commands
 }
 
 export async function handleDiffPublish (context: Context) {
+  const triggerSign: SetAnalysisBlockObject = new Set()
+  const commands: string[] = []
 
+  await context.fileStore.forRepositoryDiffPack(async function (analysisBlock) {
+    const command = await implementPublish(
+      analysisBlock.packageJson,
+      analysisBlock.dir,
+      context.config.publish.tag,
+    )
+    command && commands.push(command)
+  }, '')
+
+  if (commands.length) {
+    await gitDiffSave(
+      [...triggerSign],
+      context.config.publish.message,
+      '',
+      context.fileStore.git,
+    )
+  }
+
+  return commands
 }
 
 async function implementPublish (
