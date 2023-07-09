@@ -24,7 +24,7 @@ async function getCommitMessage (git: SimpleGit) {
   return gitMessage.latest?.hash
 }
 async function syncVersionDiff (version: string, git: SimpleGit) {
-  const tagCommitId = await tagExpect(`v${version}`, git)
+  const tagCommitId = await tagExpect(`v${version}`, git) as string
   const newCommitId = await getNewestCommitId(git)
   expect(newCommitId.includes(tagCommitId)).toBeTruthy()
 }

@@ -98,7 +98,12 @@ export async function getCommitDiffFile (tag: string, git: SimpleGit = simpleGit
   const tagCommitId = await getTagCommitId(tag, git)
   const newestCommitId = await getNewestCommitId(git)
 
-  return getChangeFiles(newestCommitId, tagCommitId, git)
+  if (tagCommitId) {
+    return getChangeFiles(newestCommitId, tagCommitId, git)
+  }
+  else {
+    return []
+  }
 }
 
 export async function getStageInfo (
