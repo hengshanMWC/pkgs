@@ -181,3 +181,7 @@ export async function getDirPackageInfo (packagesPath: string | string[]) {
     return defaultDirPath
   }
 }
+
+export function fileMatch (files: string[], dir: string) {
+  return files.some(file => file.includes(dir))
+}

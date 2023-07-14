@@ -5,6 +5,7 @@ import { gt } from 'lodash'
 import type { DiffFile } from '../utils/git'
 import { getStageInfo, getWorkInfo, getVersionDiffFile } from '../utils/git'
 import { getPackageNameVersion } from '../utils/packageJson'
+import { fileMatch } from '../utils'
 import type { AnalysisBlockItem, ContextAnalysisDiagram } from './analysisDiagram'
 export {
   FileStore,
@@ -112,13 +113,13 @@ class FileStore {
     const dirs = this.contextAnalysisDiagram.allDirs
 
     // 收集包对应的dir
-    fileList.forEach((file, index) => {
-      if (file === true) {
-        relatedPackagesDir.add(dirs[index])
+    fileList.forEach((files, index) => {
+      const dir = dirs[index]
+      if (files === true) {
+        relatedPackagesDir.add(dir)
       }
-      else {
-        const dirList = this.contextAnalysisDiagram.getRelatedPackagesDir(file)
-        dirList.forEach(dir => relatedPackagesDir.add(dir))
+      else if (files && fileMatch(files, dir)) {
+        relatedPackagesDir.add(dir)
       }
     })
     return [...relatedPackagesDir]

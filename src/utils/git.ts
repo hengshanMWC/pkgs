@@ -7,6 +7,12 @@ import { gitCommitMessageFormat, isTest, sortFilesName, warn } from './index'
 
 export type TagType = 'publish' | 'version' | string
 const _tagMessage = 'pkgs update tag'
+export function getDiffCommitMessage (nameAntVersionPackages: string[]) {
+  return nameAntVersionPackages.reduce(
+    (total, text) => `${total}\n- ${text}`,
+    '\n',
+  )
+}
 export async function gitDiffSave (
   packageJsonList: IPackageJson[],
   message = '',
@@ -14,10 +20,7 @@ export async function gitDiffSave (
   git: SimpleGit = simpleGit(),
 ) {
   const nameAntVersionPackages = getPackageNameVersionList(packageJsonList, separator)
-  const packagesMessage = nameAntVersionPackages.reduce(
-    (total, text) => `${total}\n- ${text}`,
-    '\n',
-  )
+  const packagesMessage = getDiffCommitMessage(nameAntVersionPackages)
   await git.commit(gitCommitMessageFormat(message, packagesMessage || _tagMessage))
   const tagList = nameAntVersionPackages.map(version => gitTag(version, message))
   await Promise.all(tagList)
@@ -73,10 +76,10 @@ async function getChangeFiles (
 
   arr.pop()
 
-  if (!arr.length && !isTest) {
-    warn(WARN_NOW_CHANGE)
-    process.exit()
-  }
+  // if (!arr.length && !isTest) {
+  //   warn(WARN_NOW_CHANGE)
+  //   process.exit()
+  // }
   return arr
 }
 export type DiffFile = string[] | boolean | undefined

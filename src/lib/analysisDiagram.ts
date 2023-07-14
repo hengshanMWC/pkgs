@@ -1,5 +1,5 @@
 import type IPackageJson from '@ts-type/package-dts'
-import { getDirPackageInfo, getJSONs, sortFilesName } from '../utils'
+import { fileMatch, getDirPackageInfo, getJSONs, sortFilesName } from '../utils'
 import {
   createRelyMyDirMap,
   getMyRelyPackageName,
@@ -99,7 +99,7 @@ class ContextAnalysisDiagram {
 
   getRelatedPackagesDir (files: string[] | boolean | undefined) {
     if (Array.isArray(files)) {
-      return this.allDirs.filter(key => files.some(file => file.includes(key)))
+      return this.allDirs.filter(key => fileMatch(files, key))
     }
     else {
       return []
