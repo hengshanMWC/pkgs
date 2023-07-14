@@ -47,7 +47,7 @@ async function commandRun (
 function createRunPlugin (): PluginData {
   return {
     id: 'run',
-    command: 'run <cmd> [type]',
+    command: 'run <cmd>',
     description: 'run diff scripts.\n type: all | work | stage | repository, default: all',
     option: [
       ['--type <type>', 'work | stage | repository'],
