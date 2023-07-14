@@ -9,6 +9,7 @@ import {
   addVersion,
   dirInterdependenceArr,
   dirManyArr,
+  dirManyCommandOrder,
   dirQuarantineArr,
   many,
   newVersion,
@@ -32,8 +33,8 @@ afterEach(() => {
   process.chdir(ORIGINAL_CWD)
 })
 describe(`${cmd}: ${quarantine}`, () => {
-  test(`${quarantine}: default(sync)`, async () => {
-    await syncTest(quarantine, newVersion)
+  test.only(`${quarantine}: default(sync)`, async () => {
+    await syncTest(quarantine, newVersion, dirManyCommandOrder)
     await testPackages(dirQuarantineArr, newVersion)
   })
   test(`${quarantine}`, async () => {

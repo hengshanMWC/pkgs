@@ -29,14 +29,19 @@ async function syncVersionDiff (version: string, git: SimpleGit) {
   expect(newCommitId.includes(tagCommitId)).toBeTruthy()
 }
 
-export async function syncTest (dir: string, newVersion: string) {
+export async function syncTest (dir: string, newVersion: string, arr) {
   const message = 'chore: test'
   const context = await handleCommand(dir, prefix)
   const git = newSimpleGit(context.root)
   process.chdir(context.root)
-  await commandVersion({
+  const { analysisBlockList } = await commandVersion({
     message: `${message} %s`,
   }, git, newVersion)
+
+  analysisBlockList.forEach((analysisBlock, index) => {
+    expect(analysisBlock.packageJson.name).toBe(`@test/${arr[index]}`)
+    expect(analysisBlock.packageJson.version).toBe(newVersion)
+  })
 
   await syncVersionDiff(newVersion, git)
   // packages test

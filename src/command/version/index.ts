@@ -27,7 +27,8 @@ export async function commandVersion (
     config,
     git,
   )
-  await main(context, appointVersion)
+  const result = await main(context, appointVersion)
+  return result
 }
 export function createVersionPlugin (): PluginData {
   return {

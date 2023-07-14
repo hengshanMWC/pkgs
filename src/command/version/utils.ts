@@ -3,7 +3,6 @@ import colors from 'colors'
 import { writeJSON } from 'fs-extra'
 import { versionBumpInfo } from '@abmao/bump'
 import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../lib'
-import type { WriteObject } from '../../utils'
 import { isTest, writeFiles, warn } from '../../utils'
 import { gitDiffSave } from '../../utils/git'
 import { WARN_NOW_VERSION } from '../../constant'
@@ -13,7 +12,7 @@ import { getTagVersion, gitSyncSave } from './git'
 export async function handleSyncVersion (context: Context, appointVersion?: string) {
   const version = await getChangeVersion(context, appointVersion)
 
-  const changes: WriteObject[] = []
+  const analysisBlockList: AnalysisBlockItem[] = []
 
   // 依赖更新
   for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
@@ -22,21 +21,21 @@ export async function handleSyncVersion (context: Context, appointVersion?: stri
     packageJson.version = version
 
     if (analysisBlock) {
-      changes.push({
-        filePath: context.contextAnalysisDiagram.allFilesPath[index],
-        packageJson,
-      })
+      analysisBlockList.push(analysisBlock)
       await changeRelyMyVersion(context, analysisBlock)
     }
   }
-  await writeFiles(changes)
-  await context.fileStore.git.add(changes.map(item => item.filePath))
+  await writeFiles(analysisBlockList)
+  await context.fileStore.git.add(analysisBlockList.map(item => item.filePath))
   await gitSyncSave(
     `v${version}`,
     context.config.version.message,
-    getPackageNameVersionStr(changes.map(item => item.packageJson), 'v'),
+    getPackageNameVersionStr(analysisBlockList.map(item => item.packageJson), 'v'),
     context.fileStore.git,
   )
+  return {
+    analysisBlockList,
+  }
 }
 
 export async function handleDiffVersion (context: Context, appointVersion?: string) {
@@ -52,13 +51,17 @@ export async function handleDiffVersion (context: Context, appointVersion?: stri
     )
   })
   await writeJSONs(triggerSign)
-  await context.fileStore.git.add([...triggerSign].map(item => item.filePath))
+  const analysisBlockList = [...triggerSign]
+  await context.fileStore.git.add(analysisBlockList.map(item => item.filePath))
   await gitDiffSave(
-    [...triggerSign].map(item => item.packageJson),
+    analysisBlockList.map(item => item.packageJson),
     context.config.version.message,
     'v',
     context.fileStore.git,
   )
+  return {
+    analysisBlockList,
+  }
 }
 
 // 获取仓库最新版本对应的包路径
