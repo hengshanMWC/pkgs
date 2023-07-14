@@ -1,24 +1,34 @@
 import { commandVersion } from '../../src/index'
 import { getPackages } from '../__fixtures__/commit'
 import {
+  changePackagesFileGitCommit,
+  handleCommand,
+  newSimpleGit,
   setUpFilesAdded,
 } from '../__fixtures__'
 import {
   Interdependence,
   ORIGINAL_CWD,
   addVersion,
+  changePackagesFile2,
   dirInterdependenceArr,
   dirManyArr,
   dirManyCommandOrder,
+  dirManyCommandOrderChange1,
   dirQuarantineArr,
+  dirQuarantineCommandOrder,
+  dirQuarantineCommandOrderChange1,
+  dirQuarantineCommandOrderChange2,
   many,
   newVersion,
+  newVersionBeta,
   quarantine,
   rootPackageJsonPath,
   single,
 } from '../__fixtures__/constant'
 import {
   cmd,
+  createGit,
   diffTest,
   diffTestPackage,
   diffTestPackageList,
@@ -32,24 +42,22 @@ afterEach(() => {
   // Many of the tests in this file change the CWD, so change it back after each test
   process.chdir(ORIGINAL_CWD)
 })
-describe(`${cmd}: ${quarantine}`, () => {
-  test.only(`${quarantine}: default(sync)`, async () => {
-    await syncTest(quarantine, newVersion, dirManyCommandOrder)
-    await testPackages(dirQuarantineArr, newVersion)
+describe.only(`${cmd}: ${quarantine}`, () => {
+  test(`${quarantine}: default(sync)`, async () => {
+    const { git } = await createGit(quarantine)
+    await syncTest(newVersionBeta, dirQuarantineArr, git)
+    await syncTest(newVersion, dirQuarantineArr, git)
+    await syncTest(addVersion, dirQuarantineArr, git)
   })
   test(`${quarantine}`, async () => {
-    const { git, context } = await diffTest(quarantine, newVersion)
-    await diffTestPackageList(dirQuarantineArr, newVersion, git)
-
-    await setUpFilesAdded(context, ['packages/a/test'])
-    await commandVersion({
-      mode: 'diff',
-    }, git, addVersion)
-    const [aPackageJson, bPackageJson] = await getPackages(dirQuarantineArr)
-    tagCommit(aPackageJson, addVersion, git)
-    tagCommit(bPackageJson, newVersion, git)
+    const { git, context } = await createGit(quarantine)
+    await diffTest(newVersionBeta, dirQuarantineArr, git)
+    await changePackagesFileGitCommit(context)
+    await diffTest(newVersion, dirQuarantineCommandOrderChange1, git)
+    await setUpFilesAdded(context, [changePackagesFile2])
+    await diffTest(addVersion, dirQuarantineCommandOrderChange2, git)
   })
-})
+}, 1000000)
 describe(`${cmd}: ${many}`, () => {
   test(`${many}: default(sync)`, async () => {
     await syncTest(many, newVersion)
