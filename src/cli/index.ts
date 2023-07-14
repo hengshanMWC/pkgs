@@ -2,7 +2,7 @@ import { program } from 'commander'
 import { PluginGroup } from 'plugin-group'
 import { cliVersion, cliSuccess } from '../utils/tips'
 import { Context } from '../lib/context'
-import type { PluginData } from '../defaultOptions'
+import type { PluginData } from '../command'
 export async function cliMain (argv: NodeJS.Process['argv'], version: string) {
   const pluginGroup = new PluginGroup<PluginData>()
   const config = await Context.assignConfig()

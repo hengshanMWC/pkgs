@@ -71,8 +71,9 @@ monorepo有两种模式
 ## run
 可以指定指令例如`pkgs run test`, 会自动触发需要test的包
 
-有3种模式，`work（工作区） | stage（暂存区） | repository（版本库）`，默认`work`，不同模式对应不同的diff区域对比，并且会分析你的包顺序，智能运行你的命令。
+有3种模式，`all[全部] | work（工作区） | stage（暂存区） | repository（版本库）`，默认`all`，不同模式对应不同的diff区域对比，并且会分析你的包顺序，智能运行你的命令。
 ```
+pkgs run test all
 pkgs run test work
 pkgs run test stage
 pkgs run test repository
