@@ -36,7 +36,6 @@ export async function createGit (dir: string) {
   const context = await handleCommand(dir, prefix)
   const git = newSimpleGit(context.root)
   process.chdir(context.root)
-  console.log(context.root)
   return {
     git,
     context,
