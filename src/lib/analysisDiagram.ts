@@ -13,10 +13,11 @@ export { ContextAnalysisDiagram, AnalysisBlockItem, AnalysisDiagram, SetAnalysis
 
 interface AnalysisBlockItem {
   packageJson: IPackageJson
+  name: string
   filePath: string
   dir: string
-  relyMyDir: string[]
-  myRelyDir: string[]
+  relyMyDir: string[] // 依赖我的包
+  myRelyDir: string[] // 我依赖的包
 }
 type AnalysisDiagram = Record<string, AnalysisBlockItem>
 type SetAnalysisBlockObject = Set<AnalysisBlockItem>
@@ -153,6 +154,7 @@ class ContextAnalysisDiagram {
 
       this.analysisDiagram[dir] = {
         packageJson,
+        name: packageJson.name as string,
         dir,
         filePath: filesPath[index],
         relyMyDir: relyMyMap[packageJson.name as string],
