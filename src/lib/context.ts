@@ -61,6 +61,7 @@ export class Context {
     if (this.contextAnalysisDiagram) {
       this.contextAnalysisDiagram.packagesPath = this.config.packagesPath
     }
+    return this
   }
 
   async commandBatchRun (diffDirs: string[], cmdStr: string) {
@@ -86,6 +87,7 @@ export class Context {
         this.config.packagesPath = PACKAGES_PATH
       }
     }
+    return this
   }
 }
 export type CMD = 'version' | 'publish'

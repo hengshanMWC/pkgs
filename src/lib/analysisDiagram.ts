@@ -85,6 +85,7 @@ class ContextAnalysisDiagram {
     }
 
     this.createContextAnalysisDiagram(...values)
+    return this
   }
 
   async getRelatedDir (
@@ -158,6 +159,7 @@ class ContextAnalysisDiagram {
         myRelyDir,
       }
     })
+    return this
   }
 
   private getRelatedContent (source: AnalysisBlockItem, triggerSign: SetAnalysisBlockObject) {
@@ -204,5 +206,6 @@ class ContextAnalysisDiagram {
       })
       cd()
     })
+    return this
   }
 }
