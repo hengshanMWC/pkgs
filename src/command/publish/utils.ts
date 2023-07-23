@@ -4,27 +4,28 @@ import { $ } from 'execa'
 import { gitDiffSave, gitTag } from '../../utils/git'
 import { cdDir, isTest } from '../../utils'
 import { npmTag, organization } from '../../utils/regExp'
-import type { Context, SetAnalysisBlockObject } from '../../lib'
+import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../lib'
 import { getTagPublish } from './git'
 
 export async function handleSyncPublish (context: Context) {
   const version = await getTagPublish(context)
-  const { allPackagesJSON, allDirs } = context.contextAnalysisDiagram
-  const commands: string[] = []
-  const packageJsonList: IPackageJson[] = []
+  const { allDirs } = context.contextAnalysisDiagram
+  const analysisBlockList: AnalysisBlockItem[] = []
   let versionTag = ''
 
-  for (let index = 0; index < allPackagesJSON.length; index++) {
-    const packageJson = allPackagesJSON[index]
-    const currentVersion = packageJson.version as string
-    if (!version || gt(version, currentVersion)) {
+  for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
+    const packageJson = context.contextAnalysisDiagram.allPackagesJSON[index]
+    const analysisBlock = context.contextAnalysisDiagram.packageJsonToAnalysisBlock(packageJson)
+    const currentVersion = packageJson?.version as string
+    if (analysisBlock && (!version || gt(version, currentVersion))) {
       const command = await implementPublish(
         packageJson,
         allDirs[index],
         context.config.publish.tag,
       )
-      command && packageJsonList.push(packageJson)
-      command && commands.push(command)
+      if (command) {
+        analysisBlockList.push(analysisBlock)
+      }
       // 拿到最大的version当版本号
       versionTag = versionTag
         ? gt(versionTag, currentVersion)
@@ -35,15 +36,17 @@ export async function handleSyncPublish (context: Context) {
   }
 
   if (versionTag) {
-    gitTag(versionTag, packageJsonList.map(item => item.version).join(', '))
+    gitTag(versionTag, analysisBlockList.map(item => item.packageJson.version).join(', '))
   }
 
-  return commands
+  return {
+    analysisBlockList,
+  }
 }
 
 export async function handleDiffPublish (context: Context) {
   const triggerSign: SetAnalysisBlockObject = new Set()
-  const commands: string[] = []
+  const analysisBlockList: AnalysisBlockItem[] = []
 
   await context.fileStore.forRepositoryDiffPack(async function (analysisBlock) {
     const command = await implementPublish(
@@ -51,10 +54,12 @@ export async function handleDiffPublish (context: Context) {
       analysisBlock.dir,
       context.config.publish.tag,
     )
-    command && commands.push(command)
+    if (command) {
+      analysisBlockList.push(analysisBlock)
+    }
   }, '')
 
-  if (commands.length) {
+  if (analysisBlockList.length) {
     await gitDiffSave(
       [...triggerSign],
       context.config.publish.message,
@@ -63,7 +68,9 @@ export async function handleDiffPublish (context: Context) {
     )
   }
 
-  return commands
+  return {
+    analysisBlockList,
+  }
 }
 
 async function implementPublish (
