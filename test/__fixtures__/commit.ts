@@ -10,6 +10,7 @@ import {
 } from '.'
 export async function tagExpect (version: string, git: SimpleGit) {
   const tag = await getVersionTag(version, git) as string
+  console.log('tagExpect', version, tag)
   expect(tag).not.toBeUndefined()
   const tagCommitId = await getTagCommitId(tag, git)
   expect(tagCommitId).not.toBeUndefined()

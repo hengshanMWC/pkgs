@@ -1,4 +1,5 @@
 export const bate = 'beta'
+export const originVersion = '0.0.0'
 export const newVersionBeta = `0.0.1-${bate}.1`
 export const newVersion = '1.0.0'
 export const addVersion = '1.1.0'
@@ -27,3 +28,4 @@ export const dirInterdependenceArrDiff = ['a', 'c', 'b']
 export const dirInterdependenceCommandOrder = ['a', 'c']
 export const dirInterdependenceCommandOrderChange1 = ['b', 'a']
 export const rootPackageJsonArr = ['root']
+export const rootPackageJsonPath = 'package.json'

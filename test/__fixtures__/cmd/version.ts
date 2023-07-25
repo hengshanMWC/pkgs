@@ -9,7 +9,7 @@ import { commandVersion } from '../../../src'
 import { getPackageNameVersion } from '../../../src/utils/packageJson'
 const prefix = 'version-test'
 export const cmd = 'version'
-function createName (name: string) {
+export function createName (name: string) {
   return `@test/${name}`
 }
 export async function tagCommit (packageJson: IPackageJson, version, git: SimpleGit) {
