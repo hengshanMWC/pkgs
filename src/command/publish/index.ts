@@ -1,5 +1,6 @@
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
+import { omit } from 'lodash'
 import { Context } from '../../lib/context'
 import type { CommandPublishParams, PluginData } from '../type'
 import { handleDiffPublish, handleSyncPublish } from './utils'
@@ -14,7 +15,8 @@ function main (context: Context) {
 }
 export async function commandPublish (configParam: CommandPublishParams = {}, git: SimpleGit = simpleGit()) {
   const config = await Context.assignConfig({
-    publish: configParam,
+    mode: configParam.mode,
+    publish: omit<CommandPublishParams, 'mode'>(configParam, ['mode']),
   })
   const context = await Context.create(
     config,

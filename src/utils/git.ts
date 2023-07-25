@@ -1,9 +1,8 @@
 import simpleGit from 'simple-git'
 import type { SimpleGit, FileStatusResult } from 'simple-git'
 import type IPackageJson from '@ts-type/package-dts'
-import { WARN_NOW_CHANGE } from '../constant'
 import { getPackageNameVersionList } from './packageJson'
-import { gitCommitMessageFormat, isTest, sortFilesName, warn } from './index'
+import { gitCommitMessageFormat, sortFilesName } from './index'
 
 export type TagType = 'publish' | 'version' | string
 const _tagMessage = 'pkgs update tag'

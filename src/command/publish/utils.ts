@@ -11,6 +11,7 @@ export async function handleSyncPublish (context: Context) {
   const version = await getTagPublish(context)
   const { allDirs } = context.contextAnalysisDiagram
   const analysisBlockList: AnalysisBlockItem[] = []
+  const commandList: string[] = []
   let versionTag = ''
 
   for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
@@ -24,6 +25,7 @@ export async function handleSyncPublish (context: Context) {
         context.config.publish.tag,
       )
       if (command) {
+        commandList.push(command)
         analysisBlockList.push(analysisBlock)
       }
       // 拿到最大的version当版本号
@@ -36,17 +38,18 @@ export async function handleSyncPublish (context: Context) {
   }
 
   if (versionTag) {
-    gitTag(versionTag, analysisBlockList.map(item => item.packageJson.version).join(', '))
+    await gitTag(versionTag, analysisBlockList.map(item => item.packageJson.version).join(', '))
   }
 
   return {
     analysisBlockList,
+    commandList,
   }
 }
 
 export async function handleDiffPublish (context: Context) {
   const triggerSign: SetAnalysisBlockObject = new Set()
-  const analysisBlockList: AnalysisBlockItem[] = []
+  const commandList: string[] = []
 
   await context.fileStore.forRepositoryDiffPack(async function (analysisBlock) {
     const command = await implementPublish(
@@ -55,13 +58,16 @@ export async function handleDiffPublish (context: Context) {
       context.config.publish.tag,
     )
     if (command) {
-      analysisBlockList.push(analysisBlock)
+      triggerSign.add(analysisBlock)
+      commandList.push(command)
     }
   }, '')
 
+  const analysisBlockList = [...triggerSign]
+
   if (analysisBlockList.length) {
     await gitDiffSave(
-      [...triggerSign],
+      analysisBlockList.map(item => item.packageJson),
       context.config.publish.message,
       '',
       context.fileStore.git,
@@ -70,6 +76,7 @@ export async function handleDiffPublish (context: Context) {
 
   return {
     analysisBlockList,
+    commandList,
   }
 }
 
