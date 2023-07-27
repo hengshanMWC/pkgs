@@ -1,6 +1,21 @@
 
 import { cmd, createRun, testMain } from '../__fixtures__/cmd/run'
-import { Interdependence, dirInterdependenceCommandOrder, dirInterdependenceCommandOrderChange1, dirInterdependenceRun, dirManyCommandOrder, dirManyCommandOrderChange1, dirQuarantineCommandOrder, dirQuarantineCommandOrderChange1, dirQuarantineNotTestCommandOrder, dirQuarantineNotTestCommandOrderChange1, many, quarantine, quarantineNotTest, rootPackageJsonCommandOrder, rootPackageJsonCommandOrderChange1, single } from '../__fixtures__/constant'
+import {
+  Interdependence,
+  dirInterdependenceRun,
+  dirManyCommandOrder,
+  dirManyCommandOrderChange1,
+  dirQuarantineCommandOrder,
+  dirQuarantineCommandOrderChange1,
+  dirQuarantineNotTestCommandOrder,
+  dirQuarantineNotTestCommandOrderChange1,
+  many,
+  quarantine,
+  quarantineNotTest,
+  rootPackageJsonCommandOrder,
+  rootPackageJsonCommandOrderChange1,
+  single,
+} from '../__fixtures__/constant'
 const ORIGINAL_CWD = process.cwd()
 
 describe(cmd, () => {
