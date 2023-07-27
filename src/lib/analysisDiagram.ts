@@ -1,5 +1,5 @@
 import type IPackageJson from '@ts-type/package-dts'
-import { getDirPackageInfo, getJSONs, sortFilesName } from '../utils'
+import { fileMatch, getDirPackageInfo, getJSONs, sortFilesName } from '../utils'
 import {
   createRelyMyDirMap,
   getMyRelyPackageName,
@@ -13,10 +13,11 @@ export { ContextAnalysisDiagram, AnalysisBlockItem, AnalysisDiagram, SetAnalysis
 
 interface AnalysisBlockItem {
   packageJson: IPackageJson
+  name: string
   filePath: string
   dir: string
-  relyMyDir: string[]
-  myRelyDir: string[]
+  relyMyDir: string[] // 依赖我的包
+  myRelyDir: string[] // 我依赖的包
 }
 type AnalysisDiagram = Record<string, AnalysisBlockItem>
 type SetAnalysisBlockObject = Set<AnalysisBlockItem>
@@ -85,6 +86,7 @@ class ContextAnalysisDiagram {
     }
 
     this.createContextAnalysisDiagram(...values)
+    return this
   }
 
   async getRelatedDir (
@@ -99,7 +101,7 @@ class ContextAnalysisDiagram {
 
   getRelatedPackagesDir (files: string[] | boolean | undefined) {
     if (Array.isArray(files)) {
-      return this.allDirs.filter(key => files.some(file => file.includes(key)))
+      return this.allDirs.filter(key => fileMatch(files, key))
     }
     else {
       return []
@@ -112,7 +114,7 @@ class ContextAnalysisDiagram {
     const stack: string[] = []
 
     this.dependencyTracking(dirs, result, stack, function () {
-      const value = stack[stack.length - 1]
+      const value = stack.at(-1)
       if (value !== undefined && !result.includes(value)) {
         result.push(value)
       }
@@ -152,12 +154,14 @@ class ContextAnalysisDiagram {
 
       this.analysisDiagram[dir] = {
         packageJson,
+        name: packageJson.name as string,
         dir,
         filePath: filesPath[index],
         relyMyDir: relyMyMap[packageJson.name as string],
         myRelyDir,
       }
     })
+    return this
   }
 
   private getRelatedContent (source: AnalysisBlockItem, triggerSign: SetAnalysisBlockObject) {
@@ -204,5 +208,6 @@ class ContextAnalysisDiagram {
       })
       cd()
     })
+    return this
   }
 }

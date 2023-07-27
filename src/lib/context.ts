@@ -3,18 +3,20 @@ import type { SimpleGit } from 'simple-git'
 import {
   assignOptions,
   getYamlPackages,
+  createCommand,
+  runCmdList,
+  warn,
 } from '../utils'
-import type { ExecuteCommandConfig } from '../defaultOptions'
+import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
-import { PACKAGES_PATH } from '../constant'
+import { PACKAGES_PATH, WARN_NOW_RUN } from '../constant'
 import { loadConfig } from '../config'
 import { ContextAnalysisDiagram } from './analysisDiagram'
-import { StoreCommand } from './storeCommand'
-
+import { FileStore } from './fileStore'
 export class Context {
   config: ExecuteCommandConfig
   contextAnalysisDiagram!: ContextAnalysisDiagram
-  storeCommand!: StoreCommand
+  fileStore!: FileStore
 
   static cli = 'pkgs'
 
@@ -38,12 +40,12 @@ export class Context {
     context.contextAnalysisDiagram = contextAnalysisDiagram
 
     // 命令系统
-    context.storeCommand = new StoreCommand(contextAnalysisDiagram, git)
+    context.fileStore = new FileStore(contextAnalysisDiagram, git)
 
     return context
   }
 
-  static async assignConfig (...config: Partial<ExecuteCommandConfig>[]) {
+  static async assignConfig (...config: ExecuteCommandCli[]) {
     const configData = await loadConfig(Context.cli)
     return assignOptions(defaultOptions, configData.data || {}, ...config)
   }
@@ -54,10 +56,24 @@ export class Context {
     this.config = config
   }
 
-  assignOptions (...config: Partial<ExecuteCommandConfig>[]) {
+  assignOptions (...config: ExecuteCommandCli[]) {
     this.config = assignOptions(this.config, ...config)
     if (this.contextAnalysisDiagram) {
       this.contextAnalysisDiagram.packagesPath = this.config.packagesPath
+    }
+    return this
+  }
+
+  async commandBatchRun (diffDirs: string[], cmdStr: string) {
+    const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(diffDirs)
+    const cmd = createCommand(cmdStr, orderDirs)
+
+    if (cmd.length) {
+      const cmdStrList = await runCmdList(cmd)
+      return cmdStrList
+    }
+    else {
+      warn(WARN_NOW_RUN)
     }
   }
 
@@ -71,6 +87,7 @@ export class Context {
         this.config.packagesPath = PACKAGES_PATH
       }
     }
+    return this
   }
 }
 export type CMD = 'version' | 'publish'

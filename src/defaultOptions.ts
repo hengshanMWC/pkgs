@@ -1,41 +1,46 @@
 import { createInitPlugin, createRunPlugin, createVersionPlugin, createPublishPlugin } from './command'
-import type { Context } from './lib/context'
-type Type = 'sync' | 'diff'
+import type { CommandPublishConfig } from './command/publish/type'
+import type { CommandRunConfig } from './command/run/type'
+import type { PluginData } from './command/type'
+import type { CommandVersionConfig } from './command/version/type'
+export type Mode = 'sync' | 'diff'
 
-type PluginOption = [flags: string, description?: string, defaultValue?: string | boolean]
-export interface PluginData<T extends any[] = any[]> {
-  id: string
-  command: string
-  description: string
-  option?: PluginOption[]
-  action: (context: Context, ...args: T) => void
+export interface DefaultParams {
+  mode: Mode
 }
-export interface ExecuteCommandVersionOption {
-  mode?: Type
-  message?: string
-}
-export interface ExecuteCommandPublishOption {
-  tag?: string
-}
-export interface ExecuteCommandConfig {
+
+export type GetConfig<T extends DefaultParams> = Omit<T, 'mode'>
+
+export interface ExecuteCommandConfig extends DefaultParams {
   packagesPath: string | string[] | undefined
-  version: ExecuteCommandVersionOption
-  // publish: ExecuteCommandPublishOption
+  version: CommandVersionConfig
+  publish: CommandPublishConfig
+  run: CommandRunConfig
   plugins: Array<PluginData | string>
 }
+
+export type ExecuteCommandCli = DeepPartial<ExecuteCommandConfig>
+
 export const defaultOptions: ExecuteCommandConfig = {
   packagesPath: undefined,
+  mode: 'sync',
   version: {
-    mode: 'sync',
     message: 'chore: version %s',
   },
-  // publish: {
-  // tag: '',
-  // },
+  publish: {
+    message: 'release %s',
+  },
+  run: {
+    type: 'all',
+  },
   plugins: [
     createVersionPlugin(),
     createPublishPlugin(),
     createRunPlugin(),
     createInitPlugin(),
   ],
+}
+
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 }

@@ -1,25 +1,37 @@
+import type { SimpleGit } from 'simple-git'
+import { tagExpect } from '../commit'
 import { commandPublish, commandVersion } from '../../../src'
-import { handleCommand } from '../create-test-context'
-import { newSimpleGit } from '../instance'
-const prefix = 'publish-test'
+import { createName } from './version'
 export const cmd = 'publish'
 
-export async function testPublish (dir: string, version: string) {
-  const context = await handleCommand(dir, prefix)
-  const git = newSimpleGit(context.root)
-  process.chdir(context.root)
-  await commandVersion(undefined, git, version)
+export async function tagCommit (version: string, git: SimpleGit) {
+  const tagCommitId = await tagExpect(version, git)
+  expect(tagCommitId).not.toBeUndefined()
 }
-export async function testList (arrFile: string[], tag?: string, isTag?: Boolean) {
-  const _tag = isTag ? tag : undefined
-  const publishCmdList = await commandPublish({
-    tag: _tag,
+
+export async function syncTest (version: string, arr: string[], git: SimpleGit) {
+  await commandVersion({}, git, version)
+  const { analysisBlockList } = await commandPublish({}, git)
+  analysisBlockList.forEach((analysisBlock, index) => {
+    expect(analysisBlock.packageJson.name).toBe(createName(arr[index]))
   })
-  await publishListTest(arrFile, publishCmdList, tag)
+  await tagCommit(version, git)
 }
-export function publishListTest (fileNameList: string[], cmdList?: string[], tag?: string) {
-  expect(cmdList).not.toBeUndefined()
-  cmdList && cmdList.forEach((cmd, index) => {
-    expect(cmd).toBe(`cd packages/${fileNameList[index]} && pnpm publish --access public${tag ? ` --tag ${tag}` : ''}`)
+
+export async function diffTest (version: string, arr: string[], git: SimpleGit) {
+  await commandVersion({
+    mode: 'diff',
+  }, git, version)
+  const { analysisBlockList } = await commandPublish({
+    mode: 'diff',
+  }, git)
+  analysisBlockList.forEach((analysisBlock, index) => {
+    expect(analysisBlock.packageJson.name).toBe(createName(arr[index]))
   })
+
+  const nameAntVersionPackages = analysisBlockList.map(analysisBlock => {
+    const packageJson = analysisBlock.packageJson
+    return tagCommit(`${packageJson.name}@${version}`, git)
+  })
+  await Promise.all(nameAntVersionPackages)
 }

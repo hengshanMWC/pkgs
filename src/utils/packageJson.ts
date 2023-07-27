@@ -71,3 +71,15 @@ function dependencyUpdate (
         packageJson[relyAttr][name]
           .replace(versionRegExp, version)
 }
+
+export function getPackageNameVersion (packageJson: IPackageJson, separator = '') {
+  return `${packageJson.name}@${separator}${packageJson.version}`
+}
+
+export function getPackageNameVersionList (packageJsonList: IPackageJson[], separator = '') {
+  return packageJsonList.map(packageJson => getPackageNameVersion(packageJson, separator))
+}
+
+export function getPackageNameVersionStr (packageJsonList: IPackageJson[], separator = '') {
+  return getPackageNameVersionList(packageJsonList, separator).join(', ')
+}

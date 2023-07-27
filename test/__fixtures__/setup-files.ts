@@ -1,3 +1,4 @@
+import { changePackagesFile, changeRootFile } from './constant'
 import type { SimpleGitTestContext } from './create-test-context'
 
 export async function setUpFilesAdded (
@@ -9,4 +10,14 @@ export async function setUpFilesAdded (
   await files(...fileNames)
   await git.add(addSelector)
   await git.commit(message)
+}
+
+export async function changePackagesFileGitCommit (context: SimpleGitTestContext) {
+  try {
+    await setUpFilesAdded(context, [changePackagesFile])
+  }
+  catch {
+    // 根目录
+    await setUpFilesAdded(context, [changeRootFile])
+  }
 }

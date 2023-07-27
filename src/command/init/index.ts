@@ -1,6 +1,6 @@
 import path from 'path'
 import { access, mkdir, copyFile, stat } from 'fs-extra'
-import type { PluginData } from '../../defaultOptions'
+import type { PluginData } from '../type'
 export function commandInit () {
   const packagesName = 'packages'
   const pkgsJsonName = 'pkgs.config.js'
