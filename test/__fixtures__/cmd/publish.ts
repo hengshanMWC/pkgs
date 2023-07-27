@@ -1,13 +1,7 @@
-import type IPackageJson from '@ts-type/package-dts'
 import type { SimpleGit } from 'simple-git'
-import { readJSON } from 'fs-extra'
-import { getPackages, tagExpect } from '../commit'
-import { getNewestCommitId, getVersionTag } from '../../../src/utils/git'
-import { handleCommand } from '../create-test-context'
-import { newSimpleGit } from '../instance'
+import { tagExpect } from '../commit'
 import { commandPublish, commandVersion } from '../../../src'
-import { createGit, createName } from './version'
-const prefix = 'publish-test'
+import { createName } from './version'
 export const cmd = 'publish'
 
 export async function tagCommit (version: string, git: SimpleGit) {

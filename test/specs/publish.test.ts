@@ -8,7 +8,6 @@ import {
   addVersion,
   changePackagesFile2,
   dirInterdependenceArr,
-  dirInterdependenceArrDiff,
   dirInterdependenceCommandOrder,
   dirInterdependenceCommandOrderChange1,
   dirManyArr,
@@ -46,7 +45,6 @@ describe(`${cmd}: ${quarantine}`, () => {
   })
   test(`${quarantine}`, async () => {
     const { git, context } = await createGit(quarantine)
-    console.log('quarantine', context._root)
     await diffTest(newVersionBeta, dirQuarantineArr, git)
     await changePackagesFileGitCommit(context)
     await diffTest(newVersion, dirQuarantineCommandOrderChange1, git)
@@ -54,48 +52,52 @@ describe(`${cmd}: ${quarantine}`, () => {
     await diffTest(addVersion, dirQuarantineCommandOrderChange2, git)
   })
 })
-// describe(`${cmd}: ${many}`, () => {
-//   test(`${many}: default(sync)`, async () => {
-//     const { git } = await createGit(many)
-//     await syncTest(newVersionBeta, dirManyArr, git)
-//     await syncTest(newVersion, dirManyArr, git)
-//     await syncTest(addVersion, dirManyArr, git)
-//   })
-//   test(`${many}`, async () => {
-//     const { git, context } = await createGit(many)
-//     await diffTest(newVersionBeta, dirManyArr, git)
-//     await changePackagesFileGitCommit(context)
-//     await diffTest(newVersion, dirManyCommandOrderChange1, git)
-//     await setUpFilesAdded(context, [changePackagesFile2])
-//     await diffTest(addVersion, dirManyCommandOrderChange2, git)
-//   })
-// })
-// describe(`${cmd}: ${Interdependence}`, () => {
-//   test(`${Interdependence}: default(sync)`, async () => {
-//     const { git } = await createGit(Interdependence)
-//     await syncTest(newVersionBeta, dirInterdependenceArr, git)
-//     await syncTest(newVersion, dirInterdependenceArr, git)
-//     await syncTest(addVersion, dirInterdependenceArr, git)
-//   })
-//   test(`${Interdependence}`, async () => {
-//     const { git, context } = await createGit(Interdependence)
-//     await diffTest(newVersionBeta, dirInterdependenceArrDiff, git)
-//     await changePackagesFileGitCommit(context)
-//     await diffTest(newVersion, dirInterdependenceCommandOrder, git)
-//     await setUpFilesAdded(context, [changePackagesFile2])
-//     await diffTest(addVersion, dirInterdependenceCommandOrderChange1, git)
-//   })
-// })
+describe(`${cmd}: ${many}`, () => {
+  test(`${many}: default(sync)`, async () => {
+    const { git, context } = await createGit(many)
+    await syncTest(newVersionBeta, dirManyArr, git)
+    await changePackagesFileGitCommit(context)
+    await syncTest(newVersion, dirManyArr, git)
+    await setUpFilesAdded(context, [changePackagesFile2])
+    await syncTest(addVersion, dirManyArr, git)
+  })
+  test(`${many}`, async () => {
+    const { git, context } = await createGit(many)
+    await diffTest(newVersionBeta, dirManyArr, git)
+    await changePackagesFileGitCommit(context)
+    await diffTest(newVersion, dirManyCommandOrderChange1, git)
+    await setUpFilesAdded(context, [changePackagesFile2])
+    await diffTest(addVersion, dirManyCommandOrderChange2, git)
+  })
+})
+describe(`${cmd}: ${Interdependence}`, () => {
+  test(`${Interdependence}: default(sync)`, async () => {
+    const { git, context } = await createGit(Interdependence)
+    await syncTest(newVersionBeta, dirInterdependenceArr, git)
+    await changePackagesFileGitCommit(context)
+    await syncTest(newVersion, dirInterdependenceArr, git)
+    await setUpFilesAdded(context, [changePackagesFile2])
+    await syncTest(addVersion, dirInterdependenceArr, git)
+  })
+  test(`${Interdependence}`, async () => {
+    const { git, context } = await createGit(Interdependence)
+    await diffTest(newVersionBeta, dirInterdependenceArr, git)
+    await changePackagesFileGitCommit(context)
+    await diffTest(newVersion, dirInterdependenceCommandOrder, git)
+    await setUpFilesAdded(context, [changePackagesFile2])
+    await diffTest(addVersion, dirInterdependenceCommandOrderChange1, git)
+  })
+})
 
-// describe(`${cmd}: ${single}`, () => {
-//   test(`${single}: default(sync)`, async () => {
-//     const { git } = await createGit(single)
-//     await syncTest(newVersionBeta, rootPackageJsonArr, git)
-//   })
-//   test(`${single}`, async () => {
-//     const { git, context } = await createGit(single)
-//     await diffTest(newVersionBeta, rootPackageJsonArr, git)
-//     await changePackagesFileGitCommit(context)
-//     await diffTest(newVersion, rootPackageJsonArr, git)
-//   })
-// })
+describe(`${cmd}: ${single}`, () => {
+  test(`${single}: default(sync)`, async () => {
+    const { git } = await createGit(single)
+    await syncTest(newVersionBeta, rootPackageJsonArr, git)
+  })
+  test(`${single}`, async () => {
+    const { git, context } = await createGit(single)
+    await diffTest(newVersionBeta, rootPackageJsonArr, git)
+    await changePackagesFileGitCommit(context)
+    await diffTest(newVersion, rootPackageJsonArr, git)
+  })
+})

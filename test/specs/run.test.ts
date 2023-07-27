@@ -1,6 +1,6 @@
 
 import { cmd, createRun, testMain } from '../__fixtures__/cmd/run'
-import { Interdependence, dirInterdependenceCommandOrder, dirInterdependenceCommandOrderChange1, dirManyArr, dirManyCommandOrder, dirManyCommandOrderChange1, dirQuarantineArr, dirQuarantineCommandOrder, dirQuarantineCommandOrderChange1, dirQuarantineNotTestCommandOrder, dirQuarantineNotTestCommandOrderChange1, many, quarantine, quarantineNotTest, rootPackageJsonCommandOrder, rootPackageJsonCommandOrderChange1, single } from '../__fixtures__/constant'
+import { Interdependence, dirInterdependenceCommandOrder, dirInterdependenceCommandOrderChange1, dirInterdependenceRun, dirManyCommandOrder, dirManyCommandOrderChange1, dirQuarantineCommandOrder, dirQuarantineCommandOrderChange1, dirQuarantineNotTestCommandOrder, dirQuarantineNotTestCommandOrderChange1, many, quarantine, quarantineNotTest, rootPackageJsonCommandOrder, rootPackageJsonCommandOrderChange1, single } from '../__fixtures__/constant'
 const ORIGINAL_CWD = process.cwd()
 
 describe(cmd, () => {
@@ -31,13 +31,13 @@ describe(cmd, () => {
   })
   // 依赖循环
   test(Interdependence, async () => {
-    const arr = createRun(dirInterdependenceCommandOrder)
-    const arr2 = createRun(dirInterdependenceCommandOrderChange1)
+    const arr = createRun(dirInterdependenceRun)
+    const arr2 = createRun(dirInterdependenceRun)
     await testMain(Interdependence, arr, arr2, 'sync')
     await testMain(Interdependence, arr, arr2, 'diff')
   })
   // 单项目
-  test.only(single, async () => {
+  test(single, async () => {
     const arr = createRun(rootPackageJsonCommandOrder)
     const arr2 = createRun(rootPackageJsonCommandOrderChange1)
     await testMain(single, arr, arr2, 'sync')
