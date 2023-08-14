@@ -9,5 +9,5 @@ if (importLocal(__filename)) {
   npmlog.info('cli', 'using local version of pkgs')
 }
 else {
-  cliMain(process.argv.slice(2), version)
+  cliMain(process.argv, version)
 }

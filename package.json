@@ -36,6 +36,7 @@
     "build": "tsup src/index.ts src/cli/bin.ts --format esm,cjs --dts-resolve --target node14 --clean --splitting",
     "test": "vitest",
     "test:cov": "vitest --coverage",
+    "test:bin": "esno ./src/cli/bin.ts init",
     "prepare": "husky install",
     "lint": "eslint --ext=js,ts,json,md .",
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",
