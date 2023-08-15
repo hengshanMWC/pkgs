@@ -1,5 +1,6 @@
 import simpleGit from 'simple-git'
 import type { SimpleGit } from 'simple-git'
+import { loadConfig } from 'load-code'
 import {
   assignOptions,
   getYamlPackages,
@@ -10,7 +11,6 @@ import {
 import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
 import { PACKAGES_PATH, WARN_NOW_RUN } from '../constant'
-import { loadConfig } from '../config'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
 export class Context {
