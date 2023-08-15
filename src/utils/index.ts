@@ -3,7 +3,6 @@ import { readJSON, writeJSON, readFile } from 'fs-extra'
 import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
-import strip from 'strip-json-comments'
 import { getPackagesDir } from '@abmao/forb'
 import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import { DEPENDENCY_PREFIX, WORK_SPACE_REG_EXP, gitCommitMessage } from './regExp'
@@ -138,21 +137,6 @@ export async function getYamlPackages (): Promise<string[]> {
 
 export function getArray<T> (params: T | T[]): T[] {
   return Array.isArray(params) ? params : [params]
-}
-
-export function getExportDefault (code: any) {
-  return code?.__esModule ? code.default : code
-}
-
-export function jsoncParse (data: string) {
-  try {
-    return new Function(`return ${strip(data).trim()}`)()
-  }
-  catch {
-    // Silently ignore any error
-    // That's what tsc/jsonc-parser did after all
-    return {}
-  }
 }
 
 export function sortFilesName (files: string[]) {
