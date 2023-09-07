@@ -102,7 +102,7 @@ async function implementPublish (
       }
     }
     if (!isTest) {
-      await execa(command, { stdio: 'inherit' })
+      await execa('pnpm', ['publish', '--access', 'public'], { stdio: 'inherit' })
     }
     return command
   }
