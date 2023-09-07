@@ -102,7 +102,7 @@ async function implementPublish (
       }
     }
     if (!isTest) {
-      await $({ stdio: 'inherit' })`${command}`
+      await $({ stdio: 'inherit' })`${'npm publish'}`
     }
     return command
   }
