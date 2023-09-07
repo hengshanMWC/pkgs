@@ -1,6 +1,6 @@
 import { gt } from 'semver'
 import type IPackageJson from '@ts-type/package-dts'
-import { $ } from 'execa'
+import { execa } from 'execa'
 import { gitDiffSave, gitTag } from '../../utils/git'
 import { cdDir, isTest } from '../../utils'
 import { npmTag, organization } from '../../utils/regExp'
@@ -102,7 +102,7 @@ async function implementPublish (
       }
     }
     if (!isTest) {
-      await $({ stdio: 'inherit' })`${'npm publish'}`
+      await execa(command, { stdio: 'inherit' })
     }
     return command
   }
