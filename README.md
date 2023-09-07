@@ -31,10 +31,18 @@ monorepo有两种模式
 以下是代码中的默认配置，会读取`pnpm-workspace.yaml`找到多包工作区，如果没找该文件到的话，会默认成`packages/*`
 ```JavaScript
 {
+  packagesPath: undefined, // 默认读取pnpm-workspace.yaml
+  mode: 'sync',
   version: {
-    mode: undefined,
     message: 'chore: version %s',
-  }
+  },
+  publish: {
+    message: 'release %s',
+  },
+  run: {
+    type: 'all',
+  },
+  plugins: [],
 }
 ```
 ## Options
