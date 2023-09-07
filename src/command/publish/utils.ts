@@ -6,7 +6,7 @@ import { isTest } from '../../utils'
 import { npmTag, organization } from '../../utils/regExp'
 import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../lib'
 import { getTagPublish } from './git'
-import { Commands } from '../type'
+import { CommandPublishParams, Commands } from '../type'
 
 export async function handleSyncPublish (context: Context) {
   const version = await getTagPublish(context)
@@ -23,7 +23,10 @@ export async function handleSyncPublish (context: Context) {
       const command = await implementPublish(
         packageJson,
         allDirs[index],
-        context.config.publish.tag,
+        {
+          tag: context.config.publish.tag,
+          access: context.config.publish.access
+        }
       )
       if (command) {
         commandList.push(command)
@@ -56,7 +59,10 @@ export async function handleDiffPublish (context: Context) {
     const command = await implementPublish(
       analysisBlock.packageJson,
       analysisBlock.dir,
-      context.config.publish.tag,
+      {
+        tag: context.config.publish.tag,
+        access: context.config.publish.access
+      }
     )
     if (command) {
       triggerSign.add(analysisBlock)
@@ -84,14 +90,17 @@ export async function handleDiffPublish (context: Context) {
 async function implementPublish (
   packageJson: IPackageJson<any>,
   dir?: string,
-  tag?: string,
+  {
+    tag,
+    access
+  }: Omit<CommandPublishParams, 'message'> = {}
 ): Promise<Commands | void> {
   if (!packageJson.private) {
     const command = 'pnpm'
     const args: string[] = ['publish']
 
     if (new RegExp(organization).test(packageJson.name as string)) {
-      args.push('--access', 'public')
+      args.push('--access', access || 'public')
     }
 
     if (tag !== undefined) {

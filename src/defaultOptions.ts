@@ -29,6 +29,7 @@ export const defaultOptions: ExecuteCommandConfig = {
   },
   publish: {
     message: 'release %s',
+    access: 'public'
   },
   run: {
     type: 'all',
