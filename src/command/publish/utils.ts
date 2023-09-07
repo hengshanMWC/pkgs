@@ -102,7 +102,7 @@ async function implementPublish (
       }
     }
     if (!isTest) {
-      await $`${command}`
+      await $({ stdio: 'inherit' })`${command}`
     }
     return command
   }
