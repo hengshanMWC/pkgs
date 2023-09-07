@@ -10,6 +10,12 @@ export interface PluginData<T extends any[] = any[]> {
 
 export type PluginOption = [flags: string, description?: string, defaultValue?: string | boolean]
 
+export interface Commands {
+  command: string,
+  args: string[],
+  cwd: string
+}
+
 export * from './version/type'
 export * from './publish/type'
 export * from './run/type'

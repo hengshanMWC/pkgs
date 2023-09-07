@@ -2,16 +2,17 @@ import { gt } from 'semver'
 import type IPackageJson from '@ts-type/package-dts'
 import { execa } from 'execa'
 import { gitDiffSave, gitTag } from '../../utils/git'
-import { cdDir, isTest } from '../../utils'
+import { isTest } from '../../utils'
 import { npmTag, organization } from '../../utils/regExp'
 import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../lib'
 import { getTagPublish } from './git'
+import { Commands } from '../type'
 
 export async function handleSyncPublish (context: Context) {
   const version = await getTagPublish(context)
   const { allDirs } = context.contextAnalysisDiagram
   const analysisBlockList: AnalysisBlockItem[] = []
-  const commandList: string[] = []
+  const commandList: Commands[] = []
   let versionTag = ''
 
   for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
@@ -49,7 +50,7 @@ export async function handleSyncPublish (context: Context) {
 
 export async function handleDiffPublish (context: Context) {
   const triggerSign: SetAnalysisBlockObject = new Set()
-  const commandList: string[] = []
+  const commandList: Commands[] = []
 
   await context.fileStore.forRepositoryDiffPack(async function (analysisBlock) {
     const command = await implementPublish(
@@ -84,26 +85,33 @@ async function implementPublish (
   packageJson: IPackageJson<any>,
   dir?: string,
   tag?: string,
-) {
+): Promise<Commands | void> {
   if (!packageJson.private) {
-    let command = `${cdDir(dir)}pnpm publish`
+    const command = 'pnpm'
+    const args: string[] = ['publish']
 
     if (new RegExp(organization).test(packageJson.name as string)) {
-      command += ' --access public'
+      args.push('--access', 'public')
     }
 
     if (tag !== undefined) {
-      command += ` --tag ${tag}`
+      args.push('--tag', tag)
     }
     else if (packageJson.version) {
       const tagArr = packageJson.version.match(new RegExp(npmTag))
       if (tagArr) {
-        command += ` --tag ${tagArr[1]}`
+        args.push('--tag', tagArr[1])
       }
     }
     if (!isTest) {
-      await execa('pnpm', ['publish', '--access', 'public'], { stdio: 'inherit' })
+      await execa(command, args, { stdio: 'inherit', cwd: dir })
     }
-    return command
+    return {
+      command,
+      args,
+      cwd: dir || ''
+    }
   }
 }
+
+
