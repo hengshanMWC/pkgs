@@ -1,8 +1,6 @@
 import type { DefaultParams, GetConfig } from '../../defaultOptions'
 export interface CommandPublishOption extends DefaultParams {
   message: string
-  access: 'public' | 'restricted'
-  tag?: string
 }
 
 export type CommandPublishParams = Partial<CommandPublishOption>

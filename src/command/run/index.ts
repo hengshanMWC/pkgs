@@ -31,6 +31,7 @@ async function commandRun (
   configParam: CommandRunParams = {},
   cmd: string,
   git: SimpleGit = simpleGit(),
+  argv?: string[],
 ) {
   const config = await Context.assignConfig({
     mode: configParam.mode,
@@ -39,6 +40,7 @@ async function commandRun (
   const context = await Context.create(
     config,
     git,
+    argv,
   )
   const cmdList = await main(context, cmd)
   return cmdList

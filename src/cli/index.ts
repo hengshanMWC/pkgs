@@ -15,10 +15,10 @@ export async function cliMain (argv: NodeJS.Process['argv'], version: string) {
     let _program = program
       .command(value.command)
       .description(value.description)
-      .action(async (...args) => {
+      .action(async args => {
         cliVersion(value.id)
-        const context = await Context.create()
-        await value.action(context, ...args)
+        const context = await Context.create(undefined, undefined, argv)
+        await value.action(context, args)
         cliSuccess()
       })
     if (value.option) {

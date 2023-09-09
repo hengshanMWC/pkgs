@@ -18,6 +18,7 @@ export async function commandVersion (
   configParam: CommandVersionParams = {},
   git: SimpleGit = simpleGit(),
   appointVersion?: string,
+  argv?: string[],
 ) {
   const config = await Context.assignConfig({
     mode: configParam.mode,
@@ -26,6 +27,7 @@ export async function commandVersion (
   const context = await Context.create(
     config,
     git,
+    argv,
   )
   const result = await main(context, appointVersion)
   return result

@@ -69,9 +69,6 @@ function assignOption (
     if (object.publish.message !== undefined) {
       templateObject.publish.message = object.publish.message
     }
-    if (object.publish.tag !== undefined) {
-      templateObject.publish.tag = object.publish.tag
-    }
   }
   if (object.run !== undefined) {
     if (templateObject.run === undefined) {

@@ -20,7 +20,6 @@ export interface ExecuteCommandConfig extends DefaultParams {
 }
 
 export type ExecuteCommandCli = DeepPartial<ExecuteCommandConfig>
-
 export const defaultOptions: ExecuteCommandConfig = {
   packagesPath: undefined,
   mode: 'sync',
@@ -29,7 +28,6 @@ export const defaultOptions: ExecuteCommandConfig = {
   },
   publish: {
     message: 'release %s',
-    access: 'public'
   },
   run: {
     type: 'all',
