@@ -1,4 +1,5 @@
 import type { Options } from 'execa'
+import type { Agent } from '@antfu/ni'
 import type { Context } from '../lib'
 
 export interface PluginData<T = any> {
@@ -10,10 +11,6 @@ export interface PluginData<T = any> {
 }
 
 export type PluginOption = [flags: string, description?: string, defaultValue?: string | boolean]
-
-export enum Agent {
-  PNPM = 'pnpm',
-}
 
 export type AgentType = Agent | string
 
