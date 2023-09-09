@@ -3,7 +3,6 @@ import type { SimpleGit } from 'simple-git'
 import { loadConfig } from 'load-code'
 import {
   assignOptions,
-  getYamlPackages,
   createCommand,
   runCmdList,
   warn,
@@ -11,18 +10,23 @@ import {
 import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
 import { PACKAGES_PATH, WARN_NOW_RUN } from '../constant'
+import type { Manager } from '../manager'
+import { agentSmell } from '../manager'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
 export class Context {
   config: ExecuteCommandConfig
   contextAnalysisDiagram!: ContextAnalysisDiagram
   fileStore!: FileStore
+  packageManager!: Manager
+  argv: string[]
 
   static cli = 'pkgs'
 
   static async create (
     config?: ConstructorParameters<typeof Context>[0],
     git: SimpleGit = simpleGit(),
+    argv?: string[],
   ) {
     let contextConfig: ConstructorParameters<typeof Context>[0]
     if (config) {
@@ -31,8 +35,17 @@ export class Context {
     else {
       contextConfig = await Context.assignConfig()
     }
-    const context = new Context(contextConfig)
-    await context.readDefaultPackagesPath()
+
+    // 初始化包管理
+    const packageManager = await agentSmell()
+    const packageManagerConfig = await packageManager.getConfig()
+    contextConfig = assignOptions({
+      packagesPath: PACKAGES_PATH,
+    }, packageManagerConfig, contextConfig)
+
+    // 创建上下文
+    const context = new Context(contextConfig, argv)
+    context.packageManager = packageManager
 
     // 生成包之间的图表关系
     const contextAnalysisDiagram = new ContextAnalysisDiagram(context.config.packagesPath)
@@ -52,8 +65,19 @@ export class Context {
 
   constructor (
     config: ExecuteCommandConfig,
+    argv: string[] = process.argv,
   ) {
     this.config = config
+    this.argv = argv
+  }
+
+  get argvValue () {
+    if (this.argv) {
+      return this.argv.slice(2).filter(Boolean)
+    }
+    else {
+      return []
+    }
   }
 
   assignOptions (...config: ExecuteCommandCli[]) {
@@ -75,19 +99,6 @@ export class Context {
     else {
       warn(WARN_NOW_RUN)
     }
-  }
-
-  private async readDefaultPackagesPath () {
-    if (!this.config.packagesPath) {
-      try {
-        // 同步pnpm-workspace.yaml的packagesPath
-        this.config.packagesPath = await getYamlPackages()
-      }
-      catch {
-        this.config.packagesPath = PACKAGES_PATH
-      }
-    }
-    return this
   }
 }
 export type CMD = 'version' | 'publish'

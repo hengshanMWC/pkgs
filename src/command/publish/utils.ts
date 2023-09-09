@@ -1,17 +1,14 @@
 import { gt } from 'semver'
-import type IPackageJson from '@ts-type/package-dts'
-import { $ } from 'execa'
 import { gitDiffSave, gitTag } from '../../utils/git'
-import { cdDir, isTest } from '../../utils'
-import { npmTag, organization } from '../../utils/regExp'
 import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../lib'
+import type { CommandResult } from '../type'
 import { getTagPublish } from './git'
 
 export async function handleSyncPublish (context: Context) {
   const version = await getTagPublish(context)
   const { allDirs } = context.contextAnalysisDiagram
   const analysisBlockList: AnalysisBlockItem[] = []
-  const commandList: string[] = []
+  const commandList: CommandResult[] = []
   let versionTag = ''
 
   for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
@@ -19,10 +16,12 @@ export async function handleSyncPublish (context: Context) {
     const analysisBlock = context.contextAnalysisDiagram.packageJsonToAnalysisBlock(packageJson)
     const currentVersion = packageJson?.version as string
     if (analysisBlock && (!version || gt(version, currentVersion))) {
-      const command = await implementPublish(
+      const command = await context.packageManager.publish(
         packageJson,
-        allDirs[index],
-        context.config.publish.tag,
+        context.argvValue,
+        {
+          cwd: allDirs[index],
+        },
       )
       if (command) {
         commandList.push(command)
@@ -49,13 +48,16 @@ export async function handleSyncPublish (context: Context) {
 
 export async function handleDiffPublish (context: Context) {
   const triggerSign: SetAnalysisBlockObject = new Set()
-  const commandList: string[] = []
+  const commandList: CommandResult[] = []
 
   await context.fileStore.forRepositoryDiffPack(async function (analysisBlock) {
-    const command = await implementPublish(
+    const command = await context.packageManager.publish(
       analysisBlock.packageJson,
-      analysisBlock.dir,
-      context.config.publish.tag,
+      context.argvValue,
+      {
+        cwd: analysisBlock.dir,
+      },
+
     )
     if (command) {
       triggerSign.add(analysisBlock)
@@ -77,33 +79,5 @@ export async function handleDiffPublish (context: Context) {
   return {
     analysisBlockList,
     commandList,
-  }
-}
-
-async function implementPublish (
-  packageJson: IPackageJson<any>,
-  dir?: string,
-  tag?: string,
-) {
-  if (!packageJson.private) {
-    let command = `${cdDir(dir)}pnpm publish`
-
-    if (new RegExp(organization).test(packageJson.name as string)) {
-      command += ' --access public'
-    }
-
-    if (tag !== undefined) {
-      command += ` --tag ${tag}`
-    }
-    else if (packageJson.version) {
-      const tagArr = packageJson.version.match(new RegExp(npmTag))
-      if (tagArr) {
-        command += ` --tag ${tagArr[1]}`
-      }
-    }
-    if (!isTest) {
-      await $`${command}`
-    }
-    return command
   }
 }

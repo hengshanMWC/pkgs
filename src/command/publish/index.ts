@@ -13,7 +13,11 @@ function main (context: Context) {
     return handleSyncPublish(context)
   }
 }
-export async function commandPublish (configParam: CommandPublishParams = {}, git: SimpleGit = simpleGit()) {
+export async function commandPublish (
+  configParam: CommandPublishParams = {},
+  git: SimpleGit = simpleGit(),
+  argv?: string[],
+) {
   const config = await Context.assignConfig({
     mode: configParam.mode,
     publish: omit<CommandPublishParams, 'mode'>(configParam, ['mode']),
@@ -21,6 +25,7 @@ export async function commandPublish (configParam: CommandPublishParams = {}, gi
   const context = await Context.create(
     config,
     git,
+    argv,
   )
   const result = await main(context)
   return result
@@ -35,9 +40,9 @@ export function createPublishPlugin (): PluginData {
       ['-message <message>', 'npm publish --message <message>'],
       ['-tag <type>', 'npm publish --tag <tag>'],
     ],
-    action (context: Context, config: CommandPublishParams = {}) {
+    action (context: Context, params: CommandPublishParams = {}) {
       context.assignOptions({
-        publish: config,
+        publish: params,
       })
       main(context)
     },
