@@ -12,7 +12,7 @@ export class BaseManager implements Manager {
 
   async publish (packageJson: IPackageJson<any>, args: string[] = [], options: Options = {}): Promise<CommandResult> {
     const _options: Options = { stdio: 'inherit', ...options }
-    const _args: string[] = [...args]
+    const _args: string[] = ['publish', ...args]
     const argTag = '--tag'
     if (_args.every(arg => arg !== argTag) && packageJson.version) {
       const tagArr = packageJson.version.match(new RegExp(npmTag))

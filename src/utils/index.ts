@@ -6,6 +6,7 @@ import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
 import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
+import type { CommandResult } from '../command'
 import { DEPENDENCY_PREFIX, WORK_SPACE_REG_EXP, gitCommitMessage } from './regExp'
 export const isTest = process.env.NODE_ENV === 'test'
 export async function getJSON (dir: string): Promise<IPackageJson> {
@@ -170,4 +171,11 @@ export function fileMatch (files: string[], dir: string) {
 
 export function runCommand (agent: string, args: string[], options: Options) {
   return execa(agent, args, options)
+}
+
+export function runCommandList (commandList: CommandResult[]) {
+  const runList = commandList.map(command => {
+    return runCommand(command.agent, command.args, command.options)
+  })
+  return Promise.all(runList)
 }
