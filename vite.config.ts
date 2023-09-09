@@ -10,7 +10,7 @@ export default defineConfig({
     globals: true,
     watch: false,
     includeSource: ['src/**/*.{js,ts}'],
-    // include: ['test/specs/*.ts'],
-    include: ['test/specs/init.*.ts'],
+    include: ['test/specs/*.ts'],
+    // include: ['test/specs/init.*.ts'],
   },
 })
