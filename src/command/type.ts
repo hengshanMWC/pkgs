@@ -10,6 +10,10 @@ export interface PluginData<T extends any[] = any[]> {
 
 export type PluginOption = [flags: string, description?: string, defaultValue?: string | boolean]
 
+export enum Agent {
+  PNPM = 'pnpm',
+}
+
 export interface Commands {
   command: string
   args: string[]

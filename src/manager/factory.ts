@@ -1,4 +1,5 @@
-import { Agent, DEFAULT_AGENT } from '../constant'
+import { DEFAULT_AGENT } from '../constant'
+import { Agent } from '../command'
 import type { BaseManager } from './agent'
 import { PnpmManager } from './agent'
 
