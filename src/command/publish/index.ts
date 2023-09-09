@@ -6,7 +6,7 @@ import type { CommandPublishParams, PluginData } from '../type'
 import { runCommandList } from '../../utils'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
-async function main (context: Context) {
+async function commandMain (context: Context) {
   if (context.config.mode === 'diff') {
     return handleDiffPublish(context)
   }
@@ -29,7 +29,7 @@ export async function parseCommandPublish (
     git,
     argv,
   )
-  const result = await main(context)
+  const result = await commandMain(context)
   return result
 }
 
@@ -55,7 +55,7 @@ export function createPublishPlugin (): PluginData {
       context.assignOptions({
         publish: params,
       })
-      const { commandList } = await main(context)
+      const { commandList } = await commandMain(context)
       await runCommandList(commandList)
     },
   }

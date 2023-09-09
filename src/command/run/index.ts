@@ -9,7 +9,7 @@ export {
   commandRun,
   createRunPlugin,
 }
-async function main (context: Context, cmd: string) {
+async function commandMain (context: Context, cmd: string) {
   const runCmd = `pnpm run ${cmd}`
   let diffDirs: string[]
 
@@ -42,7 +42,7 @@ async function commandRun (
     git,
     argv,
   )
-  const cmdList = await main(context, cmd)
+  const cmdList = await commandMain(context, cmd)
   return cmdList
 }
 
@@ -60,7 +60,7 @@ function createRunPlugin (): PluginData {
         mode: config.mode,
         run: config,
       })
-      return main(context, cmd)
+      return commandMain(context, cmd)
     },
   }
 }
