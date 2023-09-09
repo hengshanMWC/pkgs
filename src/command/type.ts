@@ -1,5 +1,5 @@
 import type { Options } from 'execa'
-import type { Context } from '../lib'
+import type { AnalysisBlockItem, Context } from '../lib'
 import type { Agent } from '../constant'
 
 export interface PluginData<T = any> {
@@ -18,6 +18,11 @@ export interface CommandResult {
   agent: AgentType
   args: string[]
   options: Options
+}
+
+export interface RunResult {
+  analysisBlockList: AnalysisBlockItem[]
+  commandList: CommandResult[]
 }
 
 export * from './version/type'

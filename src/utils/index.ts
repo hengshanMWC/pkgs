@@ -1,4 +1,5 @@
-import { $ } from 'execa'
+import type { Options } from 'execa'
+import { $, execa } from 'execa'
 import { readJSON, writeJSON, readFile } from 'fs-extra'
 import yaml from 'js-yaml'
 import colors from 'colors'
@@ -165,4 +166,8 @@ export async function getDirPackageInfo (packagesPath: string | string[]) {
 
 export function fileMatch (files: string[], dir: string) {
   return files.some(file => file.includes(dir))
+}
+
+export function runCommand (agent: string, args: string[], options: Options) {
+  return execa(agent, args, options)
 }
