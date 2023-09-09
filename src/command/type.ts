@@ -20,9 +20,13 @@ export interface CommandResult {
   options: Options
 }
 
-export interface RunResult {
+export interface CommandMainResult {
   analysisBlockList: AnalysisBlockItem[]
   commandList: CommandResult[]
+}
+
+export interface ExecuteCommandResult<T = any> extends CommandMainResult {
+  executeResult: T[]
 }
 
 export * from './version/type'

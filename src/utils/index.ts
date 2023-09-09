@@ -169,13 +169,13 @@ export function fileMatch (files: string[], dir: string) {
   return files.some(file => file.includes(dir))
 }
 
-export function runCommand (agent: string, args: string[], options: Options) {
+export function executeCommand (agent: string, args: string[], options: Options) {
   return execa(agent, args, options)
 }
 
-export function runCommandList (commandList: CommandResult[]) {
+export function executeCommandList (commandList: CommandResult[]) {
   const runList = commandList.map(command => {
-    return runCommand(command.agent, command.args, command.options)
+    return executeCommand(command.agent, command.args, command.options)
   })
   return Promise.all(runList)
 }

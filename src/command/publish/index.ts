@@ -2,8 +2,8 @@ import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
 import { omit } from 'lodash'
 import { Context } from '../../lib/context'
-import type { CommandPublishParams, PluginData } from '../type'
-import { runCommandList } from '../../utils'
+import type { CommandPublishParams, ExecuteCommandResult, PluginData } from '../type'
+import { executeCommandList } from '../../utils'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
 async function commandMain (context: Context) {
@@ -37,10 +37,13 @@ export async function commandPublish (
   configParam: CommandPublishParams = {},
   git: SimpleGit = simpleGit(),
   argv?: string[],
-) {
-  const result = await parseCommandPublish(configParam, git, argv)
-  await runCommandList(result.commandList)
-  return result
+): Promise<ExecuteCommandResult> {
+  const commandMainResult = await parseCommandPublish(configParam, git, argv)
+  const executeCommandResult = await executeCommandList(commandMainResult.commandList)
+  return {
+    ...commandMainResult,
+    executeResult: executeCommandResult,
+  }
 }
 
 export function createPublishPlugin (): PluginData {
@@ -56,7 +59,7 @@ export function createPublishPlugin (): PluginData {
         publish: params,
       })
       const { commandList } = await commandMain(context)
-      await runCommandList(commandList)
+      await executeCommandList(commandList)
     },
   }
 }
