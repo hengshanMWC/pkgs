@@ -1,6 +1,6 @@
 - github workflows
 - CHANGE.md
-- publish 包命令和message配置
 - 完善文档
-- 包管理器抽象
 - key为dir改为包名
+- git自动提交
+- cli测试补充
