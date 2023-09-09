@@ -1,6 +1,6 @@
 import type { Options } from 'execa'
-import type { Agent } from '@antfu/ni'
 import type { Context } from '../lib'
+import type { Agent } from '../constant'
 
 export interface PluginData<T = any> {
   id: string
