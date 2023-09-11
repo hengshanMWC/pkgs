@@ -98,8 +98,9 @@ class FileStore {
   // 拿到相关包的文件修改范围
   async getDiffFileList (createVersion: (packageJson: IPackageJson) => string) {
     const fileList = this.contextAnalysisDiagram.allPackagesJSON
+      .filter(packageJson => packageJson)
       .map(packageJson => getVersionDiffFile(
-        createVersion(packageJson),
+        createVersion(packageJson as IPackageJson),
         this.git))
     const result = await Promise.all(fileList)
     return result
