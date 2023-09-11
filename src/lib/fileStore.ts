@@ -128,7 +128,10 @@ class FileStore {
   private async forPack (relatedPackagesDir: string[], callback: ForPackCallback) {
     for (let index = 0; index < relatedPackagesDir.length; index++) {
       const dir = relatedPackagesDir[index]
-      await callback(this.contextAnalysisDiagram.analysisDiagram[dir], index)
+      const analysisBlock = this.contextAnalysisDiagram.dirToAnalysisDiagram(dir)
+      if (analysisBlock) {
+        await callback(analysisBlock, index)
+      }
     }
   }
 }
