@@ -124,14 +124,8 @@ class ContextAnalysisDiagram {
     return result
   }
 
-  packageJsonToAnalysisBlock (packageJson: IPackageJson) {
-    for (const key in this.analysisDiagram) {
-      const analysisBlock = this.analysisDiagram[key]
-
-      if (analysisBlock.packageJson === packageJson) {
-        return analysisBlock
-      }
-    }
+  packageJsonToAnalysisBlock (value: IPackageJson) {
+    return this.dataToAnalysisDiagram(value, 'packageJson')
   }
 
   dirToAnalysisDiagram (value: string) {
