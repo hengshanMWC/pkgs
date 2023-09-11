@@ -155,18 +155,20 @@ async function changeRelyMyVersion (
 
   for (let i = 0; i < relyMyDir.length; i++) {
     const relyDir = relyMyDir[i]
-    const analysisBlockRelyMy = context.contextAnalysisDiagram.analysisDiagram[relyDir]
-    const isChange = dependentSearch(analysisBlock, analysisBlockRelyMy)
+    const analysisBlockRelyMy = context.contextAnalysisDiagram.dirToAnalysisDiagram(relyDir)
+    if (analysisBlockRelyMy) {
+      const isChange = dependentSearch(analysisBlock, analysisBlockRelyMy)
 
-    // 只有有变更，并且带triggerSign，才会走version变动
-    if (isChange && triggerSign && !triggerSign.has(analysisBlockRelyMy)) {
-      await changeVersionResultItem(
-        context,
-        analysisBlockRelyMy,
-        relyDir,
-        triggerSign,
-        appointVersion,
-      )
+      // 只有有变更，并且带triggerSign，才会走version变动
+      if (isChange && triggerSign && !triggerSign.has(analysisBlockRelyMy)) {
+        await changeVersionResultItem(
+          context,
+          analysisBlockRelyMy,
+          relyDir,
+          triggerSign,
+          appointVersion,
+        )
+      }
     }
   }
 }
