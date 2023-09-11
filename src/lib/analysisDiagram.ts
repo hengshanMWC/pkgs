@@ -33,7 +33,7 @@ class ContextAnalysisDiagram {
   // 获取所有包目录路径
   get allDirs () {
     if (this.analysisDiagram) {
-      return sortFilesName(Object.keys(this.analysisDiagram))
+      return sortFilesName(Object.keys(this.analysisDiagram).map(name => this.analysisDiagram[name].dir))
     }
     else {
       return []
