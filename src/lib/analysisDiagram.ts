@@ -1,4 +1,5 @@
 import type IPackageJson from '@ts-type/package-dts'
+import { isString } from 'lodash'
 import { fileMatch, getDirPackageInfo, getJSONs, sortFilesName } from '../utils'
 import {
   createRelyMyDirMap,
@@ -136,7 +137,7 @@ class ContextAnalysisDiagram {
   dirToAnalysisDiagram (dir: string) {
     const keyList = Object.keys(this.analysisDiagram)
     const key = keyList.find(key => this.analysisDiagram[key].dir === dir)
-    if (key) {
+    if (isString(key)) {
       return this.analysisDiagram[key]
     }
     else {

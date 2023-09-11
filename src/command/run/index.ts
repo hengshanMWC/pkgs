@@ -20,9 +20,10 @@ async function commandMain (context: Context, cmd: string) {
     diffDirs = await handleSyncRun(context)
   }
 
-  const analysisDiagram = context.contextAnalysisDiagram.analysisDiagram
   // scripts有该功能才触发
-  const dirs = diffDirs.filter(dir => !!analysisDiagram[dir].packageJson?.scripts?.[cmd])
+  const dirs = diffDirs.filter(
+    dir => !!context.contextAnalysisDiagram.dirToAnalysisDiagram(dir)?.packageJson?.scripts?.[cmd],
+  )
   const result = context.commandBatchRun(dirs, runCmd)
   return result
 }
