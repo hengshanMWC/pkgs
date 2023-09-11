@@ -103,8 +103,8 @@ async function getSyncTargetVersionDir (context: Context) {
 }
 async function getChangeVersion (context: Context, appointVersion?: string) {
   const dir = await getSyncTargetVersionDir(context)
-  const analysisBlock = context.contextAnalysisDiagram.analysisDiagram[dir]
-  const oldVersion = analysisBlock.packageJson.version
+  const analysisBlock = context.contextAnalysisDiagram.dirToAnalysisDiagram(dir)
+  const oldVersion = analysisBlock?.packageJson?.version
   const version = await changeVersion(dir, appointVersion)
 
   if (oldVersion === version) {
