@@ -207,12 +207,14 @@ class ContextAnalysisDiagram {
       if (stack.includes(dir) || result.includes(dir)) return
       stack.push(dir)
 
-      const { myRelyDir } = this.analysisDiagram[dir]
-      myRelyDir.forEach(item => {
+      const myRelyDir = this.dirToAnalysisDiagram(dir)?.myRelyDir
+      myRelyDir?.forEach(item => {
         if (!stack.includes(item)) {
           stack.push(item)
-          const { myRelyDir } = this.analysisDiagram[item]
-          this.dependencyTracking(myRelyDir, result, stack, cd)
+          const myRelyDir = this.dirToAnalysisDiagram(item)?.myRelyDir
+          if (myRelyDir) {
+            this.dependencyTracking(myRelyDir, result, stack, cd)
+          }
           cd()
         }
       })
