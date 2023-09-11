@@ -79,9 +79,17 @@ async function versionTagToDir (context: Context) {
 // 获取包里面版本最高的包路径
 function getVersionMax (context: Context) {
   return context.contextAnalysisDiagram.allDirs.reduce((a, b) => {
-    const aPackageJson = context.contextAnalysisDiagram.analysisDiagram[a].packageJson
-    const bPackageJson = context.contextAnalysisDiagram.analysisDiagram[b].packageJson
-    return gt(bPackageJson.version as string, aPackageJson.version as string) ? b : a
+    const aPackageJson = context.contextAnalysisDiagram.dirToAnalysisDiagram(a)?.packageJson
+    const bPackageJson = context.contextAnalysisDiagram.dirToAnalysisDiagram(b)?.packageJson
+    if (bPackageJson && aPackageJson) {
+      return gt(bPackageJson.version as string, aPackageJson.version as string) ? b : a
+    }
+    else if (bPackageJson) {
+      return b
+    }
+    else {
+      return a
+    }
   })
 }
 
