@@ -1,10 +1,12 @@
-import { $ } from 'execa'
+import type { Options } from 'execa'
+import { $, execa } from 'execa'
 import { readJSON, writeJSON, readFile } from 'fs-extra'
 import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
 import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
+import type { CommandResult } from '../command'
 import { DEPENDENCY_PREFIX, WORK_SPACE_REG_EXP, gitCommitMessage } from './regExp'
 export const isTest = process.env.NODE_ENV === 'test'
 export async function getJSON (dir: string): Promise<IPackageJson> {
@@ -165,4 +167,15 @@ export async function getDirPackageInfo (packagesPath: string | string[]) {
 
 export function fileMatch (files: string[], dir: string) {
   return files.some(file => file.includes(dir))
+}
+
+export function executeCommand (agent: string, args: string[], options: Options) {
+  return execa(agent, args, options)
+}
+
+export function executeCommandList (commandList: CommandResult[]) {
+  const runList = commandList.map(command => {
+    return executeCommand(command.agent, command.args, command.options)
+  })
+  return Promise.all(runList)
 }

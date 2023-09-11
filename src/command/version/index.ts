@@ -6,7 +6,7 @@ import {
 } from '../../lib/context'
 import type { CommandVersionParams, PluginData } from '../type'
 import { handleDiffVersion, handleSyncVersion } from './utils'
-function main (context: Context, appointVersion?: string) {
+function commandMain (context: Context, appointVersion?: string) {
   if (context.config.mode === 'diff') {
     return handleDiffVersion(context, appointVersion)
   }
@@ -29,7 +29,7 @@ export async function commandVersion (
     git,
     argv,
   )
-  const result = await main(context, appointVersion)
+  const result = await commandMain(context, appointVersion)
   return result
 }
 export function createVersionPlugin (): PluginData {
@@ -46,7 +46,7 @@ export function createVersionPlugin (): PluginData {
         mode: config.mode,
         version: config,
       })
-      main(context)
+      commandMain(context)
     },
   }
 }

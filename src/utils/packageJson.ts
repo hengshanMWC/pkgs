@@ -1,5 +1,6 @@
 import type { IPackageJson } from '@ts-type/package-dts'
 import { satisfies } from 'semver'
+import { gt } from 'lodash'
 import type { AnalysisBlockItem } from '../lib/analysisDiagram'
 import { getRelyAttrs } from './analysisDiagram'
 import { versionText } from './regExp'
@@ -82,4 +83,33 @@ export function getPackageNameVersionList (packageJsonList: IPackageJson[], sepa
 
 export function getPackageNameVersionStr (packageJsonList: IPackageJson[], separator = '') {
   return getPackageNameVersionList(packageJsonList, separator).join(', ')
+}
+
+export function gtPackageJsonToDir (
+  aDir: string,
+  bDir: string,
+  aPackageJson?: IPackageJson,
+  bPackageJson?: IPackageJson,
+) {
+  if (bPackageJson && aPackageJson) {
+    return gt(bPackageJson.version as string, aPackageJson.version as string) ? bDir : aDir
+  }
+  else if (aPackageJson) {
+    return aDir
+  }
+  else {
+    return bDir
+  }
+}
+
+export function gtPackageJson (
+  aPackageJson?: IPackageJson,
+  bPackageJson?: IPackageJson,
+) {
+  if (bPackageJson && aPackageJson) {
+    return gt(bPackageJson.version as string, aPackageJson.version as string) ? bPackageJson : aPackageJson
+  }
+  else {
+    return aPackageJson || bPackageJson
+  }
 }

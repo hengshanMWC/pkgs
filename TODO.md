@@ -1,6 +1,6 @@
 - github workflows
 - CHANGE.md
 - 完善文档
-- key为dir改为包名
 - git自动提交
 - cli测试补充
+- 命令分层成执行跟命令

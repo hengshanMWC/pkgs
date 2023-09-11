@@ -1,4 +1,5 @@
 import type IPackageJson from '@ts-type/package-dts'
+import { isString } from 'lodash'
 import { fileMatch, getDirPackageInfo, getJSONs, sortFilesName } from '../utils'
 import {
   createRelyMyDirMap,
@@ -32,7 +33,7 @@ class ContextAnalysisDiagram {
   // 获取所有包目录路径
   get allDirs () {
     if (this.analysisDiagram) {
-      return sortFilesName(Object.keys(this.analysisDiagram))
+      return sortFilesName(Object.keys(this.analysisDiagram).map(name => this.analysisDiagram[name].dir))
     }
     else {
       return []
@@ -43,7 +44,7 @@ class ContextAnalysisDiagram {
   get allFilesPath () {
     if (this.analysisDiagram) {
       return this.allDirs.map(
-        key => this.analysisDiagram[key].filePath,
+        key => this.dirToAnalysisDiagram(key)?.filePath,
       )
     }
     else {
@@ -55,7 +56,7 @@ class ContextAnalysisDiagram {
   get allPackagesJSON () {
     if (this.analysisDiagram) {
       return this.allDirs.map(
-        key => this.analysisDiagram[key].packageJson,
+        key => this.dirToAnalysisDiagram(key)?.packageJson,
       )
     }
     else {
@@ -123,13 +124,22 @@ class ContextAnalysisDiagram {
     return result
   }
 
-  packageJsonToAnalysisBlock (packageJson: IPackageJson) {
-    for (const key in this.analysisDiagram) {
-      const analysisBlock = this.analysisDiagram[key]
+  packageJsonToAnalysisBlock (value: IPackageJson) {
+    return this.dataToAnalysisDiagram(value, 'packageJson')
+  }
 
-      if (analysisBlock.packageJson === packageJson) {
-        return analysisBlock
-      }
+  dirToAnalysisDiagram (value: string) {
+    return this.dataToAnalysisDiagram(value, 'dir')
+  }
+
+  dataToAnalysisDiagram (value: any, key: keyof AnalysisBlockItem) {
+    const nameList = Object.keys(this.analysisDiagram)
+    const name = nameList.find(val => this.analysisDiagram[val][key] === value)
+    if (isString(name)) {
+      return this.analysisDiagram[name]
+    }
+    else {
+      return null
     }
   }
 
@@ -151,13 +161,14 @@ class ContextAnalysisDiagram {
         const i = packagesJSON.findIndex(item => item.name === name)
         return dirs[i]
       })
+      const name = packageJson.name as string
 
       this.analysisDiagram[dir] = {
         packageJson,
-        name: packageJson.name as string,
+        name,
         dir,
         filePath: filesPath[index],
-        relyMyDir: relyMyMap[packageJson.name as string],
+        relyMyDir: relyMyMap[name],
         myRelyDir,
       }
     })
@@ -175,8 +186,8 @@ class ContextAnalysisDiagram {
 
     for (let i = 0; i < relyMyDir.length; i++) {
       const relyDir = relyMyDir[i]
-      const analysisBlock = this.analysisDiagram[relyDir]
-      if (triggerSign.has(analysisBlock)) continue
+      const analysisBlock = this.dirToAnalysisDiagram(relyDir)
+      if (!analysisBlock || triggerSign.has(analysisBlock)) continue
 
       for (let j = 0; j < relyAttrs.length; j++) {
         const key = relyAttrs[i]
@@ -197,12 +208,14 @@ class ContextAnalysisDiagram {
       if (stack.includes(dir) || result.includes(dir)) return
       stack.push(dir)
 
-      const { myRelyDir } = this.analysisDiagram[dir]
-      myRelyDir.forEach(item => {
+      const myRelyDir = this.dirToAnalysisDiagram(dir)?.myRelyDir
+      myRelyDir?.forEach(item => {
         if (!stack.includes(item)) {
           stack.push(item)
-          const { myRelyDir } = this.analysisDiagram[item]
-          this.dependencyTracking(myRelyDir, result, stack, cd)
+          const myRelyDir = this.dirToAnalysisDiagram(item)?.myRelyDir
+          if (myRelyDir) {
+            this.dependencyTracking(myRelyDir, result, stack, cd)
+          }
           cd()
         }
       })

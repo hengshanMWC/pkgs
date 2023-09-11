@@ -1,4 +1,3 @@
-import { gt } from 'semver'
 import colors from 'colors'
 import { writeJSON } from 'fs-extra'
 import { versionBumpInfo } from '@abmao/bump'
@@ -6,7 +5,7 @@ import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../l
 import { isTest, writeFiles, warn } from '../../utils'
 import { gitDiffSave } from '../../utils/git'
 import { WARN_NOW_VERSION } from '../../constant'
-import { dependentSearch, getPackageNameVersionStr } from '../../utils/packageJson'
+import { dependentSearch, getPackageNameVersionStr, gtPackageJsonToDir } from '../../utils/packageJson'
 import { getTagVersion, gitSyncSave } from './git'
 
 export async function handleSyncVersion (context: Context, appointVersion?: string) {
@@ -17,6 +16,7 @@ export async function handleSyncVersion (context: Context, appointVersion?: stri
   // 依赖更新
   for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
     const packageJson = context.contextAnalysisDiagram.allPackagesJSON[index]
+    if (!packageJson) break
     const analysisBlock = context.contextAnalysisDiagram.packageJsonToAnalysisBlock(packageJson)
     packageJson.version = version
 
@@ -69,7 +69,7 @@ async function versionTagToDir (context: Context) {
   const version = await getTagVersion(context, 'v')
   if (version) {
     const index = context.contextAnalysisDiagram.allPackagesJSON
-      .findIndex(packageJson => packageJson.version === version)
+      .findIndex(packageJson => packageJson?.version === version)
     if (index !== -1) {
       return context.contextAnalysisDiagram.allDirs[index]
     }
@@ -79,9 +79,9 @@ async function versionTagToDir (context: Context) {
 // 获取包里面版本最高的包路径
 function getVersionMax (context: Context) {
   return context.contextAnalysisDiagram.allDirs.reduce((a, b) => {
-    const aPackageJson = context.contextAnalysisDiagram.analysisDiagram[a].packageJson
-    const bPackageJson = context.contextAnalysisDiagram.analysisDiagram[b].packageJson
-    return gt(bPackageJson.version as string, aPackageJson.version as string) ? b : a
+    const aPackageJson = context.contextAnalysisDiagram.dirToAnalysisDiagram(a)?.packageJson
+    const bPackageJson = context.contextAnalysisDiagram.dirToAnalysisDiagram(b)?.packageJson
+    return gtPackageJsonToDir(a, b, aPackageJson, bPackageJson)
   })
 }
 
@@ -95,8 +95,8 @@ async function getSyncTargetVersionDir (context: Context) {
 }
 async function getChangeVersion (context: Context, appointVersion?: string) {
   const dir = await getSyncTargetVersionDir(context)
-  const analysisBlock = context.contextAnalysisDiagram.analysisDiagram[dir]
-  const oldVersion = analysisBlock.packageJson.version
+  const analysisBlock = context.contextAnalysisDiagram.dirToAnalysisDiagram(dir)
+  const oldVersion = analysisBlock?.packageJson?.version
   const version = await changeVersion(dir, appointVersion)
 
   if (oldVersion === version) {
@@ -147,18 +147,20 @@ async function changeRelyMyVersion (
 
   for (let i = 0; i < relyMyDir.length; i++) {
     const relyDir = relyMyDir[i]
-    const analysisBlockRelyMy = context.contextAnalysisDiagram.analysisDiagram[relyDir]
-    const isChange = dependentSearch(analysisBlock, analysisBlockRelyMy)
+    const analysisBlockRelyMy = context.contextAnalysisDiagram.dirToAnalysisDiagram(relyDir)
+    if (analysisBlockRelyMy) {
+      const isChange = dependentSearch(analysisBlock, analysisBlockRelyMy)
 
-    // 只有有变更，并且带triggerSign，才会走version变动
-    if (isChange && triggerSign && !triggerSign.has(analysisBlockRelyMy)) {
-      await changeVersionResultItem(
-        context,
-        analysisBlockRelyMy,
-        relyDir,
-        triggerSign,
-        appointVersion,
-      )
+      // 只有有变更，并且带triggerSign，才会走version变动
+      if (isChange && triggerSign && !triggerSign.has(analysisBlockRelyMy)) {
+        await changeVersionResultItem(
+          context,
+          analysisBlockRelyMy,
+          relyDir,
+          triggerSign,
+          appointVersion,
+        )
+      }
     }
   }
 }

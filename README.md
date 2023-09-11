@@ -38,8 +38,6 @@ monorepo有两种模式
   },
   publish: {
     message: 'release %s',
-    tag: undefined,
-    access: 'publish'
   },
   run: {
     type: 'all',

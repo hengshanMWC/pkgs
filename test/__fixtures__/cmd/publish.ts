@@ -1,6 +1,6 @@
 import type { SimpleGit } from 'simple-git'
 import { tagExpect } from '../commit'
-import { commandPublish, commandVersion } from '../../../src'
+import { parseCommandPublish, commandVersion } from '../../../src'
 import { createName } from './version'
 export const cmd = 'publish'
 
@@ -11,7 +11,7 @@ export async function tagCommit (version: string, git: SimpleGit) {
 
 export async function syncTest (version: string, arr: string[], git: SimpleGit) {
   await commandVersion({}, git, version)
-  const { analysisBlockList } = await commandPublish({}, git)
+  const { analysisBlockList } = await parseCommandPublish({}, git)
   analysisBlockList.forEach((analysisBlock, index) => {
     expect(analysisBlock.packageJson.name).toBe(createName(arr[index]))
   })
@@ -22,7 +22,7 @@ export async function diffTest (version: string, arr: string[], git: SimpleGit) 
   await commandVersion({
     mode: 'diff',
   }, git, version)
-  const { analysisBlockList } = await commandPublish({
+  const { analysisBlockList } = await parseCommandPublish({
     mode: 'diff',
   }, git)
   analysisBlockList.forEach((analysisBlock, index) => {

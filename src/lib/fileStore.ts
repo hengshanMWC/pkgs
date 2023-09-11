@@ -1,10 +1,9 @@
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
 import type IPackageJson from '@ts-type/package-dts'
-import { gt } from 'lodash'
 import type { DiffFile } from '../utils/git'
 import { getStageInfo, getWorkInfo, getVersionDiffFile } from '../utils/git'
-import { getPackageNameVersion } from '../utils/packageJson'
+import { getPackageNameVersion, gtPackageJson } from '../utils/packageJson'
 import { fileMatch } from '../utils'
 import type { AnalysisBlockItem, ContextAnalysisDiagram } from './analysisDiagram'
 export {
@@ -87,9 +86,7 @@ class FileStore {
   async getFileSyncList (separator?: string) {
     const packageJson = this.contextAnalysisDiagram.allPackagesJSON
       .reduce(
-        (aPackageJson, bPackageJson) => gt(bPackageJson.version as string, aPackageJson.version as string)
-          ? bPackageJson
-          : aPackageJson,
+        (aPackageJson, bPackageJson) => gtPackageJson(aPackageJson, bPackageJson),
       )
     let result: DiffFile
     if (packageJson && packageJson.version) {
@@ -101,8 +98,9 @@ class FileStore {
   // 拿到相关包的文件修改范围
   async getDiffFileList (createVersion: (packageJson: IPackageJson) => string) {
     const fileList = this.contextAnalysisDiagram.allPackagesJSON
+      .filter(packageJson => packageJson)
       .map(packageJson => getVersionDiffFile(
-        createVersion(packageJson),
+        createVersion(packageJson as IPackageJson),
         this.git))
     const result = await Promise.all(fileList)
     return result
@@ -128,7 +126,10 @@ class FileStore {
   private async forPack (relatedPackagesDir: string[], callback: ForPackCallback) {
     for (let index = 0; index < relatedPackagesDir.length; index++) {
       const dir = relatedPackagesDir[index]
-      await callback(this.contextAnalysisDiagram.analysisDiagram[dir], index)
+      const analysisBlock = this.contextAnalysisDiagram.dirToAnalysisDiagram(dir)
+      if (analysisBlock) {
+        await callback(analysisBlock, index)
+      }
     }
   }
 }

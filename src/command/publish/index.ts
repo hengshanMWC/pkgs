@@ -2,10 +2,11 @@ import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
 import { omit } from 'lodash'
 import { Context } from '../../lib/context'
-import type { CommandPublishParams, PluginData } from '../type'
+import type { CommandPublishParams, ExecuteCommandResult, PluginData } from '../type'
+import { executeCommandList } from '../../utils'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
-function main (context: Context) {
+async function commandMain (context: Context) {
   if (context.config.mode === 'diff') {
     return handleDiffPublish(context)
   }
@@ -13,7 +14,8 @@ function main (context: Context) {
     return handleSyncPublish(context)
   }
 }
-export async function commandPublish (
+
+export async function parseCommandPublish (
   configParam: CommandPublishParams = {},
   git: SimpleGit = simpleGit(),
   argv?: string[],
@@ -27,8 +29,21 @@ export async function commandPublish (
     git,
     argv,
   )
-  const result = await main(context)
+  const result = await commandMain(context)
   return result
+}
+
+export async function commandPublish (
+  configParam: CommandPublishParams = {},
+  git: SimpleGit = simpleGit(),
+  argv?: string[],
+): Promise<ExecuteCommandResult> {
+  const commandMainResult = await parseCommandPublish(configParam, git, argv)
+  const executeCommandResult = await executeCommandList(commandMainResult.commandList)
+  return {
+    ...commandMainResult,
+    executeResult: executeCommandResult,
+  }
 }
 
 export function createPublishPlugin (): PluginData {
@@ -38,13 +53,13 @@ export function createPublishPlugin (): PluginData {
     description: 'publish package',
     option: [
       ['-message <message>', 'npm publish --message <message>'],
-      ['-tag <type>', 'npm publish --tag <tag>'],
     ],
-    action (context: Context, params: CommandPublishParams = {}) {
+    async action (context: Context, params: CommandPublishParams = {}) {
       context.assignOptions({
         publish: params,
       })
-      main(context)
+      const { commandList } = await commandMain(context)
+      await executeCommandList(commandList)
     },
   }
 }
