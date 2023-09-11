@@ -101,4 +101,3 @@ export class Context {
     }
   }
 }
-export type CMD = 'version' | 'publish'

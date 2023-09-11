@@ -133,6 +133,17 @@ class ContextAnalysisDiagram {
     }
   }
 
+  dirToAnalysisDiagram (dir: string) {
+    const keyList = Object.keys(this.analysisDiagram)
+    const key = keyList.find(key => this.analysisDiagram[key].dir === dir)
+    if (key) {
+      return this.analysisDiagram[key]
+    }
+    else {
+      return null
+    }
+  }
+
   private createContextAnalysisDiagram (
     dirs: string[],
     filesPath: string[],
