@@ -185,8 +185,8 @@ class ContextAnalysisDiagram {
 
     for (let i = 0; i < relyMyDir.length; i++) {
       const relyDir = relyMyDir[i]
-      const analysisBlock = this.analysisDiagram[relyDir]
-      if (triggerSign.has(analysisBlock)) continue
+      const analysisBlock = this.dirToAnalysisDiagram(relyDir)
+      if (!analysisBlock || triggerSign.has(analysisBlock)) continue
 
       for (let j = 0; j < relyAttrs.length; j++) {
         const key = relyAttrs[i]
