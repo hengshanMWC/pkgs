@@ -44,7 +44,7 @@ class ContextAnalysisDiagram {
   get allFilesPath () {
     if (this.analysisDiagram) {
       return this.allDirs.map(
-        key => this.analysisDiagram[key].filePath,
+        key => this.dirToAnalysisDiagram(key)?.filePath,
       )
     }
     else {
@@ -56,7 +56,7 @@ class ContextAnalysisDiagram {
   get allPackagesJSON () {
     if (this.analysisDiagram) {
       return this.allDirs.map(
-        key => this.analysisDiagram[key].packageJson,
+        key => this.dirToAnalysisDiagram(key)?.packageJson,
       )
     }
     else {
