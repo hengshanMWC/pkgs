@@ -1,4 +1,3 @@
-import { gt } from 'semver'
 import colors from 'colors'
 import { writeJSON } from 'fs-extra'
 import { versionBumpInfo } from '@abmao/bump'
@@ -6,7 +5,7 @@ import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../l
 import { isTest, writeFiles, warn } from '../../utils'
 import { gitDiffSave } from '../../utils/git'
 import { WARN_NOW_VERSION } from '../../constant'
-import { dependentSearch, getPackageNameVersionStr } from '../../utils/packageJson'
+import { dependentSearch, getPackageNameVersionStr, gtPackageJsonToDir } from '../../utils/packageJson'
 import { getTagVersion, gitSyncSave } from './git'
 
 export async function handleSyncVersion (context: Context, appointVersion?: string) {
@@ -82,15 +81,7 @@ function getVersionMax (context: Context) {
   return context.contextAnalysisDiagram.allDirs.reduce((a, b) => {
     const aPackageJson = context.contextAnalysisDiagram.dirToAnalysisDiagram(a)?.packageJson
     const bPackageJson = context.contextAnalysisDiagram.dirToAnalysisDiagram(b)?.packageJson
-    if (bPackageJson && aPackageJson) {
-      return gt(bPackageJson.version as string, aPackageJson.version as string) ? b : a
-    }
-    else if (bPackageJson) {
-      return b
-    }
-    else {
-      return a
-    }
+    return gtPackageJsonToDir(a, b, aPackageJson, bPackageJson)
   })
 }
 
