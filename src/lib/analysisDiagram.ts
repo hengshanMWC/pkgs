@@ -134,11 +134,15 @@ class ContextAnalysisDiagram {
     }
   }
 
-  dirToAnalysisDiagram (dir: string) {
-    const keyList = Object.keys(this.analysisDiagram)
-    const key = keyList.find(key => this.analysisDiagram[key].dir === dir)
-    if (isString(key)) {
-      return this.analysisDiagram[key]
+  dirToAnalysisDiagram (value: string) {
+    return this.dataToAnalysisDiagram(value, 'dir')
+  }
+
+  dataToAnalysisDiagram (value: any, key: keyof AnalysisBlockItem) {
+    const nameList = Object.keys(this.analysisDiagram)
+    const name = nameList.find(val => this.analysisDiagram[val][key] === value)
+    if (isString(name)) {
+      return this.analysisDiagram[name]
     }
     else {
       return null
