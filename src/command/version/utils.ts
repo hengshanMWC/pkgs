@@ -17,6 +17,7 @@ export async function handleSyncVersion (context: Context, appointVersion?: stri
   // 依赖更新
   for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
     const packageJson = context.contextAnalysisDiagram.allPackagesJSON[index]
+    if (!packageJson) break
     const analysisBlock = context.contextAnalysisDiagram.packageJsonToAnalysisBlock(packageJson)
     packageJson.version = version
 
@@ -69,7 +70,7 @@ async function versionTagToDir (context: Context) {
   const version = await getTagVersion(context, 'v')
   if (version) {
     const index = context.contextAnalysisDiagram.allPackagesJSON
-      .findIndex(packageJson => packageJson.version === version)
+      .findIndex(packageJson => packageJson?.version === version)
     if (index !== -1) {
       return context.contextAnalysisDiagram.allDirs[index]
     }
