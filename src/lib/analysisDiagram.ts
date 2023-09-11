@@ -161,13 +161,14 @@ class ContextAnalysisDiagram {
         const i = packagesJSON.findIndex(item => item.name === name)
         return dirs[i]
       })
+      const name = packageJson.name as string
 
       this.analysisDiagram[dir] = {
         packageJson,
-        name: packageJson.name as string,
+        name,
         dir,
         filePath: filesPath[index],
-        relyMyDir: relyMyMap[packageJson.name as string],
+        relyMyDir: relyMyMap[name],
         myRelyDir,
       }
     })
