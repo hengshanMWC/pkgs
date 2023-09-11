@@ -1,10 +1,9 @@
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
 import type IPackageJson from '@ts-type/package-dts'
-import { gt } from 'lodash'
 import type { DiffFile } from '../utils/git'
 import { getStageInfo, getWorkInfo, getVersionDiffFile } from '../utils/git'
-import { getPackageNameVersion } from '../utils/packageJson'
+import { getPackageNameVersion, gtPackageJson } from '../utils/packageJson'
 import { fileMatch } from '../utils'
 import type { AnalysisBlockItem, ContextAnalysisDiagram } from './analysisDiagram'
 export {
@@ -87,9 +86,7 @@ class FileStore {
   async getFileSyncList (separator?: string) {
     const packageJson = this.contextAnalysisDiagram.allPackagesJSON
       .reduce(
-        (aPackageJson, bPackageJson) => gt(bPackageJson.version as string, aPackageJson.version as string)
-          ? bPackageJson
-          : aPackageJson,
+        (aPackageJson, bPackageJson) => gtPackageJson(aPackageJson, bPackageJson),
       )
     let result: DiffFile
     if (packageJson && packageJson.version) {

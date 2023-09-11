@@ -94,10 +94,22 @@ export function gtPackageJsonToDir (
   if (bPackageJson && aPackageJson) {
     return gt(bPackageJson.version as string, aPackageJson.version as string) ? bDir : aDir
   }
-  else if (bPackageJson) {
-    return bDir
+  else if (aPackageJson) {
+    return aDir
   }
   else {
-    return aDir
+    return bDir
+  }
+}
+
+export function gtPackageJson (
+  aPackageJson?: IPackageJson,
+  bPackageJson?: IPackageJson,
+) {
+  if (bPackageJson && aPackageJson) {
+    return gt(bPackageJson.version as string, aPackageJson.version as string) ? bPackageJson : aPackageJson
+  }
+  else {
+    return aPackageJson || bPackageJson
   }
 }
