@@ -13,6 +13,7 @@ export async function handleSyncPublish (context: Context) {
 
   for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
     const packageJson = context.contextAnalysisDiagram.allPackagesJSON[index]
+    if (!packageJson) continue
     const analysisBlock = context.contextAnalysisDiagram.packageJsonToAnalysisBlock(packageJson)
     const currentVersion = packageJson?.version as string
     if (analysisBlock && (!version || gt(version, currentVersion))) {
