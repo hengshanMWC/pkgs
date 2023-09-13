@@ -24,7 +24,7 @@ export async function parseCommandPublish (
 ) {
   const config = await Context.assignConfig({
     mode: configParam.mode,
-    publish: omit<CommandPublishParams, 'mode'>(configParam, ['mode']),
+    publish: getPublishConfig(configParam),
   })
   const context = await Context.create(
     config,
@@ -58,10 +58,14 @@ export function createPublishPlugin (): PluginData {
     async action (context: Context, params: CommandPublishParams = {}) {
       context.assignOptions({
         mode: params.mode,
-        publish: params,
+        publish: getPublishConfig(params),
       })
       await commandMain(context)
       await context.execute.outRun()
     },
   }
+}
+
+function getPublishConfig (config: CommandPublishParams = {}) {
+  return omit<CommandPublishParams, 'mode'>(config, ['mode'])
 }
