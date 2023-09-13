@@ -119,5 +119,6 @@ export class Context {
   enterCommandResult (commandMainResult: CommandMainResult) {
     this.affectedAnalysisBlockList = commandMainResult.analysisBlockList
     this.execute.setOutData(commandMainResult.commandList)
+    return this
   }
 }

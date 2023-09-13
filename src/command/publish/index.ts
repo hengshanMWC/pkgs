@@ -13,8 +13,7 @@ async function commandMain (context: Context) {
   else {
     commandMainResult = await handleSyncPublish(context)
   }
-  context.enterCommandResult(commandMainResult)
-  return commandMainResult
+  return context.enterCommandResult(commandMainResult)
 }
 
 export async function parseCommandPublish (
@@ -31,8 +30,7 @@ export async function parseCommandPublish (
     git,
     argv,
   )
-  await commandMain(context)
-  return context
+  return commandMain(context)
 }
 
 export async function commandPublish (
