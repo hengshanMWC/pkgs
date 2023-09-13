@@ -169,7 +169,7 @@ export function fileMatch (files: string[], dir: string) {
   return files.some(file => file.includes(dir))
 }
 
-export function executeCommand (agent: string, args: string[], options: Options) {
+export function executeCommand (agent: string, args?: string[], options?: Options) {
   return execa(agent, args, options)
 }
 
@@ -178,4 +178,13 @@ export function executeCommandList (commandList: CommandResult[]) {
     return executeCommand(command.agent, command.args, command.options)
   })
   return Promise.all(runList)
+}
+
+export function parserCommandResult (argv: string[]): CommandResult {
+  const _argv = argv.slice()
+  return {
+    agent: _argv.shift() || '',
+    args: _argv,
+    options: {},
+  }
 }

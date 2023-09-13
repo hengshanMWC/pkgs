@@ -1,10 +1,10 @@
 import { gt } from 'semver'
 import { gitDiffSave, gitTag } from '../../utils/git'
 import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../lib'
-import type { CommandResult } from '../type'
+import type { CommandMainResult, CommandResult } from '../type'
 import { getTagPublish } from './git'
 
-export async function handleSyncPublish (context: Context) {
+export async function handleSyncPublish (context: Context): Promise<CommandMainResult> {
   const version = await getTagPublish(context)
   const { allDirs } = context.contextAnalysisDiagram
   const analysisBlockList: AnalysisBlockItem[] = []
@@ -47,7 +47,7 @@ export async function handleSyncPublish (context: Context) {
   }
 }
 
-export async function handleDiffPublish (context: Context) {
+export async function handleDiffPublish (context: Context): Promise<CommandMainResult> {
   const triggerSign: SetAnalysisBlockObject = new Set()
   const commandList: CommandResult[] = []
 

@@ -1,45 +1,22 @@
-import { execaCommand, type Options } from 'execa'
+import { execa } from 'execa'
 import type { Execute } from '../type'
+import type { CommandResult } from '../../command'
 
 export class BaseExecute implements Execute {
-  inputCommand: string
-  inputOptions?: Options
-  outCommandList: string[] = []
-  outOptionsList: Options[] = []
-  constructor (command: string, options?: Options) {
-    this.inputCommand = command
-    if (options) {
-      this.inputOptions = options
-    }
+  inputCommandData: CommandResult
+  outCommandDataList: CommandResult[] = []
+  constructor (inputCommandData: CommandResult) {
+    this.inputCommandData = inputCommandData
   }
 
-  get inputAgent () {
-    return this.inputCommand.split(' ')[0]
-  }
-
-  get outAgentList () {
-    return this.outCommandList.map(command => command.split(' ')[0])
-  }
-
-  get inputArgs () {
-    return this.inputCommand.split(' ').slice(1)
-  }
-
-  get outArgsList () {
-    return this.outCommandList.map(command => command.split(' ').slice(1))
-  }
-
-  setOutData (commandList: string[], optionsList?: Options[]) {
-    this.outCommandList = commandList
-    if (optionsList) {
-      this.outOptionsList = optionsList
-    }
+  setOutData (outCommandData: CommandResult[]) {
+    this.outCommandDataList = outCommandData
     return this
   }
 
-  run () {
-    const runList = this.outCommandList.map((command, index) => {
-      return execaCommand(command, this.outOptionsList[index])
+  outRun () {
+    const runList = this.outCommandDataList.map(data => {
+      return execa(data.agent, data.args, data.options)
     })
     return Promise.all(runList)
   }

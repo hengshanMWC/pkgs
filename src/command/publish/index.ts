@@ -2,17 +2,20 @@ import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
 import { omit } from 'lodash'
 import { Context } from '../../lib/context'
-import type { CommandPublishParams, ExecuteCommandResult, PluginData } from '../type'
+import type { CommandMainResult, CommandPublishParams, ExecuteCommandResult, PluginData } from '../type'
 import { executeCommandList } from '../../utils'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
 async function commandMain (context: Context) {
+  let commandMainResult: CommandMainResult
   if (context.config.mode === 'diff') {
-    return handleDiffPublish(context)
+    commandMainResult = await handleDiffPublish(context)
   }
   else {
-    return handleSyncPublish(context)
+    commandMainResult = await handleSyncPublish(context)
   }
+  context.enterCommandResult(commandMainResult)
+  return commandMainResult
 }
 
 export async function parseCommandPublish (

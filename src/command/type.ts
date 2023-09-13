@@ -16,8 +16,8 @@ export type AgentType = Agent | string
 
 export interface CommandResult {
   agent: AgentType
-  args: string[]
-  options: Options
+  args?: string[]
+  options?: Options
 }
 
 export interface CommandMainResult {

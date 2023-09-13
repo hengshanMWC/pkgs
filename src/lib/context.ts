@@ -4,6 +4,7 @@ import { loadConfig } from 'load-code'
 import {
   assignOptions,
   createCommand,
+  parserCommandResult,
   runCmdList,
   warn,
 } from '../utils'
@@ -12,6 +13,10 @@ import { defaultOptions } from '../defaultOptions'
 import { PACKAGES_PATH, WARN_NOW_RUN } from '../constant'
 import type { Manager } from '../manager'
 import { agentSmell } from '../manager'
+import type { BaseExecute } from '../execute/lib/base'
+import { createExecuteProduct } from '../execute/factory'
+import type { CommandMainResult } from '../command'
+import type { AnalysisBlockItem } from './analysisDiagram'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
 export class Context {
@@ -19,7 +24,9 @@ export class Context {
   contextAnalysisDiagram!: ContextAnalysisDiagram
   fileStore!: FileStore
   packageManager!: Manager
+  execute: BaseExecute
   argv: string[]
+  private affectedAnalysisBlockList: AnalysisBlockItem[] = []
 
   static cli = 'pkgs'
 
@@ -69,6 +76,7 @@ export class Context {
   ) {
     this.config = config
     this.argv = argv
+    this.execute = createExecuteProduct(parserCommandResult(this.argvValue))
   }
 
   get argvValue () {
@@ -99,5 +107,17 @@ export class Context {
     else {
       warn(WARN_NOW_RUN)
     }
+  }
+
+  getCommandResult (): CommandMainResult {
+    return {
+      analysisBlockList: this.affectedAnalysisBlockList,
+      commandList: this.execute.outCommandDataList,
+    }
+  }
+
+  enterCommandResult (commandMainResult: CommandMainResult) {
+    this.affectedAnalysisBlockList = commandMainResult.analysisBlockList
+    this.execute.setOutData(commandMainResult.commandList)
   }
 }

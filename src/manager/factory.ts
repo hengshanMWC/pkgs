@@ -10,13 +10,3 @@ export function createManagerProduct (key: any) {
   const Product = (productList.get(key) ?? productList.get(DEFAULT_AGENT)) as typeof BaseManager
   return new Product()
 }
-
-// // 单例模式
-// let instance: BaseManager
-
-// export function getManagerInstance (key: any) {
-//   if (!instance) {
-//     instance = createManagerProduct(key)
-//   }
-//   return instance
-// }
