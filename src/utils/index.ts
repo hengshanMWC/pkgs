@@ -1,5 +1,4 @@
-import type { Options } from 'execa'
-import { $, execa } from 'execa'
+import { $ } from 'execa'
 import { readJSON, writeJSON, readFile } from 'fs-extra'
 import yaml from 'js-yaml'
 import colors from 'colors'
@@ -167,17 +166,6 @@ export async function getDirPackageInfo (packagesPath: string | string[]) {
 
 export function fileMatch (files: string[], dir: string) {
   return files.some(file => file.includes(dir))
-}
-
-export function executeCommand (agent: string, args?: string[], options?: Options) {
-  return execa(agent, args, options)
-}
-
-export function executeCommandList (commandList: CommandResult[]) {
-  const runList = commandList.map(command => {
-    return executeCommand(command.agent, command.args, command.options)
-  })
-  return Promise.all(runList)
 }
 
 export function parserCommandResult (argv: string[]): CommandResult {
