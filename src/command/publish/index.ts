@@ -7,6 +7,7 @@ import { handleDiffPublish, handleSyncPublish } from './utils'
 
 async function commandMain (context: Context) {
   let commandMainResult: CommandMainResult
+  // TODO 是否使用config.publish.mode
   if (context.config.mode === 'diff') {
     commandMainResult = await handleDiffPublish(context)
   }
