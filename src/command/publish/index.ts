@@ -57,6 +57,7 @@ export function createPublishPlugin (): PluginData {
     ],
     async action (context: Context, params: CommandPublishParams = {}) {
       context.assignOptions({
+        mode: params.mode,
         publish: params,
       })
       await commandMain(context)
