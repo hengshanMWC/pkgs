@@ -4,7 +4,8 @@ import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
-import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
+import { omit } from 'lodash'
+import type { DefaultParams, ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import type { CommandResult } from '../command'
 import { DEPENDENCY_PREFIX, WORK_SPACE_REG_EXP, gitCommitMessage } from './regExp'
 export const isTest = process.env.NODE_ENV === 'test'
@@ -175,4 +176,8 @@ export function parserCommandResult (argv: string[]): CommandResult {
     args: _argv,
     options: {},
   }
+}
+
+export function omitDefaultParams<T extends Partial<DefaultParams>> (config: T) {
+  return omit<T, 'mode'>(config, ['mode'])
 }

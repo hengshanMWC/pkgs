@@ -1,8 +1,8 @@
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
-import { omit } from 'lodash'
 import { Context } from '../../lib/context'
 import type { CommandMainResult, CommandPublishParams, ExecuteCommandResult, PluginData } from '../type'
+import { omitDefaultParams } from '../../utils'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
 async function commandMain (context: Context) {
@@ -24,7 +24,7 @@ export async function parseCommandPublish (
 ) {
   const config = await Context.assignConfig({
     mode: configParam.mode,
-    publish: getPublishConfig(configParam),
+    publish: omitDefaultParams(configParam),
   })
   const context = await Context.create(
     config,
@@ -58,14 +58,10 @@ export function createPublishPlugin (): PluginData {
     async action (context: Context, params: CommandPublishParams = {}) {
       context.assignOptions({
         mode: params.mode,
-        publish: getPublishConfig(params),
+        publish: omitDefaultParams(params),
       })
       await commandMain(context)
       await context.execute.outRun()
     },
   }
-}
-
-function getPublishConfig (config: CommandPublishParams = {}) {
-  return omit<CommandPublishParams, 'mode'>(config, ['mode'])
 }

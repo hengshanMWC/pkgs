@@ -1,10 +1,10 @@
 import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
-import { omit } from 'lodash'
 import {
   Context,
 } from '../../lib/context'
 import type { CommandVersionParams, PluginData } from '../type'
+import { omitDefaultParams } from '../../utils'
 import { handleDiffVersion, handleSyncVersion } from './utils'
 function commandMain (context: Context, appointVersion?: string) {
   if (context.config.mode === 'diff') {
@@ -22,7 +22,7 @@ export async function commandVersion (
 ) {
   const config = await Context.assignConfig({
     mode: configParam.mode,
-    version: omit<CommandVersionParams, 'mode'>(configParam, ['mode']),
+    version: omitDefaultParams(configParam),
   })
   const context = await Context.create(
     config,
@@ -44,7 +44,7 @@ export function createVersionPlugin (): PluginData {
     action (context: Context, config: CommandVersionParams = {}) {
       context.assignOptions({
         mode: config.mode,
-        version: config,
+        version: omitDefaultParams(config),
       })
       commandMain(context)
     },
