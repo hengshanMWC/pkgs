@@ -14,15 +14,13 @@ export type PluginOption = [flags: string, description?: string, defaultValue?: 
 
 export type AgentType = Agent | string
 
-export interface CommandParams {
-  args?: string[]
+export interface CommandParams<T> {
+  args?: T
   options?: Options
 }
 
-export interface CommandResult extends CommandParams {
+export interface CommandResult<T = string[]> extends CommandParams<T> {
   agent: AgentType
-  args?: string[]
-  options?: Options
 }
 
 export interface CommandMainResult {
