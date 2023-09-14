@@ -4,7 +4,6 @@ import { loadConfig } from 'load-code'
 import {
   assignOptions,
   createCommand,
-  parserCommandResult,
   runCmdList,
   warn,
 } from '../utils'
@@ -13,9 +12,7 @@ import { defaultOptions } from '../defaultOptions'
 import { PACKAGES_PATH, WARN_NOW_RUN } from '../constant'
 import type { Manager } from '../manager'
 import { agentSmell } from '../manager'
-import type { BaseExecute } from '../execute/lib/base'
-import { createExecuteProduct } from '../execute/factory'
-import type { CommandMainResult } from '../command'
+import { BaseExecuteManage } from '../execute/lib/base'
 import type { AnalysisBlockItem } from './analysisDiagram'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
@@ -24,9 +21,9 @@ export class Context {
   contextAnalysisDiagram!: ContextAnalysisDiagram
   fileStore!: FileStore
   packageManager!: Manager
-  execute: BaseExecute
+  execute: BaseExecuteManage
   argv: string[]
-  private affectedAnalysisBlockList: AnalysisBlockItem[] = []
+  affectedAnalysisBlockList: AnalysisBlockItem[] = []
 
   static cli = 'pkgs'
 
@@ -76,7 +73,7 @@ export class Context {
   ) {
     this.config = config
     this.argv = argv
-    this.execute = createExecuteProduct(parserCommandResult(this.argvValue))
+    this.execute = new BaseExecuteManage()
   }
 
   get argvValue () {
@@ -109,16 +106,28 @@ export class Context {
     }
   }
 
-  getCommandResult (): CommandMainResult {
-    return {
-      analysisBlockList: this.affectedAnalysisBlockList,
-      commandList: this.execute.outCommandDataList,
-    }
+  // getCommandResult (): CommandMainResult {
+  //   return {
+  //     analysisBlockList: this.affectedAnalysisBlockList,
+  //     commandList: this.execute.outCommandDataList,
+  //   }
+  // }
+
+  // enterCommandResult (commandMainResult: CommandMainResult) {
+  //   this.affectedAnalysisBlockList = commandMainResult.analysisBlockList
+  //   this.execute.setOutData(commandMainResult.commandList)
+  //   return this
+  // }
+
+  setAffectedAnalysisBlockList (analysisBlockLis: AnalysisBlockItem[]) {
+    this.affectedAnalysisBlockList = analysisBlockLis
+    return this
   }
 
-  enterCommandResult (commandMainResult: CommandMainResult) {
-    this.affectedAnalysisBlockList = commandMainResult.analysisBlockList
-    this.execute.setOutData(commandMainResult.commandList)
-    return this
+  executeRun () {
+    if (!this.execute.existTask) {
+      warn(WARN_NOW_RUN)
+    }
+    return this.execute.run()
   }
 }

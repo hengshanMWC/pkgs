@@ -24,14 +24,14 @@ export class BaseExecute implements Execute {
 }
 
 export class BaseExecuteManage implements ExecuteManage {
-  taskGroup: ExecuteTaskFunc<any>[] = []
+  taskGroup: ExecuteTaskFunc<CommandResult<any>>[] = []
 
   get existTask () {
     return !!this.taskGroup.length
   }
 
-  pushTask (task: ExecuteTask): this {
-    this.taskGroup.push(task)
+  pushTask (...task: ExecuteTask[]): this {
+    this.taskGroup.push(...task)
     return this
   }
 
@@ -43,7 +43,7 @@ export class BaseExecuteManage implements ExecuteManage {
 
   run () {
     return Promise.all(this.taskGroup.map(task => {
-      return task.getCommandData()
+      return task.run()
     }))
   }
 }

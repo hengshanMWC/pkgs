@@ -8,8 +8,8 @@ export interface Execute {
   outRun (): any
 }
 
-export interface ExecuteManage<T = any> extends ExecuteTaskFunc<CommandResult<T>[]> {
-  taskGroup: ExecuteTaskFunc<any>[]
+export interface ExecuteManage<T = CommandResult<any>> extends ExecuteTaskFunc<T[]> {
+  taskGroup: ExecuteTaskFunc<T>[]
   pushTask(tasks: ExecuteTask): this
 }
 

@@ -1,16 +1,15 @@
-import type { CommandParams, Context } from '../../../src'
+import type { CommandParams, CommandResult, Context } from '../../../src'
 import { parseCommandRun, commandVersion } from '../../../src'
 import type { Mode } from '../../../src/defaultOptions'
 import { newVersion } from '../constant'
 import { handleCommand } from '../create-test-context'
 import { changePackagesFileGitCommit } from '../setup-files'
 
-function getDirList (ctx: Context) {
-  const { commandList } = ctx.getCommandResult()
-  return commandList
+function getDirList (ctx: Context): CommandResult[] {
+  return ctx.execute.getCommandData()
 }
 
-export function createRun (names: string[]): CommandParams[] {
+export function createRun (names: string[]): CommandParams<string[]>[] {
   return names.map(name => {
     return {
       args: ['run', 'test'],
@@ -23,10 +22,15 @@ export function createRun (names: string[]): CommandParams[] {
 export const cmd = 'run'
 
 const prefix = `${cmd}-test`
-export async function testMain (dir: string, arr: CommandParams[], arr2: CommandParams[], mode: Mode) {
+export async function testMain (
+  dir: string,
+  arr: CommandParams<string[]>[],
+  arr2: CommandParams<string[]>[],
+  mode: Mode,
+) {
   const context = await handleCommand(dir, prefix)
   const cmd = 'test'
-  const testCmdList = (cmdList?: CommandParams[], list = arr) => {
+  const testCmdList = (cmdList?: CommandParams<string[]>[], list = arr) => {
     expect(cmdList).not.toBeUndefined()
     if (cmdList) {
       cmdList.forEach((commandParams, index) => {

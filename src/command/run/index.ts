@@ -2,8 +2,9 @@ import type { SimpleGit } from 'simple-git'
 import simpleGit from 'simple-git'
 import { omit } from 'lodash'
 import { Context } from '../../lib/context'
-import type { CommandMainResult, PluginData } from '../type'
+import type { PluginData } from '../type'
 import type { AnalysisBlockItem } from '../../lib'
+import { BaseExecuteTask } from '../../execute/lib/base'
 import type { CommandRunParams } from './type'
 import { handleDiffRun, handleSyncRun } from './utils'
 async function commandMain (context: Context, cmd: string) {
@@ -27,17 +28,18 @@ async function commandMain (context: Context, cmd: string) {
   const analysisBlockList = cwds
     .map(cwd => context.contextAnalysisDiagram.dirToAnalysisDiagram(cwd))
     .filter(analysisBlock => analysisBlock) as AnalysisBlockItem[]
-  const commandMainResult: CommandMainResult = {
-    analysisBlockList,
-    commandList: cwds.map(cwd => {
-      return {
-        agent: context.packageManager.agent,
-        args,
-        options: { stdio: 'inherit', cwd },
-      }
-    }),
-  }
-  return context.enterCommandResult(commandMainResult)
+  const taskList = cwds.map(cwd => {
+    return new BaseExecuteTask({
+      agent: context.packageManager.agent,
+      args,
+      options: { stdio: 'inherit', cwd },
+    })
+  })
+  context
+    .setAffectedAnalysisBlockList(analysisBlockList)
+    .execute
+    .pushTask(...taskList)
+  return context
 }
 
 export async function parseCommandRun (
@@ -65,9 +67,9 @@ export async function commandRun (
   argv?: string[],
 ) {
   const context = await parseCommandRun(configParam, cmd, git, argv)
-  const executeCommandResult = await context.execute.outRun()
+  const executeCommandResult = await context.executeRun()
   return {
-    ...context.getCommandResult(),
+    analysisBlockList: context.affectedAnalysisBlockList,
     executeResult: executeCommandResult,
   }
 }
@@ -87,7 +89,7 @@ export function createRunPlugin (): PluginData {
         run: params,
       })
       await commandMain(context, cmd)
-      await context.execute.outRun()
+      await context.executeRun()
     },
   }
 }
