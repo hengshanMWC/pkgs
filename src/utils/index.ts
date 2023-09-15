@@ -113,7 +113,7 @@ export async function runCmdList (cmdStrList: string[]) {
       return Promise.resolve(cmd)
     }
     else {
-      return $({ stdio: 'inherit' })`${cmd}`
+      return $(mixinDefaultOptions())`${cmd}`
         .then(() => cmd)
         .catch(e => {
           err(`${e}`)
