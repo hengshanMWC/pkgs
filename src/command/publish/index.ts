@@ -56,6 +56,7 @@ export function createPublishPlugin (): PluginData {
     command: 'publish',
     description: 'publish package',
     option: [
+      ['--mode <type>', 'sync | diff'],
       ['-message <message>', 'npm publish --message <message>'],
     ],
     async action (context: Context, params: CommandPublishParams = {}) {
