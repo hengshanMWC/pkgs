@@ -2,8 +2,8 @@ import { execa } from 'execa'
 import { writeJSON } from 'fs-extra'
 import type { SimpleGit } from 'simple-git'
 import { simpleGit } from 'simple-git'
-import type { ExecuteManage, ExecuteTask, ExecuteTaskFunc, FileExecuteCommandResult } from '../type'
-import type { CommandResult } from '../../command'
+import type { CommandResult } from '../command'
+import type { ExecuteManage, ExecuteTask, ExecuteTaskFunc, FileExecuteCommandResult } from './type'
 
 export class BaseExecuteManage implements ExecuteManage {
   taskGroup: (ExecuteTaskFunc<CommandResult<any>> | ExecuteManage)[] = []

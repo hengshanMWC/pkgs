@@ -8,7 +8,7 @@ import {
   createGitTagPackageCommand,
 } from '../../../src'
 import { getPublishCommand } from '../utils'
-import { BaseExecuteManage, GitExecuteTask } from '../../../src/execute/lib/base'
+import { BaseExecuteManage, GitExecuteTask } from '../../../src/execute'
 import { createName } from './version'
 export const cmd = 'publish'
 

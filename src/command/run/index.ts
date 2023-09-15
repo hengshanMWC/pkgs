@@ -4,7 +4,7 @@ import { omit } from 'lodash'
 import { Context } from '../../lib/context'
 import type { PluginData } from '../type'
 import type { AnalysisBlockItem } from '../../lib'
-import { BaseExecuteTask } from '../../execute/lib/base'
+import { BaseExecuteTask } from '../../execute/lib'
 import type { CommandRunParams } from './type'
 import { handleDiffRun, handleSyncRun } from './utils'
 async function commandMain (context: Context, cmd: string) {

@@ -2,7 +2,7 @@ import { gt } from 'semver'
 import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../lib'
 import type { HandleMainResult } from '../type'
 import type { ExecuteTaskFunc } from '../../execute'
-import { BaseExecuteTask, GitExecuteTask } from '../../execute/lib/base'
+import { BaseExecuteTask, GitExecuteTask } from '../../execute/lib'
 import { createGitTagPackageCommand, createGitTagPackageListCommand } from '../../instruct'
 import { getTagPublish } from './git'
 
