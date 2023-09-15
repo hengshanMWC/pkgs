@@ -1,0 +1,81 @@
+import type IPackageJson from '@ts-type/package-dts'
+import type { CommandResult } from './command'
+import { Agent, DEFAULT_AGENT } from './constant'
+import { mixinDefaultOptions } from './utils'
+import { getDiffTagArgs, getGitTag } from './utils/git'
+import { getPackageNameVersionList, getPackageVersionTag } from './utils/packageJson'
+
+export function createCommand (
+  agent: CommandResult['agent'],
+  args: CommandResult['args'] = [],
+  options?: CommandResult['options'],
+): CommandResult {
+  return {
+    agent,
+    args,
+    options: mixinDefaultOptions(options),
+  }
+}
+
+export function createPkgCommand (args?: CommandResult['args'], options?: CommandResult['options']): CommandResult {
+  return createCommand(Agent.PKGS, args, options)
+}
+
+export function createGitCommand (args?: CommandResult['args']): CommandResult {
+  return createCommand(Agent.GIT, args)
+}
+
+export function createPublishCommand (version: string, commandData: Partial<CommandResult>): CommandResult {
+  const args = ['publish', ...(commandData.args ?? [])]
+  const argTag = '--tag'
+  if (args.every(arg => arg !== argTag)) {
+    const tag = getPackageVersionTag(version)
+    if (tag) {
+      args.push(argTag, tag)
+    }
+  }
+  return createCommand(commandData.agent ?? DEFAULT_AGENT, args, commandData.options)
+}
+
+interface createGitTagPackageListCommandType {
+  version: string
+  packageJsonList: IPackageJson<any>[]
+  separator?: string
+}
+
+export function createGitTagPackageListCommand (
+  {
+    version,
+    packageJsonList,
+    separator,
+  }: createGitTagPackageListCommandType,
+) {
+  return createGitCommand(
+    getGitTag(
+      version,
+      getPackageNameVersionList(
+        packageJsonList,
+        separator,
+      ).join(', '),
+    ),
+  )
+}
+
+interface createGitTagPackageCommandType {
+  packageJson: IPackageJson<any>
+  separator?: string
+}
+
+export function createGitTagPackageCommand (
+  {
+    packageJson,
+    separator,
+  }: createGitTagPackageCommandType,
+) {
+  return createGitCommand(
+    getDiffTagArgs(
+      packageJson,
+      separator,
+    ),
+  )
+}

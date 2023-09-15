@@ -1,20 +1,23 @@
 import type { SimpleGit } from 'simple-git'
-import simpleGit from 'simple-git'
+import { simpleGit } from 'simple-git'
 import { Context } from '../../lib/context'
-import type { CommandMainResult, CommandPublishParams, ExecuteCommandResult, PluginData } from '../type'
+import type { CommandPublishParams, HandleMainResult, PluginData } from '../type'
 import { omitDefaultParams } from '../../utils'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
 async function commandMain (context: Context) {
-  let commandMainResult: CommandMainResult
-  // TODO 是否使用config.publish.mode
+  let commandMainResult: HandleMainResult
   if (context.config.mode === 'diff') {
     commandMainResult = await handleDiffPublish(context)
   }
   else {
     commandMainResult = await handleSyncPublish(context)
   }
-  return context.enterCommandResult(commandMainResult)
+  context
+    .setAffectedAnalysisBlockList(commandMainResult.analysisBlockList)
+    .execute
+    .pushTask(...commandMainResult.taskList)
+  return context
 }
 
 export async function parseCommandPublish (
@@ -38,11 +41,11 @@ export async function commandPublish (
   configParam: CommandPublishParams = {},
   git: SimpleGit = simpleGit(),
   argv?: string[],
-): Promise<ExecuteCommandResult> {
+) {
   const context = await parseCommandPublish(configParam, git, argv)
-  const executeCommandResult = await context.execute.outRun()
+  const executeCommandResult = await context.execute.run()
   return {
-    ...context.getCommandResult(),
+    analysisBlockList: context.affectedAnalysisBlockList,
     executeResult: executeCommandResult,
   }
 }
@@ -61,7 +64,7 @@ export function createPublishPlugin (): PluginData {
         publish: omitDefaultParams(params),
       })
       await commandMain(context)
-      await context.execute.outRun()
+      await context.execute.run()
     },
   }
 }

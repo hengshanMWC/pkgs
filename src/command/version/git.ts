@@ -1,5 +1,5 @@
 import type { SimpleGit } from 'simple-git'
-import simpleGit from 'simple-git'
+import { simpleGit } from 'simple-git'
 import { gitCommitMessageFormat } from '../../utils'
 import { getVersionTag, gitTag } from '../../utils/git'
 import type { Context } from '../../lib'

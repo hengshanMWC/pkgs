@@ -1,50 +1,53 @@
 import { execa } from 'execa'
 import { writeJSON } from 'fs-extra'
-import type { Execute, ExecuteManage, ExecuteTask, ExecuteTaskFunc, FileExecuteCommandResult } from '../type'
+import type { SimpleGit } from 'simple-git'
+import { simpleGit } from 'simple-git'
+import type { ExecuteManage, ExecuteTask, ExecuteTaskFunc, FileExecuteCommandResult } from '../type'
 import type { CommandResult } from '../../command'
 
-export class BaseExecute implements Execute {
-  inputCommandData: CommandResult
-  outCommandDataList: CommandResult[] = []
-  constructor (inputCommandData: CommandResult) {
-    this.inputCommandData = inputCommandData
-  }
-
-  setOutData (outCommandData: CommandResult[]) {
-    this.outCommandDataList = outCommandData
-    return this
-  }
-
-  outRun () {
-    const runList = this.outCommandDataList.map(data => {
-      return execa(data.agent, data.args, data.options)
-    })
-    return Promise.all(runList)
-  }
-}
-
 export class BaseExecuteManage implements ExecuteManage {
-  taskGroup: ExecuteTaskFunc<CommandResult<any>>[] = []
+  taskGroup: (ExecuteTaskFunc<CommandResult<any>> | ExecuteManage)[] = []
 
   get existTask () {
     return !!this.taskGroup.length
   }
 
-  pushTask (...task: ExecuteTask[]): this {
+  pushTask (...task: ExecuteTaskFunc<CommandResult<any>>[]): this {
     this.taskGroup.push(...task)
     return this
   }
 
   getCommandData () {
-    return this.taskGroup.map(task => {
-      return task.getCommandData()
+    const commandData: CommandResult<any>[] = []
+    this.taskGroup.forEach(task => {
+      const data = task.getCommandData()
+      if (Array.isArray(data)) {
+        commandData.push(...data)
+      }
+      else {
+        commandData.push(data)
+      }
     })
+    return commandData
   }
 
   run () {
     return Promise.all(this.taskGroup.map(task => {
       return task.run()
     }))
+  }
+
+  async serialRun () {
+    const result = []
+    for (const task of this.taskGroup) {
+      if (Object.hasOwn(task, 'serialRun')) {
+        result.push(await (task as ExecuteManage).serialRun())
+      }
+      else {
+        result.push(await task.run())
+      }
+    }
+    return result
   }
 }
 
@@ -81,5 +84,23 @@ export class FileExecuteTask implements ExecuteTask<FileExecuteCommandResult> {
       options?.cwd || args.packageJson,
       { spaces: 2 },
     )
+  }
+}
+
+export class GitExecuteTask implements ExecuteTask {
+  commandData: CommandResult
+  git: SimpleGit
+  constructor (commandData: CommandResult, git: SimpleGit = simpleGit()) {
+    this.commandData = commandData
+    this.git = git
+  }
+
+  getCommandData () {
+    return this.commandData
+  }
+
+  run () {
+    const { args } = this.commandData
+    return this.git.raw(args)
   }
 }

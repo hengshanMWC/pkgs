@@ -32,7 +32,7 @@ specifiers:
   npmlog: ^7.0.1
   plugin-group: ^1.0.5
   semver: ^7.5.2
-  simple-git: ^3.4.0
+  simple-git: ^3.19.1
   tsup: ^7.0.0
   typescript: ^4.6.2
   vite: ^4.3.9
@@ -54,7 +54,7 @@ dependencies:
   npmlog: 7.0.1
   plugin-group: 1.0.5
   semver: 7.5.3
-  simple-git: 3.4.0
+  simple-git: 3.19.1
 
 devDependencies:
   '@abmao/eslint-config-ts': 0.1.0_ynv3edxl3ah44xwgrna2g2yine
@@ -4289,8 +4289,8 @@ packages:
     engines: {node: '>=14'}
     dev: false
 
-  /simple-git/3.4.0:
-    resolution: {integrity: sha512-sBRdudUc1yvi0xQQPuHXc1L9gTWkRn4hP2bbc7q4BTxR502d3JJAGsDOhrmsBY+wAZAw5JLl82tx55fSWYE65w==}
+  /simple-git/3.19.1:
+    resolution: {integrity: sha512-Ck+rcjVaE1HotraRAS8u/+xgTvToTuoMkT9/l9lvuP5jftwnYUp6DwuJzsKErHgfyRk8IB8pqGHWEbM3tLgV1w==}
     dependencies:
       '@kwsites/file-exists': 1.1.1
       '@kwsites/promise-deferred': 1.1.1

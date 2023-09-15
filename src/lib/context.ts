@@ -1,4 +1,4 @@
-import simpleGit from 'simple-git'
+import { simpleGit } from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import { loadConfig } from 'load-code'
 import {
@@ -9,7 +9,7 @@ import {
 } from '../utils'
 import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
-import { PACKAGES_PATH, WARN_NOW_RUN } from '../constant'
+import { Agent, PACKAGES_PATH, WARN_NOW_RUN } from '../constant'
 import type { Manager } from '../manager'
 import { agentSmell } from '../manager'
 import { BaseExecuteManage } from '../execute/lib/base'
@@ -25,7 +25,7 @@ export class Context {
   argv: string[]
   affectedAnalysisBlockList: AnalysisBlockItem[] = []
 
-  static cli = 'pkgs'
+  static cli = Agent.PKGS
 
   static async create (
     config?: ConstructorParameters<typeof Context>[0],

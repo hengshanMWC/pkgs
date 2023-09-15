@@ -1,7 +1,7 @@
-import simpleGit from 'simple-git'
+import { simpleGit } from 'simple-git'
 import type { SimpleGit, FileStatusResult } from 'simple-git'
 import type IPackageJson from '@ts-type/package-dts'
-import { getPackageNameVersionList } from './packageJson'
+import { getPackageNameVersion, getPackageNameVersionList } from './packageJson'
 import { gitCommitMessageFormat, sortFilesName } from './index'
 
 export type TagType = 'publish' | 'version' | string
@@ -23,6 +23,22 @@ export async function gitDiffSave (
   await git.commit(gitCommitMessageFormat(message, packagesMessage || _tagMessage))
   const tagList = nameAntVersionPackages.map(version => gitTag(version, message))
   await Promise.all(tagList)
+}
+
+export function getDiffTagArgs (
+  packageJson: IPackageJson,
+  separator = '',
+  packagesMessage?: string,
+) {
+  const nameAntVersionPackages = getPackageNameVersion(packageJson, separator)
+  return getGitTag(nameAntVersionPackages, packagesMessage)
+}
+
+export function getGitTag (
+  version: string,
+  packagesMessage = _tagMessage,
+) {
+  return ['tag', '-a', version, '-m', packagesMessage]
 }
 
 export async function getVersionTag (version: string, git: SimpleGit = simpleGit()) {

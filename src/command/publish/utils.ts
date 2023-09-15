@@ -1,14 +1,16 @@
 import { gt } from 'semver'
-import { gitDiffSave, gitTag } from '../../utils/git'
 import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../lib'
-import type { CommandMainResult, CommandResult } from '../type'
+import type { HandleMainResult } from '../type'
+import type { ExecuteTaskFunc } from '../../execute'
+import { BaseExecuteTask, GitExecuteTask } from '../../execute/lib/base'
+import { createGitTagPackageCommand, createGitTagPackageListCommand } from '../../instruct'
 import { getTagPublish } from './git'
 
-export async function handleSyncPublish (context: Context): Promise<CommandMainResult> {
+export async function handleSyncPublish (context: Context): Promise<HandleMainResult> {
   const version = await getTagPublish(context)
   const { allDirs } = context.contextAnalysisDiagram
   const analysisBlockList: AnalysisBlockItem[] = []
-  const commandList: CommandResult[] = []
+  const taskList: ExecuteTaskFunc[] = []
   let versionTag = ''
 
   for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
@@ -25,8 +27,10 @@ export async function handleSyncPublish (context: Context): Promise<CommandMainR
         },
       )
       if (command) {
-        commandList.push(command)
         analysisBlockList.push(analysisBlock)
+        taskList.push(
+          new BaseExecuteTask(command),
+        )
       }
       // 拿到最大的version当版本号
       versionTag = versionTag
@@ -38,18 +42,27 @@ export async function handleSyncPublish (context: Context): Promise<CommandMainR
   }
 
   if (versionTag) {
-    await gitTag(versionTag, analysisBlockList.map(item => item.packageJson.version).join(', '))
+    taskList.push(
+      new GitExecuteTask(
+        createGitTagPackageListCommand({
+          version: versionTag,
+          packageJsonList: analysisBlockList.map(item => item.packageJson),
+          separator: '',
+        }),
+        context.fileStore.git,
+      ),
+    )
   }
 
   return {
     analysisBlockList,
-    commandList,
+    taskList,
   }
 }
 
-export async function handleDiffPublish (context: Context): Promise<CommandMainResult> {
+export async function handleDiffPublish (context: Context): Promise<HandleMainResult> {
   const triggerSign: SetAnalysisBlockObject = new Set()
-  const commandList: CommandResult[] = []
+  const taskList: ExecuteTaskFunc[] = []
 
   await context.fileStore.forRepositoryDiffPack(async function (analysisBlock) {
     const command = await context.packageManager.publish(
@@ -62,23 +75,20 @@ export async function handleDiffPublish (context: Context): Promise<CommandMainR
     )
     if (command) {
       triggerSign.add(analysisBlock)
-      commandList.push(command)
+      taskList.push(
+        new BaseExecuteTask(command),
+        new GitExecuteTask(createGitTagPackageCommand({
+          packageJson: analysisBlock.packageJson,
+          separator: '',
+        }), context.fileStore.git),
+      )
     }
   }, '')
 
   const analysisBlockList = [...triggerSign]
 
-  if (analysisBlockList.length) {
-    await gitDiffSave(
-      analysisBlockList.map(item => item.packageJson),
-      context.config.publish.message,
-      '',
-      context.fileStore.git,
-    )
-  }
-
   return {
     analysisBlockList,
-    commandList,
+    taskList,
   }
 }

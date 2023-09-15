@@ -4,6 +4,7 @@ import type { Mode } from '../../../src/defaultOptions'
 import { newVersion } from '../constant'
 import { handleCommand } from '../create-test-context'
 import { changePackagesFileGitCommit } from '../setup-files'
+import { createPackagePath } from '../utils'
 
 function getDirList (ctx: Context): CommandResult[] {
   return ctx.execute.getCommandData()
@@ -14,7 +15,7 @@ export function createRun (names: string[]): CommandParams<string[]>[] {
     return {
       args: ['run', 'test'],
       options: {
-        cwd: name ? `packages/${name}` : '',
+        cwd: createPackagePath(name),
       },
     }
   })

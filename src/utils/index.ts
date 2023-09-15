@@ -1,3 +1,4 @@
+import type { Options } from 'execa'
 import { $ } from 'execa'
 import { readJSON, writeJSON, readFile } from 'fs-extra'
 import yaml from 'js-yaml'
@@ -180,4 +181,11 @@ export function parserCommandResult (argv: string[]): CommandResult {
 
 export function omitDefaultParams<T extends Partial<DefaultParams>> (config: T) {
   return omit<T, 'mode'>(config, ['mode'])
+}
+
+export function mixinDefaultOptions (options?: Options): Options {
+  return {
+    stdio: 'inherit',
+    ...options,
+  }
 }

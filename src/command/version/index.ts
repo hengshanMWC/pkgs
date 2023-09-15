@@ -1,5 +1,5 @@
 import type { SimpleGit } from 'simple-git'
-import simpleGit from 'simple-git'
+import { simpleGit } from 'simple-git'
 import {
   Context,
 } from '../../lib/context'

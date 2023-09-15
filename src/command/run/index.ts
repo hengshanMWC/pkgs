@@ -1,5 +1,5 @@
 import type { SimpleGit } from 'simple-git'
-import simpleGit from 'simple-git'
+import { simpleGit } from 'simple-git'
 import { omit } from 'lodash'
 import { Context } from '../../lib/context'
 import type { PluginData } from '../type'
