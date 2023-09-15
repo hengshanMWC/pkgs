@@ -6,6 +6,7 @@ import {
 import type { CommandVersionParams, PluginData } from '../type'
 import { omitDefaultParams } from '../../utils'
 import { handleDiffVersion, handleSyncVersion } from './utils'
+
 function commandMain (context: Context, appointVersion?: string) {
   if (context.config.mode === 'diff') {
     return handleDiffVersion(context, appointVersion)
@@ -14,6 +15,26 @@ function commandMain (context: Context, appointVersion?: string) {
     return handleSyncVersion(context, appointVersion)
   }
 }
+
+export async function parseCommandVersion (
+  configParam: CommandVersionParams = {},
+  git: SimpleGit = simpleGit(),
+  appointVersion?: string,
+  argv?: string[],
+) {
+  const config = await Context.assignConfig({
+    mode: configParam.mode,
+    version: omitDefaultParams(configParam),
+  })
+  const context = await Context.create(
+    config,
+    git,
+    argv,
+  )
+  const result = await commandMain(context, appointVersion)
+  return result
+}
+
 export async function commandVersion (
   configParam: CommandVersionParams = {},
   git: SimpleGit = simpleGit(),
@@ -32,6 +53,7 @@ export async function commandVersion (
   const result = await commandMain(context, appointVersion)
   return result
 }
+
 export function createVersionPlugin (): PluginData {
   return {
     id: 'version',
