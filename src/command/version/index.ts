@@ -1,20 +1,25 @@
 import type { SimpleGit } from 'simple-git'
-import simpleGit from 'simple-git'
-import { omit } from 'lodash'
+import { simpleGit } from 'simple-git'
 import {
   Context,
 } from '../../lib/context'
-import type { CommandVersionParams, PluginData } from '../type'
+import type { CommandVersionParams, HandleMainResult, PluginData } from '../type'
+import { omitDefaultParams } from '../../utils'
 import { handleDiffVersion, handleSyncVersion } from './utils'
-function commandMain (context: Context, appointVersion?: string) {
+
+async function commandMain (context: Context, appointVersion?: string) {
+  let commandMainResult: HandleMainResult
   if (context.config.mode === 'diff') {
-    return handleDiffVersion(context, appointVersion)
+    commandMainResult = await handleDiffVersion(context, appointVersion)
   }
   else {
-    return handleSyncVersion(context, appointVersion)
+    commandMainResult = await handleSyncVersion(context, appointVersion)
   }
+  context.executeManage.enterMainResult(commandMainResult)
+  return context
 }
-export async function commandVersion (
+
+export async function parseCommandVersion (
   configParam: CommandVersionParams = {},
   git: SimpleGit = simpleGit(),
   appointVersion?: string,
@@ -22,16 +27,30 @@ export async function commandVersion (
 ) {
   const config = await Context.assignConfig({
     mode: configParam.mode,
-    version: omit<CommandVersionParams, 'mode'>(configParam, ['mode']),
+    version: omitDefaultParams(configParam),
   })
   const context = await Context.create(
     config,
     git,
     argv,
   )
-  const result = await commandMain(context, appointVersion)
-  return result
+  return commandMain(context, appointVersion)
 }
+
+export async function commandVersion (
+  configParam: CommandVersionParams = {},
+  git: SimpleGit = simpleGit(),
+  appointVersion?: string,
+  argv?: string[],
+) {
+  const context = await parseCommandVersion(configParam, git, appointVersion, argv)
+  const executeCommandResult = await context.executeManage.execute()
+  return {
+    analysisBlockList: context.executeManage.getCommandData().analysisBlockList,
+    executeResult: executeCommandResult,
+  }
+}
+
 export function createVersionPlugin (): PluginData {
   return {
     id: 'version',
@@ -41,12 +60,13 @@ export function createVersionPlugin (): PluginData {
       ['--mode <type>', 'sync | diff'],
       ['-m, --message <message>', 'commit message'],
     ],
-    action (context: Context, config: CommandVersionParams = {}) {
+    async action (context: Context, config: CommandVersionParams = {}) {
       context.assignOptions({
         mode: config.mode,
-        version: config,
+        version: omitDefaultParams(config),
       })
-      commandMain(context)
+      await commandMain(context)
+      await context.executeManage.execute()
     },
   }
 }

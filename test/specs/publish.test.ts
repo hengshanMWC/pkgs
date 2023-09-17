@@ -45,6 +45,7 @@ describe(`${cmd}: ${quarantine}`, () => {
   })
   test(`${quarantine}`, async () => {
     const { git, context } = await createGit(quarantine)
+    console.log('_root', context._root)
     await diffTest(newVersionBeta, dirQuarantineArr, git)
     await changePackagesFileGitCommit(context)
     await diffTest(newVersion, dirQuarantineCommandOrderChange1, git)

@@ -1,16 +1,15 @@
 import type { SimpleGit } from 'simple-git'
-import simpleGit from 'simple-git'
+import { simpleGit } from 'simple-git'
 import { omit } from 'lodash'
 import { Context } from '../../lib/context'
 import type { PluginData } from '../type'
+import type { AnalysisBlockItem } from '../../lib'
+import { BaseExecuteTask } from '../../execute/lib'
+import { mixinDefaultOptions } from '../../utils'
 import type { CommandRunParams } from './type'
 import { handleDiffRun, handleSyncRun } from './utils'
-export {
-  commandRun,
-  createRunPlugin,
-}
 async function commandMain (context: Context, cmd: string) {
-  const runCmd = `pnpm run ${cmd}`
+  const args = ['run', cmd]
   let diffDirs: string[]
 
   if (context.config.mode === 'diff') {
@@ -21,14 +20,30 @@ async function commandMain (context: Context, cmd: string) {
   }
 
   // scripts有该功能才触发
-  const dirs = diffDirs.filter(
+  const cmdDirs = diffDirs.filter(
     dir => !!context.contextAnalysisDiagram.dirToAnalysisDiagram(dir)?.packageJson?.scripts?.[cmd],
   )
-  const result = context.commandBatchRun(dirs, runCmd)
-  return result
+
+  const cwds = context.contextAnalysisDiagram.getDirTopologicalSorting(cmdDirs)
+
+  const analysisBlockList = cwds
+    .map(cwd => context.contextAnalysisDiagram.dirToAnalysisDiagram(cwd))
+    .filter(analysisBlock => analysisBlock) as AnalysisBlockItem[]
+  const taskList = cwds.map(cwd => {
+    return new BaseExecuteTask({
+      agent: context.packageManager.agent,
+      args,
+      options: mixinDefaultOptions({ cwd }),
+    })
+  })
+  context.executeManage.enterMainResult({
+    analysisBlockList,
+    taskList,
+  })
+  return context
 }
 
-async function commandRun (
+export async function parseCommandRun (
   configParam: CommandRunParams = {},
   cmd: string,
   git: SimpleGit = simpleGit(),
@@ -43,11 +58,24 @@ async function commandRun (
     git,
     argv,
   )
-  const cmdList = await commandMain(context, cmd)
-  return cmdList
+  return commandMain(context, cmd)
 }
 
-function createRunPlugin (): PluginData {
+export async function commandRun (
+  configParam: CommandRunParams = {},
+  cmd: string,
+  git: SimpleGit = simpleGit(),
+  argv?: string[],
+) {
+  const context = await parseCommandRun(configParam, cmd, git, argv)
+  const executeCommandResult = await context.executeManage.execute()
+  return {
+    analysisBlockList: context.executeManage.getCommandData().analysisBlockList,
+    executeResult: executeCommandResult,
+  }
+}
+
+export function createRunPlugin (): PluginData {
   return {
     id: 'run',
     command: 'run <cmd>',
@@ -56,12 +84,13 @@ function createRunPlugin (): PluginData {
       ['--type <type>', 'all | work | stage | repository'],
       ['--mode <mode>', 'sync | diff'],
     ],
-    action: (context: Context, cmd: string, config: CommandRunParams = {}) => {
+    action: async (context: Context, cmd: string, params: CommandRunParams = {}) => {
       context.assignOptions({
-        mode: config.mode,
-        run: config,
+        mode: params.mode,
+        run: params,
       })
-      return commandMain(context, cmd)
+      await commandMain(context, cmd)
+      await context.executeManage.execute()
     },
   }
 }

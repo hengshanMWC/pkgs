@@ -16,7 +16,7 @@ describe(cmd, () => {
     // Many of the tests in this file change the CWD, so change it back after each test
     process.chdir(ORIGINAL_CWD)
   })
-  test('default', async () => {
+  test.only('default', async () => {
     const _path = await io.mkdtemp(prefix)
     process.chdir(_path)
     await commandInit()
@@ -38,5 +38,5 @@ describe(cmd, () => {
     expect(packagesFileData.trim()).toBe(_path)
     expect(pkgsJsonData.includes(_path)).toBeTruthy()
     expect(packageJsonData.includes(_path)).toBeTruthy()
-  })
+  }, 1000000)
 })

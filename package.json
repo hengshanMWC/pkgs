@@ -61,7 +61,7 @@
     "npmlog": "^7.0.1",
     "plugin-group": "^1.0.5",
     "semver": "^7.5.2",
-    "simple-git": "^3.4.0"
+    "simple-git": "^3.19.1"
   },
   "devDependencies": {
     "@abmao/eslint-config-ts": "^0.1.0",

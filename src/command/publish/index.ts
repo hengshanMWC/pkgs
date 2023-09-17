@@ -1,18 +1,20 @@
 import type { SimpleGit } from 'simple-git'
-import simpleGit from 'simple-git'
-import { omit } from 'lodash'
+import { simpleGit } from 'simple-git'
 import { Context } from '../../lib/context'
-import type { CommandPublishParams, ExecuteCommandResult, PluginData } from '../type'
-import { executeCommandList } from '../../utils'
+import type { CommandPublishParams, HandleMainResult, PluginData } from '../type'
+import { omitDefaultParams } from '../../utils'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
 async function commandMain (context: Context) {
+  let commandMainResult: HandleMainResult
   if (context.config.mode === 'diff') {
-    return handleDiffPublish(context)
+    commandMainResult = await handleDiffPublish(context)
   }
   else {
-    return handleSyncPublish(context)
+    commandMainResult = await handleSyncPublish(context)
   }
+  context.executeManage.enterMainResult(commandMainResult)
+  return context
 }
 
 export async function parseCommandPublish (
@@ -22,26 +24,25 @@ export async function parseCommandPublish (
 ) {
   const config = await Context.assignConfig({
     mode: configParam.mode,
-    publish: omit<CommandPublishParams, 'mode'>(configParam, ['mode']),
+    publish: omitDefaultParams(configParam),
   })
   const context = await Context.create(
     config,
     git,
     argv,
   )
-  const result = await commandMain(context)
-  return result
+  return commandMain(context)
 }
 
 export async function commandPublish (
   configParam: CommandPublishParams = {},
   git: SimpleGit = simpleGit(),
   argv?: string[],
-): Promise<ExecuteCommandResult> {
-  const commandMainResult = await parseCommandPublish(configParam, git, argv)
-  const executeCommandResult = await executeCommandList(commandMainResult.commandList)
+) {
+  const context = await parseCommandPublish(configParam, git, argv)
+  const executeCommandResult = await context.executeManage.execute()
   return {
-    ...commandMainResult,
+    analysisBlockList: context.executeManage.getCommandData().analysisBlockList,
     executeResult: executeCommandResult,
   }
 }
@@ -52,14 +53,16 @@ export function createPublishPlugin (): PluginData {
     command: 'publish',
     description: 'publish package',
     option: [
+      ['--mode <type>', 'sync | diff'],
       ['-message <message>', 'npm publish --message <message>'],
     ],
     async action (context: Context, params: CommandPublishParams = {}) {
       context.assignOptions({
-        publish: params,
+        mode: params.mode,
+        publish: omitDefaultParams(params),
       })
-      const { commandList } = await commandMain(context)
-      await executeCommandList(commandList)
+      await commandMain(context)
+      await context.executeManage.execute()
     },
   }
 }

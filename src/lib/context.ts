@@ -1,27 +1,26 @@
-import simpleGit from 'simple-git'
+import { simpleGit } from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import { loadConfig } from 'load-code'
 import {
   assignOptions,
-  createCommand,
-  runCmdList,
-  warn,
 } from '../utils'
 import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
-import { PACKAGES_PATH, WARN_NOW_RUN } from '../constant'
+import { Agent, PACKAGES_PATH } from '../constant'
 import type { Manager } from '../manager'
 import { agentSmell } from '../manager'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
+import { ExecuteManage } from './executeManage'
 export class Context {
   config: ExecuteCommandConfig
   contextAnalysisDiagram!: ContextAnalysisDiagram
   fileStore!: FileStore
   packageManager!: Manager
+  executeManage = new ExecuteManage()
   argv: string[]
 
-  static cli = 'pkgs'
+  static cli = Agent.PKGS
 
   static async create (
     config?: ConstructorParameters<typeof Context>[0],
@@ -86,18 +85,5 @@ export class Context {
       this.contextAnalysisDiagram.packagesPath = this.config.packagesPath
     }
     return this
-  }
-
-  async commandBatchRun (diffDirs: string[], cmdStr: string) {
-    const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(diffDirs)
-    const cmd = createCommand(cmdStr, orderDirs)
-
-    if (cmd.length) {
-      const cmdStrList = await runCmdList(cmd)
-      return cmdStrList
-    }
-    else {
-      warn(WARN_NOW_RUN)
-    }
   }
 }

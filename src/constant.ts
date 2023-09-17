@@ -17,6 +17,8 @@ export const WARN_NOW_VERSION = 'canceled: The version has not changed'
 export const WARN_NOW_RUN = 'There are no packages that need to run commands'
 
 export enum Agent {
+  PKGS = 'pkgs',
   PNPM = 'pnpm',
+  GIT = 'git',
 }
 export const DEFAULT_AGENT = Agent.PNPM

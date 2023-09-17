@@ -3,7 +3,7 @@ import { satisfies } from 'semver'
 import { gt } from 'lodash'
 import type { AnalysisBlockItem } from '../lib/analysisDiagram'
 import { getRelyAttrs } from './analysisDiagram'
-import { versionText } from './regExp'
+import { npmTag, versionText } from './regExp'
 import { getWorkspaceVersion, isVersionStar } from './index'
 
 export function dependentSearch (
@@ -111,5 +111,12 @@ export function gtPackageJson (
   }
   else {
     return aPackageJson || bPackageJson
+  }
+}
+
+export function getPackageVersionTag (version: string) {
+  const tagArr = version.match(new RegExp(npmTag))
+  if (tagArr) {
+    return tagArr[1]
   }
 }

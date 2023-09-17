@@ -1,23 +1,27 @@
 import type { Options } from 'execa'
 import type { AnalysisBlockItem, Context } from '../lib'
 import type { Agent } from '../constant'
+import type { TaskItem } from '../execute'
 
-export interface PluginData<T = any> {
+export interface PluginData<T extends any[] = any> {
   id: string
   command: string
   description: string
   option?: PluginOption[]
-  action: (context: Context, args: T) => void
+  action: (context: Context, ...args: T) => void
 }
 
 export type PluginOption = [flags: string, description?: string, defaultValue?: string | boolean]
 
 export type AgentType = Agent | string
 
-export interface CommandResult {
+export interface CommandParams<T = string[]> {
+  args: T
+  options?: Options
+}
+
+export interface CommandResult<T = string[]> extends CommandParams<T> {
   agent: AgentType
-  args: string[]
-  options: Options
 }
 
 export interface CommandMainResult {
@@ -25,8 +29,17 @@ export interface CommandMainResult {
   commandList: CommandResult[]
 }
 
+export interface GitCommandMainResult extends CommandMainResult {
+  gitCommandList: CommandResult[]
+}
+
 export interface ExecuteCommandResult<T = any> extends CommandMainResult {
   executeResult: T[]
+}
+
+export interface HandleMainResult {
+  analysisBlockList: AnalysisBlockItem[]
+  taskList: TaskItem[]
 }
 
 export * from './version/type'
