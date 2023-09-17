@@ -1,2 +1,2 @@
-export * from './pnpm'
 export * from './base'
+export * from './pnpm'

@@ -4,4 +4,3 @@
 - git自动提交
 - cli测试补充
 - 命令分层成执行跟命令（ing
-- 补充publish message命令
