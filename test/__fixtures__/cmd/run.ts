@@ -7,7 +7,7 @@ import { changePackagesFileGitCommit } from '../setup-files'
 import { createPackagePath } from '../utils'
 
 function getDirList (ctx: Context): CommandResult[] {
-  return ctx.executeManage.manage.getCommandData()
+  return ctx.executeManage.getCommandData().commandData
 }
 
 export function createRun (names: string[]): CommandParams<string[]>[] {

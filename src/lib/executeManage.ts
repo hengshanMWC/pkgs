@@ -6,7 +6,7 @@ import {
 } from '../utils'
 import type { AnalysisBlockItem } from './analysisDiagram'
 export class ExecuteManage {
-  manage = new BaseExecuteManage()
+  private manage = new BaseExecuteManage()
   private affectedAnalysisBlockList: AnalysisBlockItem[] = []
 
   enterMainResult (commandMainResult: HandleMainResult) {

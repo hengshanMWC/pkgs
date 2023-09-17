@@ -35,7 +35,7 @@ export async function syncTest (version: string, arr: string[], git: SimpleGit) 
     separator: '',
   })
   commandResult.push(gitTagCommand)
-  const commandData = context.executeManage.manage.getCommandData()
+  const commandData = context.executeManage.getCommandData().commandData
   commandData.forEach((item, index) => {
     expect(item).toEqual(commandResult[index])
   })
@@ -70,7 +70,7 @@ export async function diffTest (version: string, arr: string[], git: SimpleGit) 
     nameAntVersionPackages.push(() => tagCommit(`${packageJson.name}@${version}`, git))
   })
 
-  const commandData = context.executeManage.manage.getCommandData()
+  const commandData = context.executeManage.getCommandData().commandData
   commandData.forEach((item, index) => {
     expect(item).toEqual(commandResult[index])
   })
