@@ -12,8 +12,6 @@ import type {
   ExecuteTask,
   FileExecuteCommandData,
   FileExecuteCommandResult,
-  MkdirExecuteCommandData,
-  MkdirExecuteCommandResult,
   TaskItem,
 } from './type'
 
@@ -133,20 +131,21 @@ export class CopyFileExecuteTask implements ExecuteTask<CopyFileExecuteCommandRe
     return this.commandData
   }
 
-  execute () {
+  async execute () {
     const { args, options } = this.commandData
+    const dir = args[0]
     try {
-      return access(args)
+      await access(dir)
     }
     catch {
-      return copyFile(options.cwd, args)
+      await copyFile(options.cwd, dir)
     }
   }
 }
 
-export class MkdirExecuteTask implements ExecuteTask<MkdirExecuteCommandResult> {
-  commandData: MkdirExecuteCommandResult
-  constructor (commandData: MkdirExecuteCommandData) {
+export class MkdirExecuteTask implements ExecuteTask {
+  commandData: CommandResult
+  constructor (commandData: ExecuteCommandData) {
     this.commandData = {
       agent: Agent.PKGS,
       ...commandData,
@@ -159,15 +158,16 @@ export class MkdirExecuteTask implements ExecuteTask<MkdirExecuteCommandResult> 
 
   async execute () {
     const { args } = this.commandData
+    const dir = args[0]
     try {
-      const statResult = await stat(args)
+      const statResult = await stat(dir)
       if (!statResult.isDirectory()) {
         throw new Error()
       }
       return statResult
     }
     catch {
-      return mkdir(args)
+      await mkdir(dir)
     }
   }
 }

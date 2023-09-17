@@ -1,43 +1,42 @@
 import path from 'path'
-import { access, mkdir, copyFile, stat } from 'fs-extra'
 import type { PluginData } from '../type'
-export function commandInit () {
+import type { CopyFileExecuteCommandData } from '../../execute'
+import { BaseExecuteManage, CopyFileExecuteTask, MkdirExecuteTask } from '../../execute'
+import { createPkgsCommand } from '../../instruct'
+
+export function parseCommandInit () {
   const packagesName = 'packages'
   const pkgsJsonName = 'pkgs.config.js'
   const packageJsonName = 'package.json'
   const dirPath = path.resolve(__dirname, './template')
   const pkgsJson = path.resolve(dirPath, pkgsJsonName)
   const packageJson = path.resolve(dirPath, packageJsonName)
-  return Promise.all([
-    createMkdir(packagesName),
-    createFile(pkgsJsonName, pkgsJson),
-    createFile(packageJsonName, packageJson),
-  ])
+  return [
+    new MkdirExecuteTask(createPkgsCommand(packagesName)),
+    new CopyFileExecuteTask(createPkgsCommand(pkgsJsonName, {
+      cwd: pkgsJson,
+    }) as CopyFileExecuteCommandData),
+    new CopyFileExecuteTask(createPkgsCommand(packageJsonName, {
+      cwd: packageJson,
+    }) as CopyFileExecuteCommandData),
+  ]
 }
+
+export async function commandInit () {
+  const executeManage = new BaseExecuteManage()
+  const executeResult = await executeManage
+    .pushTask(...parseCommandInit())
+    .execute()
+  return {
+    executeResult,
+  }
+}
+
 export function createInitPlugin (): PluginData {
   return {
     id: 'init',
     command: 'init',
     description: 'create pkgs file',
     action: commandInit,
-  }
-}
-async function createMkdir (dirName: string) {
-  try {
-    const statResult = await stat(dirName)
-    if (!statResult.isDirectory()) {
-      throw new Error()
-    }
-  }
-  catch {
-    await mkdir(dirName)
-  }
-}
-async function createFile (fileName: string, filePath: string) {
-  try {
-    await access(fileName)
-  }
-  catch {
-    await copyFile(filePath, fileName)
   }
 }

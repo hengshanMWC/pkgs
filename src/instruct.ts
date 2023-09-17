@@ -17,8 +17,8 @@ export function createCommand (
   }
 }
 
-export function createPkgCommand (args?: CommandResult['args'], options?: CommandResult['options']): CommandResult {
-  return createCommand(Agent.PKGS, args, options)
+export function createPkgsCommand (args?: string[] | string, options?: CommandResult['options']): CommandResult {
+  return createCommand(Agent.PKGS, !Array.isArray(args) && args ? [args] : (args as string[]), options)
 }
 
 export function createGitCommand (args?: CommandResult['args']): CommandResult {

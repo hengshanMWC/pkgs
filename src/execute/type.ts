@@ -22,8 +22,7 @@ export interface FileExecuteCommandResult extends CommandResult<AnalysisBlockIte
   args: AnalysisBlockItem
 }
 
-export interface CopyFileExecuteCommandResult extends CommandResult<string> {
-  args: string
+export interface CopyFileExecuteCommandResult extends CommandResult {
   options: {
     cwd: string
   }
