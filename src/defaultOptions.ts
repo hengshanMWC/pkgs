@@ -3,10 +3,10 @@ import type { CommandPublishConfig } from './command/publish/type'
 import type { CommandRunConfig } from './command/run/type'
 import type { PluginData } from './command/type'
 import type { CommandVersionConfig } from './command/version/type'
-export type Mode = 'sync' | 'diff'
+export type ModeType = 'sync' | 'diff'
 
 export interface DefaultParams {
-  mode: Mode
+  mode: ModeType
 }
 
 export type GetConfig<T extends DefaultParams> = Omit<T, 'mode'>

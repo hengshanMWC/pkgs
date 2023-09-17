@@ -1,6 +1,6 @@
 import type { CommandParams, CommandResult, Context } from '../../../src'
 import { parseCommandRun, commandVersion } from '../../../src'
-import type { Mode } from '../../../src/defaultOptions'
+import type { ModeType } from '../../../src/defaultOptions'
 import { newVersion } from '../constant'
 import { handleCommand } from '../create-test-context'
 import { changePackagesFileGitCommit } from '../setup-files'
@@ -27,7 +27,7 @@ export async function testMain (
   dir: string,
   arr: CommandParams<string[]>[],
   arr2: CommandParams<string[]>[],
-  mode: Mode,
+  mode: ModeType,
 ) {
   const context = await handleCommand(dir, prefix)
   const cmd = 'test'
