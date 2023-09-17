@@ -1,5 +1,4 @@
 import type { Options } from 'execa'
-import { $ } from 'execa'
 import { readJSON, readFile } from 'fs-extra'
 import yaml from 'js-yaml'
 import colors from 'colors'
@@ -20,9 +19,6 @@ export async function getJSON (dir: string): Promise<IPackageJson> {
 }
 export async function getJSONs (dirs: string[]) {
   return Promise.all(dirs.map(dir => getJSON(dir)))
-}
-export function cdDir (dir?: string) {
-  return dir ? `cd ${dir} && ` : ''
 }
 export function assignOptions (
   ...objects: ExecuteCommandCli[]
@@ -87,34 +83,6 @@ export function isVersionStar (version: string) {
 }
 export function getWorkspaceVersion (version: string) {
   return version.replace(WORK_SPACE_REG_EXP, '')
-}
-export function createCommand (cmd: string, dirs: string[]) {
-  if (!dirs.length) return []
-  return dirs
-    .map(dir => `${cdDir(dir)}${cmd}`)
-}
-export async function runCmdList (cmdStrList: string[]) {
-  const result: string[] = []
-  const cmdList = cmdStrList.map(cmd => {
-    if (isTest) {
-      return Promise.resolve(cmd)
-    }
-    else {
-      return $(mixinDefaultOptions())`${cmd}`
-        .then(() => cmd)
-        .catch(e => {
-          err(`${e}`)
-          return Promise.reject(e)
-        })
-    }
-  })
-  const cmdResultList = await Promise.allSettled(cmdList)
-  cmdResultList.forEach(item => {
-    if (item.status === 'fulfilled') {
-      result.push(item.value)
-    }
-  })
-  return result
 }
 
 export async function getYamlPackages (): Promise<string[]> {

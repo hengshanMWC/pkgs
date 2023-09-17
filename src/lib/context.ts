@@ -3,8 +3,6 @@ import type { SimpleGit } from 'simple-git'
 import { loadConfig } from 'load-code'
 import {
   assignOptions,
-  createCommand,
-  runCmdList,
   warn,
 } from '../utils'
 import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
@@ -92,19 +90,6 @@ export class Context {
       this.contextAnalysisDiagram.packagesPath = this.config.packagesPath
     }
     return this
-  }
-
-  async commandBatchRun (diffDirs: string[], cmdStr: string) {
-    const orderDirs = this.contextAnalysisDiagram.getDirTopologicalSorting(diffDirs)
-    const cmd = createCommand(cmdStr, orderDirs)
-
-    if (cmd.length) {
-      const cmdStrList = await runCmdList(cmd)
-      return cmdStrList
-    }
-    else {
-      warn(WARN_NOW_RUN)
-    }
   }
 
   enterMainResult (commandMainResult: HandleMainResult) {
