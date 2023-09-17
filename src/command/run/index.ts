@@ -36,10 +36,10 @@ async function commandMain (context: Context, cmd: string) {
       options: mixinDefaultOptions({ cwd }),
     })
   })
-  context
-    .setAffectedAnalysisBlockList(analysisBlockList)
-    .execute
-    .pushTask(...taskList)
+  context.executeManage.enterMainResult({
+    analysisBlockList,
+    taskList,
+  })
   return context
 }
 
@@ -68,9 +68,9 @@ export async function commandRun (
   argv?: string[],
 ) {
   const context = await parseCommandRun(configParam, cmd, git, argv)
-  const executeCommandResult = await context.executeRun()
+  const executeCommandResult = await context.executeManage.execute()
   return {
-    analysisBlockList: context.affectedAnalysisBlockList,
+    analysisBlockList: context.executeManage.affectedAnalysisBlockList,
     executeResult: executeCommandResult,
   }
 }
@@ -90,7 +90,7 @@ export function createRunPlugin (): PluginData {
         run: params,
       })
       await commandMain(context, cmd)
-      await context.executeRun()
+      await context.executeManage.execute()
     },
   }
 }

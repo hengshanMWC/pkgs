@@ -43,18 +43,18 @@ export class BaseExecuteManage implements ExecuteManage {
     return commandData
   }
 
-  run () {
+  execute () {
     return Promise.all(this.taskGroup.map(task => {
-      return task.run()
+      return task.execute()
     }))
   }
 }
 
 export class SerialExecuteManage extends BaseExecuteManage {
-  async run () {
+  async execute () {
     const result = []
     for (const task of this.taskGroup) {
-      result.push(await task.run())
+      result.push(await task.execute())
     }
     return result
   }
@@ -70,7 +70,7 @@ export class BaseExecuteTask implements ExecuteTask {
     return this.commandData
   }
 
-  run () {
+  execute () {
     const { agent, args, options } = this.commandData
     return execa(agent, args, options)
   }
@@ -89,7 +89,7 @@ export class JsonExecuteTask implements ExecuteTask<FileExecuteCommandResult> {
     return this.commandData
   }
 
-  run () {
+  execute () {
     const { args, options } = this.commandData
     return writeJSON(
       args.filePath,
@@ -114,7 +114,7 @@ export class GitExecuteTask implements ExecuteTask {
     return this.commandData
   }
 
-  run () {
+  execute () {
     const { args } = this.commandData
     return this.git.raw(args)
   }
@@ -133,7 +133,7 @@ export class CopyFileExecuteTask implements ExecuteTask<CopyFileExecuteCommandRe
     return this.commandData
   }
 
-  run () {
+  execute () {
     const { args, options } = this.commandData
     try {
       return access(args)
@@ -157,7 +157,7 @@ export class MkdirExecuteTask implements ExecuteTask<MkdirExecuteCommandResult> 
     return this.commandData
   }
 
-  async run () {
+  async execute () {
     const { args } = this.commandData
     try {
       const statResult = await stat(args)

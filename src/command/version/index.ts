@@ -15,7 +15,8 @@ async function commandMain (context: Context, appointVersion?: string) {
   else {
     commandMainResult = await handleSyncVersion(context, appointVersion)
   }
-  return context.enterMainResult(commandMainResult)
+  context.executeManage.enterMainResult(commandMainResult)
+  return context
 }
 
 export async function parseCommandVersion (
@@ -43,9 +44,9 @@ export async function commandVersion (
   argv?: string[],
 ) {
   const context = await parseCommandVersion(configParam, git, appointVersion, argv)
-  const executeCommandResult = await context.executeRun()
+  const executeCommandResult = await context.executeManage.execute()
   return {
-    analysisBlockList: context.affectedAnalysisBlockList,
+    analysisBlockList: context.executeManage.affectedAnalysisBlockList,
     executeResult: executeCommandResult,
   }
 }
@@ -65,7 +66,7 @@ export function createVersionPlugin (): PluginData {
         version: omitDefaultParams(config),
       })
       await commandMain(context)
-      await context.executeRun()
+      await context.executeManage.execute()
     },
   }
 }

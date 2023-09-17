@@ -11,7 +11,7 @@ export interface ExecuteTask<T = CommandResult> extends ExecuteTaskFunc<T>{
 
 export interface ExecuteTaskFunc<T = CommandResult<any>> {
   getCommandData (): T
-  run (): Promise<any>
+  execute (): Promise<any>
 }
 
 export type AgentNoNeed<T> = Omit<T, 'agent'> & {

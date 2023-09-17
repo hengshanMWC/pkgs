@@ -3,26 +3,22 @@ import type { SimpleGit } from 'simple-git'
 import { loadConfig } from 'load-code'
 import {
   assignOptions,
-  warn,
 } from '../utils'
 import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
-import { Agent, PACKAGES_PATH, WARN_NOW_RUN } from '../constant'
+import { Agent, PACKAGES_PATH } from '../constant'
 import type { Manager } from '../manager'
 import { agentSmell } from '../manager'
-import { BaseExecuteManage } from '../execute/lib'
-import type { HandleMainResult } from '../command'
-import type { AnalysisBlockItem } from './analysisDiagram'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
+import { ExecuteManage } from './executeManage'
 export class Context {
   config: ExecuteCommandConfig
   contextAnalysisDiagram!: ContextAnalysisDiagram
   fileStore!: FileStore
   packageManager!: Manager
-  execute: BaseExecuteManage
+  executeManage = new ExecuteManage()
   argv: string[]
-  affectedAnalysisBlockList: AnalysisBlockItem[] = []
 
   static cli = Agent.PKGS
 
@@ -72,7 +68,6 @@ export class Context {
   ) {
     this.config = config
     this.argv = argv
-    this.execute = new BaseExecuteManage()
   }
 
   get argvValue () {
@@ -90,25 +85,5 @@ export class Context {
       this.contextAnalysisDiagram.packagesPath = this.config.packagesPath
     }
     return this
-  }
-
-  enterMainResult (commandMainResult: HandleMainResult) {
-    this
-      .setAffectedAnalysisBlockList(commandMainResult.analysisBlockList)
-      .execute
-      .pushTask(...commandMainResult.taskList)
-    return this
-  }
-
-  setAffectedAnalysisBlockList (analysisBlockLis: AnalysisBlockItem[]) {
-    this.affectedAnalysisBlockList = analysisBlockLis
-    return this
-  }
-
-  executeRun () {
-    if (!this.execute.existTask) {
-      warn(WARN_NOW_RUN)
-    }
-    return this.execute.run()
   }
 }

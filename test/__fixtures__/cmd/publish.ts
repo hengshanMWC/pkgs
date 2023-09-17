@@ -20,7 +20,7 @@ export async function tagCommit (version: string, git: SimpleGit) {
 export async function syncTest (version: string, arr: string[], git: SimpleGit) {
   await commandVersion({}, git, version)
   const context = await parseCommandPublish({}, git)
-  const analysisBlockList = context.affectedAnalysisBlockList
+  const analysisBlockList = context.executeManage.affectedAnalysisBlockList
   const commandResult: CommandResult<any>[] = []
   analysisBlockList.forEach((analysisBlock, index) => {
     expect(analysisBlock.packageJson.name).toBe(createName(arr[index]))
@@ -35,12 +35,12 @@ export async function syncTest (version: string, arr: string[], git: SimpleGit) 
     separator: '',
   })
   commandResult.push(gitTagCommand)
-  const commandData = context.execute.getCommandData()
+  const commandData = context.executeManage.manage.getCommandData()
   commandData.forEach((item, index) => {
     expect(item).toEqual(commandResult[index])
   })
   const gitTag = new GitExecuteTask(gitTagCommand)
-  await gitTag.run()
+  await gitTag.execute()
   await tagCommit(version, git)
 }
 
@@ -51,7 +51,7 @@ export async function diffTest (version: string, arr: string[], git: SimpleGit) 
   const context = await parseCommandPublish({
     mode: 'diff',
   }, git)
-  const analysisBlockList = context.affectedAnalysisBlockList
+  const analysisBlockList = context.executeManage.affectedAnalysisBlockList
   const commandResult: CommandResult<any>[] = []
   const taskList = new SerialExecuteManage()
   const nameAntVersionPackages: Array<() => Promise<void>> = []
@@ -70,10 +70,10 @@ export async function diffTest (version: string, arr: string[], git: SimpleGit) 
     nameAntVersionPackages.push(() => tagCommit(`${packageJson.name}@${version}`, git))
   })
 
-  const commandData = context.execute.getCommandData()
+  const commandData = context.executeManage.manage.getCommandData()
   commandData.forEach((item, index) => {
     expect(item).toEqual(commandResult[index])
   })
-  await taskList.run()
+  await taskList.execute()
   await Promise.all(nameAntVersionPackages.map(func => func()))
 }
