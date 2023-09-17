@@ -13,11 +13,7 @@ async function commandMain (context: Context) {
   else {
     commandMainResult = await handleSyncPublish(context)
   }
-  context
-    .setAffectedAnalysisBlockList(commandMainResult.analysisBlockList)
-    .execute
-    .pushTask(...commandMainResult.taskList)
-  return context
+  return context.enterMainResult(commandMainResult)
 }
 
 export async function parseCommandPublish (

@@ -13,6 +13,7 @@ import { Agent, PACKAGES_PATH, WARN_NOW_RUN } from '../constant'
 import type { Manager } from '../manager'
 import { agentSmell } from '../manager'
 import { BaseExecuteManage } from '../execute/lib'
+import type { HandleMainResult } from '../command'
 import type { AnalysisBlockItem } from './analysisDiagram'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
@@ -106,18 +107,13 @@ export class Context {
     }
   }
 
-  // getCommandResult (): CommandMainResult {
-  //   return {
-  //     analysisBlockList: this.affectedAnalysisBlockList,
-  //     commandList: this.execute.outCommandDataList,
-  //   }
-  // }
-
-  // enterCommandResult (commandMainResult: CommandMainResult) {
-  //   this.affectedAnalysisBlockList = commandMainResult.analysisBlockList
-  //   this.execute.setOutData(commandMainResult.commandList)
-  //   return this
-  // }
+  enterMainResult (commandMainResult: HandleMainResult) {
+    this
+      .setAffectedAnalysisBlockList(commandMainResult.analysisBlockList)
+      .execute
+      .pushTask(...commandMainResult.taskList)
+    return this
+  }
 
   setAffectedAnalysisBlockList (analysisBlockLis: AnalysisBlockItem[]) {
     this.affectedAnalysisBlockList = analysisBlockLis

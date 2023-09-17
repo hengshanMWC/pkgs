@@ -15,11 +15,7 @@ async function commandMain (context: Context, appointVersion?: string) {
   else {
     commandMainResult = await handleSyncVersion(context, appointVersion)
   }
-  context
-    .setAffectedAnalysisBlockList(commandMainResult.analysisBlockList)
-    .execute
-    .pushTask(...commandMainResult.taskList)
-  return context
+  return context.enterMainResult(commandMainResult)
 }
 
 export async function parseCommandVersion (

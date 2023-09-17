@@ -35,7 +35,6 @@ async function versionDiff (tag: string, git: SimpleGit) {
 export async function createGit (dir: string) {
   const context = await handleCommand(dir, prefix)
   const git = newSimpleGit(context.root)
-  console.log('context.root', context.root)
   process.chdir(context.root)
   return {
     git,
