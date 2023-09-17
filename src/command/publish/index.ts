@@ -42,7 +42,7 @@ export async function commandPublish (
   const context = await parseCommandPublish(configParam, git, argv)
   const executeCommandResult = await context.executeManage.execute()
   return {
-    analysisBlockList: context.executeManage.affectedAnalysisBlockList,
+    analysisBlockList: context.executeManage.getCommandData().analysisBlockList,
     executeResult: executeCommandResult,
   }
 }

@@ -7,7 +7,7 @@ import {
 import type { AnalysisBlockItem } from './analysisDiagram'
 export class ExecuteManage {
   manage = new BaseExecuteManage()
-  affectedAnalysisBlockList: AnalysisBlockItem[] = []
+  private affectedAnalysisBlockList: AnalysisBlockItem[] = []
 
   enterMainResult (commandMainResult: HandleMainResult) {
     this
@@ -20,6 +20,13 @@ export class ExecuteManage {
   setAffectedAnalysisBlockList (analysisBlockLis: AnalysisBlockItem[]) {
     this.affectedAnalysisBlockList = analysisBlockLis
     return this
+  }
+
+  getCommandData () {
+    return {
+      analysisBlockList: this.affectedAnalysisBlockList,
+      commandData: this.manage.getCommandData(),
+    }
   }
 
   execute () {

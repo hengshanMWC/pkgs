@@ -46,7 +46,7 @@ export async function commandVersion (
   const context = await parseCommandVersion(configParam, git, appointVersion, argv)
   const executeCommandResult = await context.executeManage.execute()
   return {
-    analysisBlockList: context.executeManage.affectedAnalysisBlockList,
+    analysisBlockList: context.executeManage.getCommandData().analysisBlockList,
     executeResult: executeCommandResult,
   }
 }

@@ -20,7 +20,7 @@ export async function tagCommit (version: string, git: SimpleGit) {
 export async function syncTest (version: string, arr: string[], git: SimpleGit) {
   await commandVersion({}, git, version)
   const context = await parseCommandPublish({}, git)
-  const analysisBlockList = context.executeManage.affectedAnalysisBlockList
+  const analysisBlockList = context.executeManage.getCommandData().analysisBlockList
   const commandResult: CommandResult<any>[] = []
   analysisBlockList.forEach((analysisBlock, index) => {
     expect(analysisBlock.packageJson.name).toBe(createName(arr[index]))
@@ -51,7 +51,7 @@ export async function diffTest (version: string, arr: string[], git: SimpleGit) 
   const context = await parseCommandPublish({
     mode: 'diff',
   }, git)
-  const analysisBlockList = context.executeManage.affectedAnalysisBlockList
+  const analysisBlockList = context.executeManage.getCommandData().analysisBlockList
   const commandResult: CommandResult<any>[] = []
   const taskList = new SerialExecuteManage()
   const nameAntVersionPackages: Array<() => Promise<void>> = []

@@ -70,7 +70,7 @@ export async function commandRun (
   const context = await parseCommandRun(configParam, cmd, git, argv)
   const executeCommandResult = await context.executeManage.execute()
   return {
-    analysisBlockList: context.executeManage.affectedAnalysisBlockList,
+    analysisBlockList: context.executeManage.getCommandData().analysisBlockList,
     executeResult: executeCommandResult,
   }
 }
