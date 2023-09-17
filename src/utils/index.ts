@@ -1,6 +1,6 @@
 import type { Options } from 'execa'
 import { $ } from 'execa'
-import { readJSON, writeJSON, readFile } from 'fs-extra'
+import { readJSON, readFile } from 'fs-extra'
 import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
@@ -20,19 +20,6 @@ export async function getJSON (dir: string): Promise<IPackageJson> {
 }
 export async function getJSONs (dirs: string[]) {
   return Promise.all(dirs.map(dir => getJSON(dir)))
-}
-export interface WriteObject {
-  filePath: string
-  packageJson: IPackageJson
-}
-export async function writeFiles (writesObject: WriteObject[]) {
-  return Promise.all(
-    writesObject.map(writeObject => writeJSON(
-      writeObject.filePath,
-      writeObject.packageJson,
-      { spaces: 2 },
-    )),
-  )
 }
 export function cdDir (dir?: string) {
   return dir ? `cd ${dir} && ` : ''

@@ -25,6 +25,16 @@ export async function gitDiffSave (
   await Promise.all(tagList)
 }
 
+export function getCommitPackageListMessage (
+  packageJsonList: IPackageJson[],
+  separator = '',
+  message = '',
+) {
+  const nameAntVersionPackages = getPackageNameVersionList(packageJsonList, separator)
+  const packagesMessage = getDiffCommitMessage(nameAntVersionPackages)
+  return gitCommitMessageFormat(message, packagesMessage || _tagMessage)
+}
+
 export function getDiffTagArgs (
   packageJson: IPackageJson,
   separator = '',

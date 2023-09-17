@@ -43,7 +43,7 @@ export async function commandPublish (
   argv?: string[],
 ) {
   const context = await parseCommandPublish(configParam, git, argv)
-  const executeCommandResult = await context.execute.run()
+  const executeCommandResult = await context.executeRun()
   return {
     analysisBlockList: context.affectedAnalysisBlockList,
     executeResult: executeCommandResult,
@@ -65,7 +65,7 @@ export function createPublishPlugin (): PluginData {
         publish: omitDefaultParams(params),
       })
       await commandMain(context)
-      await context.execute.run()
+      await context.executeRun()
     },
   }
 }

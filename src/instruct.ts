@@ -3,7 +3,7 @@ import type { CommandResult } from './command'
 import { Agent, DEFAULT_AGENT } from './constant'
 import { mixinDefaultOptions } from './utils'
 import { getDiffTagArgs, getGitTag } from './utils/git'
-import { getPackageNameVersionList, getPackageVersionTag } from './utils/packageJson'
+import { getPackageNameVersionStr, getPackageVersionTag } from './utils/packageJson'
 
 export function createCommand (
   agent: CommandResult['agent'],
@@ -47,16 +47,16 @@ export function createGitTagPackageListCommand (
   {
     version,
     packageJsonList,
-    separator,
+    separator = '',
   }: createGitTagPackageListCommandType,
 ) {
   return createGitCommand(
     getGitTag(
-      version,
-      getPackageNameVersionList(
+      separator + version,
+      getPackageNameVersionStr(
         packageJsonList,
         separator,
-      ).join(', '),
+      ),
     ),
   )
 }
@@ -78,4 +78,12 @@ export function createGitTagPackageCommand (
       separator,
     ),
   )
+}
+
+export function createGitAddCommand (filePath: string[]) {
+  return createGitCommand(['add', ...filePath])
+}
+
+export function createGitCommitCommand (message: string) {
+  return createGitCommand(['commit', '-m', message])
 }

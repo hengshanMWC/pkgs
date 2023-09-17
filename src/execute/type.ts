@@ -1,9 +1,8 @@
-import type { CommandResult } from '../command'
+import type { AgentType, CommandResult } from '../command'
 import type { AnalysisBlockItem } from '../lib'
 export interface ExecuteManage<T = CommandResult<any>> extends ExecuteTaskFunc<T[]> {
   taskGroup: (ExecuteTaskFunc<T> | ExecuteManage<T>)[]
   pushTask(tasks: ExecuteTask): this
-  serialRun (): Promise<any>
 }
 
 export interface ExecuteTask<T = CommandResult> extends ExecuteTaskFunc<T>{
@@ -14,6 +13,17 @@ export interface ExecuteTaskFunc<T = CommandResult<any>> {
   getCommandData (): T
   run (): Promise<any>
 }
+
+export type AgentNoNeed<T> = Omit<T, 'agent'> & {
+  agent?: AgentType
+}
+
 export interface FileExecuteCommandResult extends CommandResult<AnalysisBlockItem> {
   args: AnalysisBlockItem
 }
+
+export type FileExecuteCommandData = AgentNoNeed<FileExecuteCommandResult>
+
+export type ExecuteCommandData = AgentNoNeed<CommandResult>
+
+export type TaskItem = ExecuteTaskFunc | ExecuteManage

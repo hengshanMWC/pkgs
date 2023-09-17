@@ -1,7 +1,7 @@
 import type { Options } from 'execa'
 import type { AnalysisBlockItem, Context } from '../lib'
 import type { Agent } from '../constant'
-import type { ExecuteTaskFunc } from '../execute'
+import type { TaskItem } from '../execute'
 
 export interface PluginData<T extends any[] = any> {
   id: string
@@ -39,7 +39,7 @@ export interface ExecuteCommandResult<T = any> extends CommandMainResult {
 
 export interface HandleMainResult {
   analysisBlockList: AnalysisBlockItem[]
-  taskList: ExecuteTaskFunc[]
+  taskList: TaskItem[]
 }
 
 export * from './version/type'

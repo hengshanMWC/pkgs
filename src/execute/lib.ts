@@ -3,16 +3,24 @@ import { writeJSON } from 'fs-extra'
 import type { SimpleGit } from 'simple-git'
 import { simpleGit } from 'simple-git'
 import type { CommandResult } from '../command'
-import type { ExecuteManage, ExecuteTask, ExecuteTaskFunc, FileExecuteCommandResult } from './type'
+import { Agent } from '../constant'
+import type {
+  ExecuteCommandData,
+  ExecuteManage,
+  ExecuteTask,
+  FileExecuteCommandData,
+  FileExecuteCommandResult,
+  TaskItem,
+} from './type'
 
 export class BaseExecuteManage implements ExecuteManage {
-  taskGroup: (ExecuteTaskFunc<CommandResult<any>> | ExecuteManage)[] = []
+  taskGroup: TaskItem[] = []
 
   get existTask () {
     return !!this.taskGroup.length
   }
 
-  pushTask (...task: ExecuteTaskFunc<CommandResult<any>>[]): this {
+  pushTask (...task: TaskItem[]): this {
     this.taskGroup.push(...task)
     return this
   }
@@ -36,16 +44,13 @@ export class BaseExecuteManage implements ExecuteManage {
       return task.run()
     }))
   }
+}
 
-  async serialRun () {
+export class SerialExecuteManage extends BaseExecuteManage {
+  async run () {
     const result = []
     for (const task of this.taskGroup) {
-      if (Object.hasOwn(task, 'serialRun')) {
-        result.push(await (task as ExecuteManage).serialRun())
-      }
-      else {
-        result.push(await task.run())
-      }
+      result.push(await task.run())
     }
     return result
   }
@@ -69,8 +74,11 @@ export class BaseExecuteTask implements ExecuteTask {
 
 export class FileExecuteTask implements ExecuteTask<FileExecuteCommandResult> {
   commandData: FileExecuteCommandResult
-  constructor (commandData: FileExecuteCommandResult) {
-    this.commandData = commandData
+  constructor (commandData: FileExecuteCommandData) {
+    this.commandData = {
+      agent: Agent.PKGS,
+      ...commandData,
+    }
   }
 
   getCommandData () {
@@ -90,8 +98,11 @@ export class FileExecuteTask implements ExecuteTask<FileExecuteCommandResult> {
 export class GitExecuteTask implements ExecuteTask {
   commandData: CommandResult
   git: SimpleGit
-  constructor (commandData: CommandResult, git: SimpleGit = simpleGit()) {
-    this.commandData = commandData
+  constructor (commandData: ExecuteCommandData, git: SimpleGit = simpleGit()) {
+    this.commandData = {
+      agent: Agent.GIT,
+      ...commandData,
+    }
     this.git = git
   }
 

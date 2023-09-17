@@ -8,7 +8,7 @@ import {
   createGitTagPackageCommand,
 } from '../../../src'
 import { getPublishCommand } from '../utils'
-import { BaseExecuteManage, GitExecuteTask } from '../../../src/execute'
+import { GitExecuteTask, SerialExecuteManage } from '../../../src/execute'
 import { createName } from './version'
 export const cmd = 'publish'
 
@@ -53,7 +53,7 @@ export async function diffTest (version: string, arr: string[], git: SimpleGit) 
   }, git)
   const analysisBlockList = context.affectedAnalysisBlockList
   const commandResult: CommandResult<any>[] = []
-  const taskList = new BaseExecuteManage()
+  const taskList = new SerialExecuteManage()
   const nameAntVersionPackages: Array<() => Promise<void>> = []
 
   analysisBlockList.forEach((analysisBlock, index) => {
@@ -74,6 +74,6 @@ export async function diffTest (version: string, arr: string[], git: SimpleGit) 
   commandData.forEach((item, index) => {
     expect(item).toEqual(commandResult[index])
   })
-  await taskList.serialRun()
+  await taskList.run()
   await Promise.all(nameAntVersionPackages.map(func => func()))
 }

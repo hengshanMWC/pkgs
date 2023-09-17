@@ -1,17 +1,24 @@
 import colors from 'colors'
-import { writeJSON } from 'fs-extra'
 import { versionBumpInfo } from '@abmao/bump'
 import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../lib'
-import { isTest, writeFiles, warn } from '../../utils'
-import { gitDiffSave } from '../../utils/git'
+import { gitCommitMessageFormat, isTest, warn } from '../../utils'
+import { getCommitPackageListMessage } from '../../utils/git'
 import { WARN_NOW_VERSION } from '../../constant'
-import { dependentSearch, getPackageNameVersionStr, gtPackageJsonToDir } from '../../utils/packageJson'
-import { getTagVersion, gitSyncSave } from './git'
+import { dependentSearch, gtPackageJsonToDir } from '../../utils/packageJson'
+import type { TaskItem } from '../../execute'
+import { FileExecuteTask, GitExecuteTask, SerialExecuteManage, BaseExecuteManage } from '../../execute'
+import {
+  createGitAddCommand,
+  createGitCommitCommand,
+  createGitTagPackageCommand,
+  createGitTagPackageListCommand,
+} from '../../instruct'
+import { getTagVersion } from './git'
 
 export async function handleSyncVersion (context: Context, appointVersion?: string) {
   const version = await getChangeVersion(context, appointVersion)
-
   const analysisBlockList: AnalysisBlockItem[] = []
+  const taskList: TaskItem[] = []
 
   // 依赖更新
   for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
@@ -23,18 +30,33 @@ export async function handleSyncVersion (context: Context, appointVersion?: stri
     if (analysisBlock) {
       analysisBlockList.push(analysisBlock)
       await changeRelyMyVersion(context, analysisBlock)
+      taskList.push(new FileExecuteTask({
+        args: analysisBlock,
+      }))
     }
   }
-  await writeFiles(analysisBlockList)
-  await context.fileStore.git.add(analysisBlockList.map(item => item.filePath))
-  await gitSyncSave(
-    `v${version}`,
-    context.config.version.message,
-    getPackageNameVersionStr(analysisBlockList.map(item => item.packageJson), 'v'),
-    context.fileStore.git,
-  )
+  if (taskList.length && appointVersion) {
+    const executeManage = new SerialExecuteManage()
+    executeManage.pushTask(
+      new GitExecuteTask(
+        createGitAddCommand(analysisBlockList.map(item => item.filePath)),
+        context.fileStore.git,
+      ),
+      new GitExecuteTask(
+        createGitCommitCommand(gitCommitMessageFormat(context.config.version.message, `v${version}`)),
+        context.fileStore.git,
+      ),
+      new GitExecuteTask(createGitTagPackageListCommand({
+        version: appointVersion,
+        packageJsonList: analysisBlockList.map(item => item.packageJson),
+        separator: 'v',
+      }), context.fileStore.git),
+    )
+    taskList.push(executeManage)
+  }
   return {
     analysisBlockList,
+    taskList,
   }
 }
 
@@ -50,17 +72,63 @@ export async function handleDiffVersion (context: Context, appointVersion?: stri
       appointVersion,
     )
   })
-  await writeJSONs(triggerSign)
+
   const analysisBlockList = [...triggerSign]
-  await context.fileStore.git.add(analysisBlockList.map(item => item.filePath))
-  await gitDiffSave(
-    analysisBlockList.map(item => item.packageJson),
-    context.config.version.message,
-    'v',
-    context.fileStore.git,
-  )
+  const taskList: TaskItem[] = []
+
+  if (analysisBlockList.length) {
+    const packageJsonManage = new BaseExecuteManage()
+    const packageJsonCommand = analysisBlockList.map(analysisBlock => {
+      return new FileExecuteTask({
+        args: analysisBlock,
+      })
+    })
+    packageJsonManage.pushTask(...packageJsonCommand)
+
+    const gitFileManage = new SerialExecuteManage()
+    gitFileManage.pushTask(
+      new GitExecuteTask(
+        createGitAddCommand(analysisBlockList.map(item => item.filePath)),
+        context.fileStore.git,
+      ),
+      new GitExecuteTask(
+        createGitCommitCommand(
+          getCommitPackageListMessage(
+            analysisBlockList.map(analysisBlock => analysisBlock.packageJson),
+            'v',
+            context.config.version.message,
+          ),
+        ),
+        context.fileStore.git,
+      ),
+    )
+
+    const gitTagManage = new BaseExecuteManage()
+    const gitTagCommand = analysisBlockList.map(analysisBlock => {
+      return new GitExecuteTask(createGitTagPackageCommand({
+        packageJson: analysisBlock.packageJson,
+        separator: 'v',
+      }), context.fileStore.git)
+    })
+    gitTagManage.pushTask(...gitTagCommand)
+
+    const taskManage = new SerialExecuteManage()
+
+    taskManage.pushTask(packageJsonManage, gitFileManage, gitTagManage)
+
+    taskList.push(taskManage)
+  }
+  // await writeJSONs(triggerSign)
+  // await context.fileStore.git.add(analysisBlockList.map(item => item.filePath))
+  // await gitDiffSave(
+  //   analysisBlockList.map(item => item.packageJson),
+  //   context.config.version.message,
+  //   'v',
+  //   context.fileStore.git,
+  // )
   return {
     analysisBlockList,
+    taskList,
   }
 }
 
@@ -163,13 +231,6 @@ async function changeRelyMyVersion (
       }
     }
   }
-}
-function writeJSONs (triggerSign: SetAnalysisBlockObject) {
-  return Promise.all(
-    [...triggerSign].map(({ filePath, packageJson }) => {
-      return writeJSON(filePath, packageJson, { spaces: 2 })
-    }),
-  )
 }
 
 async function changeVersion (cwd?: string, release?: string) {
