@@ -72,7 +72,7 @@ export class BaseExecuteTask implements ExecuteTask {
   }
 }
 
-export class FileExecuteTask implements ExecuteTask<FileExecuteCommandResult> {
+export class JsonExecuteTask implements ExecuteTask<FileExecuteCommandResult> {
   commandData: FileExecuteCommandResult
   constructor (commandData: FileExecuteCommandData) {
     this.commandData = {

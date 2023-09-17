@@ -6,7 +6,7 @@ import { getCommitPackageListMessage } from '../../utils/git'
 import { WARN_NOW_VERSION } from '../../constant'
 import { dependentSearch, gtPackageJsonToDir } from '../../utils/packageJson'
 import type { TaskItem } from '../../execute'
-import { FileExecuteTask, GitExecuteTask, SerialExecuteManage, BaseExecuteManage } from '../../execute'
+import { JsonExecuteTask, GitExecuteTask, SerialExecuteManage, BaseExecuteManage } from '../../execute'
 import {
   createGitAddCommand,
   createGitCommitCommand,
@@ -30,7 +30,7 @@ export async function handleSyncVersion (context: Context, appointVersion?: stri
     if (analysisBlock) {
       analysisBlockList.push(analysisBlock)
       await changeRelyMyVersion(context, analysisBlock)
-      taskList.push(new FileExecuteTask({
+      taskList.push(new JsonExecuteTask({
         args: analysisBlock,
       }))
     }
@@ -79,7 +79,7 @@ export async function handleDiffVersion (context: Context, appointVersion?: stri
   if (analysisBlockList.length) {
     const packageJsonManage = new BaseExecuteManage()
     const packageJsonCommand = analysisBlockList.map(analysisBlock => {
-      return new FileExecuteTask({
+      return new JsonExecuteTask({
         args: analysisBlock,
       })
     })
