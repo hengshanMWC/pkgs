@@ -6,13 +6,14 @@ import type { PluginData } from '../type'
 import type { AnalysisBlockItem } from '../../lib'
 import { BaseExecuteTask } from '../../execute/lib'
 import { mixinDefaultOptions } from '../../utils'
+import { Mode, ModeOptions } from '../../constant'
 import type { CommandRunParams } from './type'
 import { handleDiffRun, handleSyncRun } from './utils'
 async function commandMain (context: Context, cmd: string) {
   const args = ['run', cmd]
   let diffDirs: string[]
 
-  if (context.config.mode === 'diff') {
+  if (context.config.mode === Mode.DIFF) {
     diffDirs = await handleDiffRun(context)
   }
   else {
@@ -82,7 +83,7 @@ export function createRunPlugin (): PluginData {
     description: 'run diff scripts.\n type: all | work | stage | repository, default: all',
     option: [
       ['--type <type>', 'all | work | stage | repository'],
-      ['--mode <mode>', 'sync | diff'],
+      ModeOptions,
     ],
     action: async (context: Context, cmd: string, params: CommandRunParams = {}) => {
       context.assignOptions({

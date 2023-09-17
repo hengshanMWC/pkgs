@@ -9,6 +9,7 @@ import {
 } from '../../../src'
 import { getPublishCommand } from '../utils'
 import { GitExecuteTask, SerialExecuteManage } from '../../../src/execute'
+import { Mode } from '../../../src/constant'
 import { createName } from './version'
 export const cmd = 'publish'
 
@@ -46,10 +47,10 @@ export async function syncTest (version: string, arr: string[], git: SimpleGit) 
 
 export async function diffTest (version: string, arr: string[], git: SimpleGit) {
   await commandVersion({
-    mode: 'diff',
+    mode: Mode.DIFF,
   }, git, version)
   const context = await parseCommandPublish({
-    mode: 'diff',
+    mode: Mode.DIFF,
   }, git)
   const analysisBlockList = context.executeManage.getCommandData().analysisBlockList
   const commandResult: CommandResult<any>[] = []

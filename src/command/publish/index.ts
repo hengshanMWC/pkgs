@@ -3,11 +3,12 @@ import { simpleGit } from 'simple-git'
 import { Context } from '../../lib/context'
 import type { CommandPublishParams, HandleMainResult, PluginData } from '../type'
 import { omitDefaultParams } from '../../utils'
+import { Mode, ModeOptions } from '../../constant'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
 async function commandMain (context: Context) {
   let commandMainResult: HandleMainResult
-  if (context.config.mode === 'diff') {
+  if (context.config.mode === Mode.DIFF) {
     commandMainResult = await handleDiffPublish(context)
   }
   else {
@@ -53,8 +54,7 @@ export function createPublishPlugin (): PluginData {
     command: 'publish',
     description: 'publish package',
     option: [
-      ['--mode <type>', 'sync | diff'],
-      ['-message <message>', 'npm publish --message <message>'],
+      ModeOptions,
     ],
     async action (context: Context, params: CommandPublishParams = {}) {
       context.assignOptions({

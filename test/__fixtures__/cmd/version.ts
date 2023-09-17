@@ -7,6 +7,7 @@ import { handleCommand } from '../create-test-context'
 import { newSimpleGit } from '../instance'
 import { commandVersion } from '../../../src'
 import { getPackageNameVersion } from '../../../src/utils/packageJson'
+import { Mode } from '../../../src/constant'
 const prefix = 'version-test'
 export const cmd = 'version'
 export function createName (name: string) {
@@ -43,7 +44,7 @@ export async function createGit (dir: string) {
 }
 
 export async function syncTest (newVersion: string, arr: string[], git: SimpleGit) {
-  const message = 'chore: sync'
+  const message = `chore: ${Mode.SYNC}`
   const { analysisBlockList } = await commandVersion({
     message: `${message} %s`,
   }, git, newVersion)
@@ -70,9 +71,9 @@ export async function testPackage (filePath: string, newVersion: string) {
 }
 
 export async function diffTest (newVersion: string, arr: string[], git: SimpleGit) {
-  const message = 'chore: diff'
+  const message = `chore: ${Mode.DIFF}`
   const { analysisBlockList } = await commandVersion({
-    mode: 'diff',
+    mode: Mode.DIFF,
     message: `${message} %s`,
   }, git, newVersion)
 

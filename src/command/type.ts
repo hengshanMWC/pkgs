@@ -3,15 +3,16 @@ import type { AnalysisBlockItem, Context } from '../lib'
 import type { Agent } from '../constant'
 import type { TaskItem } from '../execute'
 
-export interface PluginData<T extends any[] = any> {
+export interface BasePluginData<T extends any[] = any> {
   id: string
   command: string
   description: string
   option?: PluginOption[]
   action: (context: Context, ...args: T) => void
 }
+export type PluginData = Readonly<BasePluginData>
 
-export type PluginOption = [flags: string, description?: string, defaultValue?: string | boolean]
+export type PluginOption = readonly [flags: string, description?: string, defaultValue?: string | boolean]
 
 export type AgentType = Agent | string
 

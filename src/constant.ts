@@ -23,3 +23,10 @@ export enum Agent {
 }
 
 export const DEFAULT_AGENT = Agent.PNPM
+
+export enum Mode {
+  SYNC = 'sync',
+  DIFF = 'diff',
+}
+
+export const ModeOptions = ['--mode <type>', Object.values(Mode).join(' | ')] as const
