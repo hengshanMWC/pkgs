@@ -1,15 +1,19 @@
 import { execa } from 'execa'
-import { writeJSON } from 'fs-extra'
+import { access, copyFile, mkdir, stat, writeJSON } from 'fs-extra'
 import type { SimpleGit } from 'simple-git'
 import { simpleGit } from 'simple-git'
 import type { CommandResult } from '../command'
 import { Agent } from '../constant'
 import type {
+  CopyFileExecuteCommandData,
+  CopyFileExecuteCommandResult,
   ExecuteCommandData,
   ExecuteManage,
   ExecuteTask,
   FileExecuteCommandData,
   FileExecuteCommandResult,
+  MkdirExecuteCommandData,
+  MkdirExecuteCommandResult,
   TaskItem,
 } from './type'
 
@@ -113,5 +117,57 @@ export class GitExecuteTask implements ExecuteTask {
   run () {
     const { args } = this.commandData
     return this.git.raw(args)
+  }
+}
+
+export class CopyFileExecuteTask implements ExecuteTask<CopyFileExecuteCommandResult> {
+  commandData: CopyFileExecuteCommandResult
+  constructor (commandData: CopyFileExecuteCommandData) {
+    this.commandData = {
+      agent: Agent.PKGS,
+      ...commandData,
+    }
+  }
+
+  getCommandData () {
+    return this.commandData
+  }
+
+  run () {
+    const { args, options } = this.commandData
+    try {
+      return access(args)
+    }
+    catch {
+      return copyFile(options.cwd, args)
+    }
+  }
+}
+
+export class MkdirExecuteTask implements ExecuteTask<MkdirExecuteCommandResult> {
+  commandData: MkdirExecuteCommandResult
+  constructor (commandData: MkdirExecuteCommandData) {
+    this.commandData = {
+      agent: Agent.PKGS,
+      ...commandData,
+    }
+  }
+
+  getCommandData () {
+    return this.commandData
+  }
+
+  async run () {
+    const { args } = this.commandData
+    try {
+      const statResult = await stat(args)
+      if (!statResult.isDirectory()) {
+        throw new Error()
+      }
+      return statResult
+    }
+    catch {
+      return mkdir(args)
+    }
   }
 }

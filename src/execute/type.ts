@@ -22,8 +22,23 @@ export interface FileExecuteCommandResult extends CommandResult<AnalysisBlockIte
   args: AnalysisBlockItem
 }
 
+export interface CopyFileExecuteCommandResult extends CommandResult<string> {
+  args: string
+  options: {
+    cwd: string
+  }
+}
+
+export interface MkdirExecuteCommandResult extends CommandResult<string> {
+  args: string
+}
+
 export type FileExecuteCommandData = AgentNoNeed<FileExecuteCommandResult>
 
 export type ExecuteCommandData = AgentNoNeed<CommandResult>
+
+export type CopyFileExecuteCommandData = AgentNoNeed<CopyFileExecuteCommandResult>
+
+export type MkdirExecuteCommandData = AgentNoNeed<MkdirExecuteCommandResult>
 
 export type TaskItem = ExecuteTaskFunc | ExecuteManage
