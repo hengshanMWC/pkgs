@@ -4,7 +4,7 @@ import { Context } from '../../lib/context'
 import type { CommandPublishParams, HandleMainResult, PluginData } from '../type'
 import { getConfigValue } from '../../utils'
 import { Mode, ModeOptions } from '../../constant'
-import { GitExecuteTask, SerialExecuteManage } from '../../execute'
+import { BaseExecuteManage, GitExecuteTask, SerialExecuteManage } from '../../execute'
 import { createGitPushTagsCommand } from '../../instruct'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
@@ -16,11 +16,18 @@ async function commandMain (context: Context) {
   else {
     commandMainResult = await handleSyncPublish(context)
   }
+
   if (getConfigValue(context.config, 'publish', 'push')) {
+    const baseExecuteManage = new BaseExecuteManage()
+    baseExecuteManage.pushTask(...commandMainResult.taskList)
     const serialExecuteManage = new SerialExecuteManage()
-    serialExecuteManage.pushTask(new GitExecuteTask(createGitPushTagsCommand(), context.fileStore.git))
-    commandMainResult.taskList.push(serialExecuteManage)
+    serialExecuteManage.pushTask(
+      baseExecuteManage,
+      new GitExecuteTask(createGitPushTagsCommand(), context.fileStore.git),
+    )
+    commandMainResult.taskList = [serialExecuteManage]
   }
+
   context.executeManage.enterMainResult(commandMainResult)
   return context
 }
