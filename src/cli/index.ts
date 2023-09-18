@@ -1,5 +1,6 @@
 import { program } from 'commander'
 import { PluginGroup } from 'plugin-group'
+import { isUndefined } from 'lodash'
 import { cliVersion, cliSuccess } from '../utils/tips'
 import { Context } from '../lib/context'
 import type { PluginData } from '../command'
@@ -24,6 +25,9 @@ export async function cliMain (argv: NodeJS.Process['argv'], version: string) {
         await value.action(context, ...args)
         cliSuccess()
       })
+    if (!isUndefined(value.allowUnknownOption)) {
+      _program.allowUnknownOption(value.allowUnknownOption)
+    }
     if (value.option) {
       value.option.forEach(item => {
         _program = _program.option(...item)

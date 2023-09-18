@@ -8,6 +8,7 @@ export interface BasePluginData<T extends any[] = any> {
   command: string
   description: string
   option?: PluginOption[]
+  allowUnknownOption?: boolean
   action: (context: Context, ...args: T) => void
 }
 export type PluginData = Readonly<BasePluginData>

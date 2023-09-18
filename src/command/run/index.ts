@@ -83,6 +83,7 @@ export function createRunPlugin (): PluginData {
       ['--type <type>', 'all | work | stage | repository'],
       ModeOptions,
     ],
+    allowUnknownOption: true,
     action: async (context: Context, cmd: string, params: CommandRunParams = {}) => {
       context.assignOptions({
         run: params,

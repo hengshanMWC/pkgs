@@ -62,6 +62,7 @@ export function createVersionPlugin (): PluginData {
       ModeOptions,
       ['-m, --message <message>', 'commit message'],
     ],
+    allowUnknownOption: true,
     async action (context: Context, config: CommandVersionParams = {}) {
       context.assignOptions({
         version: config,

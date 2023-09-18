@@ -58,6 +58,7 @@ export function createPublishPlugin (): PluginData {
     option: [
       ModeOptions,
     ],
+    allowUnknownOption: true,
     async action (context: Context, params: CommandPublishParams = {}) {
       context.assignOptions({
         mode: params.mode,
