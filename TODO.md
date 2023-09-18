@@ -1,5 +1,5 @@
 ### 下一个版本代办事项
-- TODO [ ] 添加 version 和 publish 命令的 git 自动提交
+- [x] 添加 version 和 publish 命令的 git 自动提交
 ### 代办事项
 - [ ] github workflows
 - [ ] CHANGE.md

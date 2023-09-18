@@ -33,12 +33,11 @@ monorepo有两种模式
 {
   packagesPath: undefined, // 默认读取pnpm-workspace.yaml
   mode: 'sync',
+  push: true,
   version: {
     message: 'chore: version %s',
   },
-  publish: {
-    message: 'release %s',
-  },
+  publish: {},
   run: {
     type: 'all',
   },
@@ -49,6 +48,7 @@ monorepo有两种模式
 - **version**: `pkgs version`命令配置
   - **mode**: `sync` | `diff`。决定命令模式
   - **message**: 运行\``git commit -m '${message} v${version}'`\`的message
+  - **push**: 自动提交到所有远程仓库
 # Commands
 可以使用`pkgs -h`查看具体指令
 ## version
