@@ -3,7 +3,7 @@ import type { CommandPublishConfig } from './command/publish/type'
 import type { CommandRunConfig } from './command/run/type'
 import type { PluginData } from './command/type'
 import type { CommandVersionConfig } from './command/version/type'
-export type Mode = 'sync' | 'diff'
+import { Mode } from './constant'
 
 export interface DefaultParams {
   mode: Mode
@@ -22,7 +22,7 @@ export interface ExecuteCommandConfig extends DefaultParams {
 export type ExecuteCommandCli = DeepPartial<ExecuteCommandConfig>
 export const defaultOptions: ExecuteCommandConfig = {
   packagesPath: undefined,
-  mode: 'sync',
+  mode: Mode.SYNC,
   version: {
     message: 'chore: version %s',
   },

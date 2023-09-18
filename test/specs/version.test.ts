@@ -30,13 +30,14 @@ import {
   diffTest,
   syncTest,
 } from '../__fixtures__/cmd/version'
+import { Mode } from '../../src/constant'
 
 afterEach(() => {
   // Many of the tests in this file change the CWD, so change it back after each test
   process.chdir(ORIGINAL_CWD)
 })
 describe(`${cmd}: ${quarantine}`, () => {
-  test(`${quarantine}: default(sync)`, async () => {
+  test(`${quarantine}: default(${Mode.SYNC})`, async () => {
     const { git } = await createGit(quarantine)
     await syncTest(newVersionBeta, dirQuarantineArr, git)
     await syncTest(newVersion, dirQuarantineArr, git)
@@ -52,7 +53,7 @@ describe(`${cmd}: ${quarantine}`, () => {
   })
 })
 describe(`${cmd}: ${many}`, () => {
-  test(`${many}: default(sync)`, async () => {
+  test(`${many}: default(${Mode.SYNC})`, async () => {
     const { git } = await createGit(many)
     await syncTest(newVersionBeta, dirManyArr, git)
     await syncTest(newVersion, dirManyArr, git)
@@ -68,7 +69,7 @@ describe(`${cmd}: ${many}`, () => {
   })
 })
 describe(`${cmd}: ${Interdependence}`, () => {
-  test(`${Interdependence}: default(sync)`, async () => {
+  test(`${Interdependence}: default(${Mode.SYNC})`, async () => {
     const { git } = await createGit(Interdependence)
     await syncTest(newVersionBeta, dirInterdependenceArr, git)
     await syncTest(newVersion, dirInterdependenceArr, git)
@@ -85,7 +86,7 @@ describe(`${cmd}: ${Interdependence}`, () => {
 })
 
 describe(`${cmd}: ${single}`, () => {
-  test(`${single}: default(sync)`, async () => {
+  test(`${single}: default(${Mode.SYNC})`, async () => {
     const { git } = await createGit(single)
     await syncTest(newVersionBeta, rootPackageJsonArr, git)
   })

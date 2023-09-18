@@ -5,11 +5,12 @@ import {
 } from '../../lib/context'
 import type { CommandVersionParams, HandleMainResult, PluginData } from '../type'
 import { omitDefaultParams } from '../../utils'
+import { Mode, ModeOptions } from '../../constant'
 import { handleDiffVersion, handleSyncVersion } from './utils'
 
 async function commandMain (context: Context, appointVersion?: string) {
   let commandMainResult: HandleMainResult
-  if (context.config.mode === 'diff') {
+  if (context.config.mode === Mode.DIFF) {
     commandMainResult = await handleDiffVersion(context, appointVersion)
   }
   else {
@@ -57,7 +58,7 @@ export function createVersionPlugin (): PluginData {
     command: 'version',
     description: 'version package',
     option: [
-      ['--mode <type>', 'sync | diff'],
+      ModeOptions,
       ['-m, --message <message>', 'commit message'],
     ],
     async action (context: Context, config: CommandVersionParams = {}) {

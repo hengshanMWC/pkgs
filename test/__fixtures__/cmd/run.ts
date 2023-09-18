@@ -1,6 +1,6 @@
 import type { CommandParams, CommandResult, Context } from '../../../src'
 import { parseCommandRun, commandVersion } from '../../../src'
-import type { Mode } from '../../../src/defaultOptions'
+import type { Mode } from '../../../src/constant'
 import { newVersion } from '../constant'
 import { handleCommand } from '../create-test-context'
 import { changePackagesFileGitCommit } from '../setup-files'
