@@ -43,7 +43,7 @@ export async function handleSyncVersion (context: Context, appointVersion?: stri
         context.fileStore.git,
       ),
       new GitExecuteTask(
-        createGitCommitCommand(gitCommitMessageFormat(context.config.version.message, `v${version}`)),
+        createGitCommitCommand(gitCommitMessageFormat(context.config.version.message as string, `v${version}`)),
         context.fileStore.git,
       ),
       new GitExecuteTask(createGitTagPackageListCommand({

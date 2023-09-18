@@ -1,9 +1,7 @@
-import type { DefaultParams, GetConfig } from '../../defaultOptions'
+import type { DefaultParams } from '../../defaultOptions'
 
-export interface CommandVersionOption extends DefaultParams {
-  message: string
+export interface CommandVersionOption {
+  message?: string
 }
 
-export type CommandVersionParams = Partial<CommandVersionOption>
-
-export type CommandVersionConfig = GetConfig<CommandVersionOption>
+export type CommandVersionParams = CommandVersionOption & Partial<DefaultParams>

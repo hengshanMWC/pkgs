@@ -1,8 +1,3 @@
-import type { DefaultParams, GetConfig } from '../../defaultOptions'
-export interface CommandPublishOption extends DefaultParams {
-  message: string
-}
+import type { DefaultParams } from '../../defaultOptions'
 
-export type CommandPublishParams = Partial<CommandPublishOption>
-
-export type CommandPublishConfig = GetConfig<CommandPublishOption>
+export type CommandPublishParams = Partial<DefaultParams>

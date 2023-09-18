@@ -2,18 +2,36 @@ import type { SimpleGit } from 'simple-git'
 import { simpleGit } from 'simple-git'
 import { Context } from '../../lib/context'
 import type { CommandPublishParams, HandleMainResult, PluginData } from '../type'
-import { omitDefaultParams } from '../../utils'
+import { getConfigValue } from '../../utils'
 import { Mode, ModeOptions } from '../../constant'
+import { BaseExecuteManage, GitExecuteTask, SerialExecuteManage } from '../../execute'
+import { createGitPushTagsCommand } from '../../instruct'
+import { getGitRemoteList } from '../../utils/git'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
 async function commandMain (context: Context) {
   let commandMainResult: HandleMainResult
-  if (context.config.mode === Mode.DIFF) {
+  if (getConfigValue(context.config, 'publish', 'mode') === Mode.DIFF) {
     commandMainResult = await handleDiffPublish(context)
   }
   else {
     commandMainResult = await handleSyncPublish(context)
   }
+
+  if (getConfigValue(context.config, 'publish', 'push')) {
+    const remoteList = await getGitRemoteList(context.fileStore.git)
+    if (remoteList.length) {
+      const baseExecuteManage = new BaseExecuteManage()
+      baseExecuteManage.pushTask(...commandMainResult.taskList)
+      const serialExecuteManage = new SerialExecuteManage()
+      serialExecuteManage.pushTask(
+        baseExecuteManage,
+        new GitExecuteTask(createGitPushTagsCommand(), context.fileStore.git),
+      )
+      commandMainResult.taskList = [serialExecuteManage]
+    }
+  }
+
   context.executeManage.enterMainResult(commandMainResult)
   return context
 }
@@ -25,12 +43,14 @@ export async function parseCommandPublish (
 ) {
   const config = await Context.assignConfig({
     mode: configParam.mode,
-    publish: omitDefaultParams(configParam),
+    publish: configParam,
   })
   const context = await Context.create(
-    config,
-    git,
-    argv,
+    {
+      config,
+      git,
+      argv,
+    },
   )
   return commandMain(context)
 }
@@ -56,10 +76,11 @@ export function createPublishPlugin (): PluginData {
     option: [
       ModeOptions,
     ],
+    allowUnknownOption: true,
     async action (context: Context, params: CommandPublishParams = {}) {
       context.assignOptions({
         mode: params.mode,
-        publish: omitDefaultParams(params),
+        publish: params,
       })
       await commandMain(context)
       await context.executeManage.execute()

@@ -1,4 +1,3 @@
-import { simpleGit } from 'simple-git'
 import type { SimpleGit } from 'simple-git'
 import { loadConfig } from 'load-code'
 import {
@@ -12,20 +11,26 @@ import { agentSmell } from '../manager'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
 import { ExecuteManage } from './executeManage'
+
 export class Context {
   config: ExecuteCommandConfig
   contextAnalysisDiagram!: ContextAnalysisDiagram
   fileStore!: FileStore
   packageManager!: Manager
   executeManage = new ExecuteManage()
-  argv: string[]
+  argv: ContextParams['argv']
+  args: ContextParams['args']
+  ttArgv: ContextParams['ttArgv'] = []
 
   static cli = Agent.PKGS
 
   static async create (
-    config?: ConstructorParameters<typeof Context>[0],
-    git: SimpleGit = simpleGit(),
-    argv?: string[],
+    {
+      config,
+      git,
+      argv,
+      args,
+    }: ContextParams,
   ) {
     let contextConfig: ConstructorParameters<typeof Context>[0]
     if (config) {
@@ -43,7 +48,7 @@ export class Context {
     }, packageManagerConfig, contextConfig)
 
     // 创建上下文
-    const context = new Context(contextConfig, argv)
+    const context = new Context(contextConfig, argv, args)
     context.packageManager = packageManager
 
     // 生成包之间的图表关系
@@ -65,9 +70,11 @@ export class Context {
   constructor (
     config: ExecuteCommandConfig,
     argv: string[] = process.argv,
+    args?: any[],
   ) {
     this.config = config
     this.argv = argv
+    this.args = args
   }
 
   get argvValue () {
@@ -86,4 +93,12 @@ export class Context {
     }
     return this
   }
+}
+
+interface ContextParams {
+  config?: ConstructorParameters<typeof Context>[0]
+  git?: SimpleGit
+  argv?: string[]
+  args?: any[]
+  ttArgv?: string[]
 }

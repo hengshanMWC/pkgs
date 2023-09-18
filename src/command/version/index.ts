@@ -4,18 +4,41 @@ import {
   Context,
 } from '../../lib/context'
 import type { CommandVersionParams, HandleMainResult, PluginData } from '../type'
-import { omitDefaultParams } from '../../utils'
 import { Mode, ModeOptions } from '../../constant'
+import { getConfigValue } from '../../utils'
+import { BaseExecuteManage, GitExecuteTask, SerialExecuteManage } from '../../execute'
+import { createGitPushCommand } from '../../instruct'
+import { getGitRemoteList } from '../../utils/git'
 import { handleDiffVersion, handleSyncVersion } from './utils'
 
 async function commandMain (context: Context, appointVersion?: string) {
   let commandMainResult: HandleMainResult
-  if (context.config.mode === Mode.DIFF) {
+  if (getConfigValue(context.config, 'version', 'mode') === Mode.DIFF) {
     commandMainResult = await handleDiffVersion(context, appointVersion)
   }
   else {
     commandMainResult = await handleSyncVersion(context, appointVersion)
   }
+
+  if (getConfigValue(context.config, 'version', 'push')) {
+    const remoteList = await getGitRemoteList(context.fileStore.git)
+    if (remoteList.length) {
+      const baseExecuteManage = new BaseExecuteManage()
+      baseExecuteManage.pushTask(...commandMainResult.taskList)
+      const serialExecuteManage = new SerialExecuteManage()
+      serialExecuteManage.pushTask(
+        baseExecuteManage,
+        ...remoteList.map(remote => {
+          return new GitExecuteTask(
+            createGitPushCommand([remote, 'HEAD']),
+            context.fileStore.git,
+          )
+        }),
+      )
+      commandMainResult.taskList = [serialExecuteManage]
+    }
+  }
+
   context.executeManage.enterMainResult(commandMainResult)
   return context
 }
@@ -27,13 +50,14 @@ export async function parseCommandVersion (
   argv?: string[],
 ) {
   const config = await Context.assignConfig({
-    mode: configParam.mode,
-    version: omitDefaultParams(configParam),
+    version: configParam,
   })
   const context = await Context.create(
-    config,
-    git,
-    argv,
+    {
+      config,
+      git,
+      argv,
+    },
   )
   return commandMain(context, appointVersion)
 }
@@ -61,10 +85,10 @@ export function createVersionPlugin (): PluginData {
       ModeOptions,
       ['-m, --message <message>', 'commit message'],
     ],
+    allowUnknownOption: true,
     async action (context: Context, config: CommandVersionParams = {}) {
       context.assignOptions({
-        mode: config.mode,
-        version: omitDefaultParams(config),
+        version: config,
       })
       await commandMain(context)
       await context.executeManage.execute()

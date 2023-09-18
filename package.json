@@ -13,6 +13,7 @@
   ],
   "license": "MIT",
   "author": "mawencan",
+  "access": "public",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hengshanMWC/pkgs.git"
@@ -36,7 +37,8 @@
     "build": "tsup src/index.ts src/cli/bin.ts --format esm,cjs --dts-resolve --target node14 --clean --splitting",
     "test": "vitest",
     "test:cov": "vitest --coverage",
-    "test:bin": "esno ./src/cli/bin.ts init",
+    "test:bin": "esno ./src/cli/bin.ts run test:bin-i --type all --color=false",
+    "test:bin-i": "pnpm i",
     "prepare": "husky install",
     "lint": "eslint --ext=js,ts,json,md .",
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",

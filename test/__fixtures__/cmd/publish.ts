@@ -40,7 +40,7 @@ export async function syncTest (version: string, arr: string[], git: SimpleGit) 
   commandData.forEach((item, index) => {
     expect(item).toEqual(commandResult[index])
   })
-  const gitTag = new GitExecuteTask(gitTagCommand)
+  const gitTag = new GitExecuteTask(gitTagCommand, context.fileStore.git)
   await gitTag.execute()
   await tagCommit(version, git)
 }
@@ -66,7 +66,7 @@ export async function diffTest (version: string, arr: string[], git: SimpleGit) 
       separator: '',
     })
     commandResult.push(gitTagCommand)
-    const gitTag = new GitExecuteTask(gitTagCommand)
+    const gitTag = new GitExecuteTask(gitTagCommand, context.fileStore.git)
     taskList.pushTask(gitTag)
     nameAntVersionPackages.push(() => tagCommit(`${packageJson.name}@${version}`, git))
   })

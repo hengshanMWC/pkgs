@@ -1,10 +1,8 @@
-import type { DefaultParams, GetConfig } from '../../defaultOptions'
+import type { DefaultParams } from '../../defaultOptions'
 
 export type RunMode = 'all' | 'work' | 'stage' | 'repository'
-export interface CommandRunOption extends DefaultParams {
-  type: RunMode
+export interface CommandRunOption {
+  type?: RunMode
 }
 
-export type CommandRunParams = Partial<CommandRunOption>
-
-export type CommandRunConfig = GetConfig<CommandRunOption>
+export type CommandRunParams = CommandRunOption & Partial<Exclude<DefaultParams, 'mode'>>

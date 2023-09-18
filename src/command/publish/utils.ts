@@ -19,9 +19,9 @@ export async function handleSyncPublish (context: Context): Promise<HandleMainRe
     const analysisBlock = context.contextAnalysisDiagram.packageJsonToAnalysisBlock(packageJson)
     const currentVersion = packageJson?.version as string
     if (analysisBlock && (!version || gt(version, currentVersion))) {
-      const command = await context.packageManager.publish(
+      const command = context.packageManager.publish(
         packageJson,
-        context.argvValue,
+        context.ttArgv,
         {
           cwd: allDirs[index],
         },
@@ -65,13 +65,12 @@ export async function handleDiffPublish (context: Context): Promise<HandleMainRe
   const taskList: ExecuteTaskFunc[] = []
 
   await context.fileStore.forRepositoryDiffPack(async function (analysisBlock) {
-    const command = await context.packageManager.publish(
+    const command = context.packageManager.publish(
       analysisBlock.packageJson,
-      context.argvValue,
+      context.ttArgv,
       {
         cwd: analysisBlock.dir,
       },
-
     )
     if (command) {
       triggerSign.add(analysisBlock)

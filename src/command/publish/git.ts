@@ -1,8 +1,10 @@
+import { GitExecuteTask } from '../../execute'
+import { createGitCommand } from '../../instruct'
 import type { Context } from '../../lib'
 
 export async function getTagPublish (context: Context) {
-  try {
-    const result = await context.fileStore.git.raw([
+  const task = new GitExecuteTask(createGitCommand(
+    [
       'tag',
       '--sort',
       'v:refname',
@@ -10,7 +12,10 @@ export async function getTagPublish (context: Context) {
       'grep',
       '-v',
       '^v',
-    ])
+    ],
+  ), context.fileStore.git)
+  try {
+    const result = await task.execute()
     return result.split('/n')[0]
   }
   catch {

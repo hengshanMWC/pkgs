@@ -87,3 +87,11 @@ export function createGitAddCommand (filePath: string[]) {
 export function createGitCommitCommand (message: string) {
   return createGitCommand(['commit', '-m', message])
 }
+
+export function createGitPushCommand (args: string[]) {
+  return createGitCommand(['push', ...args])
+}
+
+export function createGitPushTagsCommand (args?: string[]) {
+  return createGitPushCommand(['--tags', ...(args ?? [])])
+}
