@@ -4,12 +4,11 @@ import { Context } from '../../lib/context'
 import type { PluginData } from '../type'
 import type { AnalysisBlockItem } from '../../lib'
 import { BaseExecuteTask } from '../../execute/lib'
-import { getConfigValue, mixinDefaultOptions } from '../../utils'
+import { getConfigValue } from '../../utils'
 import { Mode, ModeOptions } from '../../constant'
 import type { CommandRunParams } from './type'
 import { handleDiffRun, handleSyncRun } from './utils'
 async function commandMain (context: Context, cmd: string) {
-  const args = ['run', cmd]
   let diffDirs: string[]
 
   if (getConfigValue(context.config, 'run', 'mode') === Mode.DIFF) {
@@ -30,11 +29,9 @@ async function commandMain (context: Context, cmd: string) {
     .map(cwd => context.contextAnalysisDiagram.dirToAnalysisDiagram(cwd))
     .filter(analysisBlock => analysisBlock) as AnalysisBlockItem[]
   const taskList = cwds.map(cwd => {
-    return new BaseExecuteTask({
-      agent: context.packageManager.agent,
-      args,
-      options: mixinDefaultOptions({ cwd }),
-    })
+    return new BaseExecuteTask(
+      context.packageManager.run(cmd, context.ttArgv, { cwd }),
+    )
   })
   context.executeManage.enterMainResult({
     analysisBlockList,

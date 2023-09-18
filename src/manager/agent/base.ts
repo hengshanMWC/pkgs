@@ -10,8 +10,8 @@ export class BaseManager implements Manager {
     return {}
   }
 
-  async run (cmd: string, args: string[] = []) {
-    return createCommand(this.agent, ['run', cmd, ...args])
+  run (cmd: string, args: string[] = [], options?: Options) {
+    return createCommand(this.agent, ['run', cmd, ...args], options)
   }
 
   publish (packageJson: IPackageJson<any>, args: string[] = [], options: Options = {}): CommandResult {

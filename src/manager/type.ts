@@ -6,6 +6,7 @@ import type { ExecuteCommandCli } from '../defaultOptions'
 export interface Manager {
   agent: AgentType
   getConfig(): Promise<ExecuteCommandCli>
+  run(cmd: string, args?: string[], options?: Options): CommandResult
   publish(
     packageJson: IPackageJson<any>,
     args?: string[], // 命令参数
