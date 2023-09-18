@@ -21,12 +21,16 @@ async function commandMain (context: Context) {
   if (getConfigValue(context.config, 'publish', 'push')) {
     const remoteList = await getGitRemoteList(context.fileStore.git)
     if (remoteList.length) {
+      const serialExecuteManage = new SerialExecuteManage()
       const baseExecuteManage = new BaseExecuteManage()
       baseExecuteManage.pushTask(...commandMainResult.taskList)
-      const serialExecuteManage = new SerialExecuteManage()
+      // 串行
       serialExecuteManage.pushTask(
         baseExecuteManage,
-        new GitExecuteTask(createGitPushTagsCommand(), context.fileStore.git),
+        // 提交tags到所有源
+        ...remoteList.map(remote => {
+          return new GitExecuteTask(createGitPushTagsCommand([remote]), context.fileStore.git)
+        }),
       )
       commandMainResult.taskList = [serialExecuteManage]
     }

@@ -1,8 +1,8 @@
 import { gt } from 'semver'
 import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../lib'
 import type { HandleMainResult } from '../type'
-import type { ExecuteTaskFunc } from '../../execute'
-import { BaseExecuteTask, GitExecuteTask } from '../../execute/lib'
+import type { TaskItem } from '../../execute'
+import { BaseExecuteManage, BaseExecuteTask, GitExecuteTask, SerialExecuteManage } from '../../execute/lib'
 import { createGitTagPackageCommand, createGitTagPackageListCommand } from '../../instruct'
 import { getTagPublish } from './git'
 
@@ -10,7 +10,8 @@ export async function handleSyncPublish (context: Context): Promise<HandleMainRe
   const version = await getTagPublish(context)
   const { allDirs } = context.contextAnalysisDiagram
   const analysisBlockList: AnalysisBlockItem[] = []
-  const taskList: ExecuteTaskFunc[] = []
+  const taskList: TaskItem[] = []
+  const baseExecuteManage = new BaseExecuteManage()
   let versionTag = ''
 
   for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
@@ -28,9 +29,8 @@ export async function handleSyncPublish (context: Context): Promise<HandleMainRe
       )
       if (command) {
         analysisBlockList.push(analysisBlock)
-        taskList.push(
-          new BaseExecuteTask(command),
-        )
+        // publish
+        baseExecuteManage.pushTask(new BaseExecuteTask(command))
       }
       // 拿到最大的version当版本号
       versionTag = versionTag
@@ -41,8 +41,14 @@ export async function handleSyncPublish (context: Context): Promise<HandleMainRe
     }
   }
 
+  taskList.push(baseExecuteManage)
+
   if (versionTag) {
-    taskList.push(
+    const serialExecuteManage = new SerialExecuteManage()
+    // 串行
+    serialExecuteManage.pushTask(
+      ...taskList,
+      // tag
       new GitExecuteTask(
         createGitTagPackageListCommand({
           version: versionTag,
@@ -52,6 +58,8 @@ export async function handleSyncPublish (context: Context): Promise<HandleMainRe
         context.fileStore.git,
       ),
     )
+    taskList.length = 0
+    taskList.push(serialExecuteManage)
   }
 
   return {
@@ -62,7 +70,7 @@ export async function handleSyncPublish (context: Context): Promise<HandleMainRe
 
 export async function handleDiffPublish (context: Context): Promise<HandleMainResult> {
   const triggerSign: SetAnalysisBlockObject = new Set()
-  const taskList: ExecuteTaskFunc[] = []
+  const taskList: TaskItem[] = []
 
   await context.fileStore.forRepositoryDiffPack(async function (analysisBlock) {
     const command = context.packageManager.publish(
@@ -75,11 +83,16 @@ export async function handleDiffPublish (context: Context): Promise<HandleMainRe
     if (command) {
       triggerSign.add(analysisBlock)
       taskList.push(
-        new BaseExecuteTask(command),
-        new GitExecuteTask(createGitTagPackageCommand({
-          packageJson: analysisBlock.packageJson,
-          separator: '',
-        }), context.fileStore.git),
+        // 串行
+        new SerialExecuteManage().pushTask(
+          // publish
+          new BaseExecuteTask(command),
+          // tag
+          new GitExecuteTask(createGitTagPackageCommand({
+            packageJson: analysisBlock.packageJson,
+            separator: '',
+          }), context.fileStore.git),
+        ),
       )
     }
   }, '')

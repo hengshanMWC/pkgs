@@ -21,13 +21,16 @@ async function commandMain (context: Context, appointVersion?: string) {
   }
 
   if (getConfigValue(context.config, 'version', 'push')) {
+    // 拿到remote数组
     const remoteList = await getGitRemoteList(context.fileStore.git)
     if (remoteList.length) {
+      const serialExecuteManage = new SerialExecuteManage()
       const baseExecuteManage = new BaseExecuteManage()
       baseExecuteManage.pushTask(...commandMainResult.taskList)
-      const serialExecuteManage = new SerialExecuteManage()
+      // 串行
       serialExecuteManage.pushTask(
         baseExecuteManage,
+        // 提交所有远程源
         ...remoteList.map(remote => {
           return new GitExecuteTask(
             createGitPushCommand([remote, 'HEAD']),

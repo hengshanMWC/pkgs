@@ -30,29 +30,37 @@ export async function handleSyncVersion (context: Context, appointVersion?: stri
     if (analysisBlock) {
       analysisBlockList.push(analysisBlock)
       await changeRelyMyVersion(context, analysisBlock)
+      // 写入package.json
       taskList.push(new JsonExecuteTask({
         args: analysisBlock,
       }))
     }
   }
   if (taskList.length && appointVersion) {
-    const executeManage = new SerialExecuteManage()
-    executeManage.pushTask(
+    const serialExecuteManage = new SerialExecuteManage()
+    // 串行
+    serialExecuteManage.pushTask(
+      // 写入package.json
+      new BaseExecuteManage().pushTask(...taskList),
+      // git add
       new GitExecuteTask(
         createGitAddCommand(analysisBlockList.map(item => item.filePath)),
         context.fileStore.git,
       ),
+      // git commit
       new GitExecuteTask(
         createGitCommitCommand(gitCommitMessageFormat(context.config.version.message as string, `v${version}`)),
         context.fileStore.git,
       ),
+      // git tag
       new GitExecuteTask(createGitTagPackageListCommand({
         version: appointVersion,
         packageJsonList: analysisBlockList.map(item => item.packageJson),
         separator: 'v',
       }), context.fileStore.git),
     )
-    taskList.push(executeManage)
+    taskList.length = 0
+    taskList.push(serialExecuteManage)
   }
   return {
     analysisBlockList,
@@ -78,6 +86,7 @@ export async function handleDiffVersion (context: Context, appointVersion?: stri
 
   if (analysisBlockList.length) {
     const packageJsonManage = new BaseExecuteManage()
+    // 写入package.json
     const packageJsonCommand = analysisBlockList.map(analysisBlock => {
       return new JsonExecuteTask({
         args: analysisBlock,
@@ -86,11 +95,14 @@ export async function handleDiffVersion (context: Context, appointVersion?: stri
     packageJsonManage.pushTask(...packageJsonCommand)
 
     const gitFileManage = new SerialExecuteManage()
+    // 串行
     gitFileManage.pushTask(
+      // git add
       new GitExecuteTask(
         createGitAddCommand(analysisBlockList.map(item => item.filePath)),
         context.fileStore.git,
       ),
+      // git commit
       new GitExecuteTask(
         createGitCommitCommand(
           getCommitPackageListMessage(
@@ -104,6 +116,7 @@ export async function handleDiffVersion (context: Context, appointVersion?: stri
     )
 
     const gitTagManage = new BaseExecuteManage()
+    // git tag
     const gitTagCommand = analysisBlockList.map(analysisBlock => {
       return new GitExecuteTask(createGitTagPackageCommand({
         packageJson: analysisBlock.packageJson,
@@ -114,18 +127,12 @@ export async function handleDiffVersion (context: Context, appointVersion?: stri
 
     const taskManage = new SerialExecuteManage()
 
+    // 写入、提交、tag
     taskManage.pushTask(packageJsonManage, gitFileManage, gitTagManage)
 
     taskList.push(taskManage)
   }
-  // await writeJSONs(triggerSign)
-  // await context.fileStore.git.add(analysisBlockList.map(item => item.filePath))
-  // await gitDiffSave(
-  //   analysisBlockList.map(item => item.packageJson),
-  //   context.config.version.message,
-  //   'v',
-  //   context.fileStore.git,
-  // )
+
   return {
     analysisBlockList,
     taskList,

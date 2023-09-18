@@ -93,5 +93,5 @@ export function createGitPushCommand (args: string[]) {
 }
 
 export function createGitPushTagsCommand (args?: string[]) {
-  return createGitPushCommand(['--tags', ...(args ?? [])])
+  return createGitPushCommand([...(args ?? []), '--tags'])
 }
