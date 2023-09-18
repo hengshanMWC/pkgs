@@ -10,5 +10,5 @@ export interface Manager {
     packageJson: IPackageJson<any>,
     args?: string[], // 命令参数
     options?: Options, // 触发命令方法的参数
-  ): Promise<CommandResult>
+  ): CommandResult
 }

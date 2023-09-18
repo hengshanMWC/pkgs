@@ -14,7 +14,7 @@ export class BaseManager implements Manager {
     return createCommand(this.agent, ['run', cmd, ...args])
   }
 
-  async publish (packageJson: IPackageJson<any>, args: string[] = [], options: Options = {}): Promise<CommandResult> {
+  publish (packageJson: IPackageJson<any>, args: string[] = [], options: Options = {}): CommandResult {
     return createPublishCommand(packageJson.version as string, {
       agent: this.agent,
       args,
