@@ -1,7 +1,6 @@
 import { execa } from 'execa'
 import { access, copyFile, mkdir, stat, writeJSON } from 'fs-extra'
 import type { SimpleGit } from 'simple-git'
-import { simpleGit } from 'simple-git'
 import type { CommandResult } from '../command'
 import { Agent } from '../constant'
 import type {
@@ -100,7 +99,7 @@ export class JsonExecuteTask implements ExecuteTask<FileExecuteCommandResult> {
 export class GitExecuteTask implements ExecuteTask {
   commandData: CommandResult
   git: SimpleGit
-  constructor (commandData: ExecuteCommandData, git: SimpleGit = simpleGit()) {
+  constructor (commandData: ExecuteCommandData, git: SimpleGit) {
     this.commandData = {
       agent: Agent.GIT,
       ...commandData,
