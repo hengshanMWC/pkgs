@@ -1,6 +1,6 @@
 import { createInitPlugin, createRunPlugin, createVersionPlugin, createPublishPlugin } from './command'
 import type { CommandPublishParams } from './command/publish/type'
-import type { CommandRunConfig } from './command/run/type'
+import type { CommandRunParams } from './command/run/type'
 import type { PluginData } from './command/type'
 import type { CommandVersionParams } from './command/version/type'
 import { Mode } from './constant'
@@ -16,7 +16,7 @@ export interface ExecuteCommandConfig extends DefaultParams {
   packagesPath: string | string[] | undefined
   version: CommandVersionParams
   publish: CommandPublishParams
-  run: CommandRunConfig
+  run: CommandRunParams
   plugins: Array<PluginData | string>
 }
 

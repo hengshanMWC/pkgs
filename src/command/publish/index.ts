@@ -2,13 +2,13 @@ import type { SimpleGit } from 'simple-git'
 import { simpleGit } from 'simple-git'
 import { Context } from '../../lib/context'
 import type { CommandPublishParams, HandleMainResult, PluginData } from '../type'
-import { omitDefaultParams } from '../../utils'
+import { getConfigValue } from '../../utils'
 import { Mode, ModeOptions } from '../../constant'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
 async function commandMain (context: Context) {
   let commandMainResult: HandleMainResult
-  if (context.config.mode === Mode.DIFF) {
+  if (getConfigValue(context.config, 'publish', 'mode') === Mode.DIFF) {
     commandMainResult = await handleDiffPublish(context)
   }
   else {
@@ -25,7 +25,7 @@ export async function parseCommandPublish (
 ) {
   const config = await Context.assignConfig({
     mode: configParam.mode,
-    publish: omitDefaultParams(configParam),
+    publish: configParam,
   })
   const context = await Context.create(
     config,
@@ -59,7 +59,7 @@ export function createPublishPlugin (): PluginData {
     async action (context: Context, params: CommandPublishParams = {}) {
       context.assignOptions({
         mode: params.mode,
-        publish: omitDefaultParams(params),
+        publish: params,
       })
       await commandMain(context)
       await context.executeManage.execute()

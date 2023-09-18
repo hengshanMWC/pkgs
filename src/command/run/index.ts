@@ -1,11 +1,10 @@
 import type { SimpleGit } from 'simple-git'
 import { simpleGit } from 'simple-git'
-import { omit } from 'lodash'
 import { Context } from '../../lib/context'
 import type { PluginData } from '../type'
 import type { AnalysisBlockItem } from '../../lib'
 import { BaseExecuteTask } from '../../execute/lib'
-import { mixinDefaultOptions } from '../../utils'
+import { getConfigValue, mixinDefaultOptions } from '../../utils'
 import { Mode, ModeOptions } from '../../constant'
 import type { CommandRunParams } from './type'
 import { handleDiffRun, handleSyncRun } from './utils'
@@ -13,7 +12,7 @@ async function commandMain (context: Context, cmd: string) {
   const args = ['run', cmd]
   let diffDirs: string[]
 
-  if (context.config.mode === Mode.DIFF) {
+  if (getConfigValue(context.config, 'run', 'mode') === Mode.DIFF) {
     diffDirs = await handleDiffRun(context)
   }
   else {
@@ -51,8 +50,7 @@ export async function parseCommandRun (
   argv?: string[],
 ) {
   const config = await Context.assignConfig({
-    mode: configParam.mode,
-    run: omit<CommandRunParams, 'mode'>(configParam, ['mode']),
+    run: configParam,
   })
   const context = await Context.create(
     config,
@@ -87,7 +85,6 @@ export function createRunPlugin (): PluginData {
     ],
     action: async (context: Context, cmd: string, params: CommandRunParams = {}) => {
       context.assignOptions({
-        mode: params.mode,
         run: params,
       })
       await commandMain(context, cmd)

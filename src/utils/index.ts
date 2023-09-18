@@ -4,7 +4,6 @@ import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
-import { omit } from 'lodash'
 import type { DefaultParams, ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import type { CommandResult } from '../command'
 import { DEPENDENCY_PREFIX, WORK_SPACE_REG_EXP, gitCommitMessage } from './regExp'
@@ -50,6 +49,9 @@ function assignOption (
     if (object.version.message !== undefined) {
       templateObject.version.message = object.version.message
     }
+    if (object.version.mode !== undefined) {
+      templateObject.version.mode = object.version.mode
+    }
     if (object.version.push !== undefined) {
       templateObject.version.push = object.version.push
     }
@@ -57,6 +59,9 @@ function assignOption (
   if (object.publish !== undefined) {
     if (templateObject.publish === undefined) {
       templateObject.publish = {}
+    }
+    if (object.publish.mode !== undefined) {
+      templateObject.publish.mode = object.publish.mode
     }
     if (object.publish.push !== undefined) {
       templateObject.publish.push = object.publish.push
@@ -68,6 +73,9 @@ function assignOption (
     }
     if (object.run.type !== undefined) {
       templateObject.run.type = object.run.type
+    }
+    if (object.run.mode !== undefined) {
+      templateObject.run.mode = object.run.mode
     }
   }
   if (object.plugins !== undefined) {
@@ -140,13 +148,17 @@ export function parserCommandResult (argv: string[]): CommandResult {
   }
 }
 
-export function omitDefaultParams<T extends Partial<DefaultParams>> (config: T) {
-  return omit<T, 'mode'>(config, ['mode'])
-}
-
 export function mixinDefaultOptions (options?: Options): Options {
   return {
     stdio: 'inherit',
     ...options,
   }
+}
+
+export function getConfigValue (
+  config: ExecuteCommandConfig,
+  module: 'publish' | 'version' | 'run',
+  key: keyof DefaultParams,
+) {
+  return config[module][key] ?? config[key]
 }
