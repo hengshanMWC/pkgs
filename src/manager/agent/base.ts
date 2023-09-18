@@ -2,12 +2,16 @@ import type IPackageJson from '@ts-type/package-dts'
 import type { Options } from 'execa'
 import type { Manager } from '../type'
 import type { CommandResult } from '../../command'
-import { createPublishCommand } from '../../instruct'
+import { createCommand, createPublishCommand } from '../../instruct'
 
 export class BaseManager implements Manager {
   agent = 'base'
   async getConfig () {
     return {}
+  }
+
+  async run (cmd: string, args: string[] = []) {
+    return createCommand(this.agent, ['run', cmd, ...args])
   }
 
   async publish (packageJson: IPackageJson<any>, args: string[] = [], options: Options = {}): Promise<CommandResult> {

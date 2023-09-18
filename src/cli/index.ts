@@ -17,7 +17,10 @@ export async function cliMain (argv: NodeJS.Process['argv'], version: string) {
       .description(value.description)
       .action(async (...args) => {
         cliVersion(value.id)
-        const context = await Context.create(undefined, undefined, argv)
+        const context = await Context.create({
+          args,
+          argv,
+        })
         await value.action(context, ...args)
         cliSuccess()
       })

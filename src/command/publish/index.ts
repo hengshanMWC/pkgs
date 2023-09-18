@@ -28,9 +28,11 @@ export async function parseCommandPublish (
     publish: configParam,
   })
   const context = await Context.create(
-    config,
-    git,
-    argv,
+    {
+      config,
+      git,
+      argv,
+    },
   )
   return commandMain(context)
 }

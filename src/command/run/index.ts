@@ -52,11 +52,11 @@ export async function parseCommandRun (
   const config = await Context.assignConfig({
     run: configParam,
   })
-  const context = await Context.create(
+  const context = await Context.create({
     config,
     git,
     argv,
-  )
+  })
   return commandMain(context, cmd)
 }
 

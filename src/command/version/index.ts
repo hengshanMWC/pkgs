@@ -30,9 +30,11 @@ export async function parseCommandVersion (
     version: configParam,
   })
   const context = await Context.create(
-    config,
-    git,
-    argv,
+    {
+      config,
+      git,
+      argv,
+    },
   )
   return commandMain(context, appointVersion)
 }
