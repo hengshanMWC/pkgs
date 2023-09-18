@@ -6,6 +6,9 @@ import {
 import type { CommandVersionParams, HandleMainResult, PluginData } from '../type'
 import { Mode, ModeOptions } from '../../constant'
 import { getConfigValue } from '../../utils'
+import { BaseExecuteManage, GitExecuteTask, SerialExecuteManage } from '../../execute'
+import { createGitPushCommand } from '../../instruct'
+import { getGitRemoteList } from '../../utils/git'
 import { handleDiffVersion, handleSyncVersion } from './utils'
 
 async function commandMain (context: Context, appointVersion?: string) {
@@ -16,6 +19,26 @@ async function commandMain (context: Context, appointVersion?: string) {
   else {
     commandMainResult = await handleSyncVersion(context, appointVersion)
   }
+
+  if (getConfigValue(context.config, 'version', 'push')) {
+    const remoteList = await getGitRemoteList(context.fileStore.git)
+    if (remoteList.length) {
+      const baseExecuteManage = new BaseExecuteManage()
+      baseExecuteManage.pushTask(...commandMainResult.taskList)
+      const serialExecuteManage = new SerialExecuteManage()
+      serialExecuteManage.pushTask(
+        baseExecuteManage,
+        ...remoteList.map(remote => {
+          return new GitExecuteTask(
+            createGitPushCommand([remote, 'HEAD']),
+            context.fileStore.git,
+          )
+        }),
+      )
+      commandMainResult.taskList = [serialExecuteManage]
+    }
+  }
+
   context.executeManage.enterMainResult(commandMainResult)
   return context
 }

@@ -6,6 +6,7 @@ import { getConfigValue } from '../../utils'
 import { Mode, ModeOptions } from '../../constant'
 import { BaseExecuteManage, GitExecuteTask, SerialExecuteManage } from '../../execute'
 import { createGitPushTagsCommand } from '../../instruct'
+import { getGitRemoteList } from '../../utils/git'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
 async function commandMain (context: Context) {
@@ -18,14 +19,17 @@ async function commandMain (context: Context) {
   }
 
   if (getConfigValue(context.config, 'publish', 'push')) {
-    const baseExecuteManage = new BaseExecuteManage()
-    baseExecuteManage.pushTask(...commandMainResult.taskList)
-    const serialExecuteManage = new SerialExecuteManage()
-    serialExecuteManage.pushTask(
-      baseExecuteManage,
-      new GitExecuteTask(createGitPushTagsCommand(), context.fileStore.git),
-    )
-    commandMainResult.taskList = [serialExecuteManage]
+    const remoteList = await getGitRemoteList(context.fileStore.git)
+    if (remoteList.length) {
+      const baseExecuteManage = new BaseExecuteManage()
+      baseExecuteManage.pushTask(...commandMainResult.taskList)
+      const serialExecuteManage = new SerialExecuteManage()
+      serialExecuteManage.pushTask(
+        baseExecuteManage,
+        new GitExecuteTask(createGitPushTagsCommand(), context.fileStore.git),
+      )
+      commandMainResult.taskList = [serialExecuteManage]
+    }
   }
 
   context.executeManage.enterMainResult(commandMainResult)

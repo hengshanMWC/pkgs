@@ -1,6 +1,8 @@
 import { simpleGit } from 'simple-git'
 import type { SimpleGit, FileStatusResult } from 'simple-git'
 import type IPackageJson from '@ts-type/package-dts'
+import { GitExecuteTask } from '../execute'
+import { createGitCommand } from '../instruct'
 import { getPackageNameVersion, getPackageNameVersionList } from './packageJson'
 import { gitCommitMessageFormat, sortFilesName } from './index'
 
@@ -150,4 +152,15 @@ export async function getWorkInfo (
 
 function sortFilter (files: FileStatusResult[]) {
   return sortFilesName(files.map(file => file.path))
+}
+
+export async function getGitRemoteList (git: SimpleGit = simpleGit()) {
+  const gitExecuteTask = new GitExecuteTask(createGitCommand(['remote']), git)
+  try {
+    const removes = await gitExecuteTask.execute()
+    return removes ? removes.trim().split('\n') : []
+  }
+  catch {
+    return []
+  }
 }

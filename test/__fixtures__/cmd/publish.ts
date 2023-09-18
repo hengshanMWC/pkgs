@@ -6,7 +6,6 @@ import {
   commandVersion,
   createGitTagPackageListCommand,
   createGitTagPackageCommand,
-  createGitPushTagsCommand,
 } from '../../../src'
 import { getPublishCommand } from '../utils'
 import { GitExecuteTask, SerialExecuteManage } from '../../../src/execute'
@@ -37,7 +36,6 @@ export async function syncTest (version: string, arr: string[], git: SimpleGit) 
     separator: '',
   })
   commandResult.push(gitTagCommand)
-  commandResult.push(createGitPushTagsCommand())
   const commandData = context.executeManage.getCommandData().commandData
   commandData.forEach((item, index) => {
     expect(item).toEqual(commandResult[index])
@@ -72,8 +70,6 @@ export async function diffTest (version: string, arr: string[], git: SimpleGit) 
     taskList.pushTask(gitTag)
     nameAntVersionPackages.push(() => tagCommit(`${packageJson.name}@${version}`, git))
   })
-
-  commandResult.push(createGitPushTagsCommand())
 
   const commandData = context.executeManage.getCommandData().commandData
   commandData.forEach((item, index) => {
