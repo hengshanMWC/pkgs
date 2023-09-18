@@ -7,9 +7,10 @@ import { Mode } from './constant'
 
 export interface DefaultParams {
   mode: Mode
+  push: boolean
 }
 
-export type GetConfig<T extends DefaultParams> = Omit<T, 'mode'>
+export type GetConfig<T extends DefaultParams> = Omit<T, keyof DefaultParams>
 
 export interface ExecuteCommandConfig extends DefaultParams {
   packagesPath: string | string[] | undefined
@@ -23,11 +24,11 @@ export type ExecuteCommandCli = DeepPartial<ExecuteCommandConfig>
 export const defaultOptions: ExecuteCommandConfig = {
   packagesPath: undefined,
   mode: Mode.SYNC,
+  push: true,
   version: {
     message: 'chore: version %s',
   },
   publish: {
-    message: 'release %s',
   },
   run: {
     type: 'all',
