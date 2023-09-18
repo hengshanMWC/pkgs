@@ -20,6 +20,7 @@ export class Context {
   executeManage = new ExecuteManage()
   argv: ContextParams['argv']
   args: ContextParams['args']
+  ttArgv: ContextParams['ttArgv'] = []
 
   static cli = Agent.PKGS
 
@@ -99,4 +100,5 @@ interface ContextParams {
   git?: SimpleGit
   argv?: string[]
   args?: any[]
+  ttArgv?: string[]
 }
