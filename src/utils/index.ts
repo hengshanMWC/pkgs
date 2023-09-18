@@ -40,6 +40,9 @@ function assignOption (
   if (object.mode !== undefined) {
     templateObject.mode = object.mode
   }
+  if (object.push !== undefined) {
+    templateObject.push = object.push
+  }
   if (object.version !== undefined) {
     if (templateObject.version === undefined) {
       templateObject.version = {}
@@ -47,13 +50,16 @@ function assignOption (
     if (object.version.message !== undefined) {
       templateObject.version.message = object.version.message
     }
+    if (object.version.push !== undefined) {
+      templateObject.version.push = object.version.push
+    }
   }
   if (object.publish !== undefined) {
     if (templateObject.publish === undefined) {
       templateObject.publish = {}
     }
-    if (object.publish.message !== undefined) {
-      templateObject.publish.message = object.publish.message
+    if (object.publish.push !== undefined) {
+      templateObject.publish.push = object.publish.push
     }
   }
   if (object.run !== undefined) {
