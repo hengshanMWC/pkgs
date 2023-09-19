@@ -1,5 +1,6 @@
 import colors from 'colors'
 import { versionBumpInfo } from '@abmao/bump'
+import { isString } from 'lodash'
 import type { AnalysisBlockItem, Context, SetAnalysisBlockObject } from '../../lib'
 import { gitCommitMessageFormat, isTest, warn } from '../../utils'
 import { getCommitPackageListMessage } from '../../utils/git'
@@ -163,7 +164,7 @@ function getVersionMax (context: Context) {
 // 获取包路径用于做版本升级依据
 async function getSyncTargetVersionDir (context: Context) {
   const dir = await versionTagToDir(context)
-  if (dir) {
+  if (isString(dir)) {
     return dir
   }
   return getVersionMax(context)
