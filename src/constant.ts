@@ -18,8 +18,10 @@ export const WARN_NOW_RUN = 'There are no packages that need to run commands'
 
 export enum Agent {
   PKGS = 'pkgs',
-  PNPM = 'pnpm',
   GIT = 'git',
+  PNPM = 'pnpm',
+  YARN = 'yarn',
+  NPM = 'npm',
 }
 
 export const DEFAULT_AGENT = Agent.PNPM

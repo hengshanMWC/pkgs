@@ -1,9 +1,11 @@
 import { Agent, DEFAULT_AGENT } from '../constant'
 import type { BaseManager } from './agent'
-import { PnpmManager } from './agent'
+import { NpmManager, PnpmManager, YarnManager } from './agent'
 
 const productList: Map<any, typeof BaseManager> = new Map()
 productList.set(Agent.PNPM, PnpmManager)
+productList.set(Agent.YARN, YarnManager)
+productList.set(Agent.NPM, NpmManager)
 
 // 工厂模式
 export function createManagerProduct (key: any) {
