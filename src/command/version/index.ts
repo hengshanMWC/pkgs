@@ -33,7 +33,7 @@ async function commandMain (context: Context, appointVersion?: string) {
         // 提交所有远程源
         ...remoteList.map(remote => {
           return new GitExecuteTask(
-            createGitPushCommand([remote, 'HEAD']),
+            createGitPushCommand([remote, 'HEAD', '--follow-tags', '--no-verify', '--atomic']),
             context.fileStore.git,
           )
         }),
