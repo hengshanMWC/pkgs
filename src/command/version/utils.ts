@@ -37,7 +37,7 @@ export async function handleSyncVersion (context: Context, appointVersion?: stri
       }))
     }
   }
-  if (taskList.length && appointVersion) {
+  if (taskList.length) {
     const serialExecuteManage = new SerialExecuteManage()
     // 串行
     serialExecuteManage.pushTask(
@@ -55,7 +55,7 @@ export async function handleSyncVersion (context: Context, appointVersion?: stri
       ),
       // git tag
       new GitExecuteTask(createGitTagPackageListCommand({
-        version: appointVersion,
+        version,
         packageJsonList: analysisBlockList.map(item => item.packageJson),
         separator: 'v',
       }), context.fileStore.git),
