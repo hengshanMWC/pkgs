@@ -1,10 +1,12 @@
 # Overview
-`pkgs` 是一个 `monorepo cli`，它只做该做的事
+`pkgs` 它只做该做的事
 
 - 无论 `monorepo` 还是 `multirepo` 架构都可以使用
 - 0配置开箱即用
 - 天生支持按需调用
 - 支持插件化
+
+结合实现了 `workspace` 版本号的包管理器做发布工具
 
 # Usage
 ```
