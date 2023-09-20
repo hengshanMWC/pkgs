@@ -14,18 +14,6 @@ export function getDiffCommitMessage (nameAntVersionPackages: string[]) {
     '\n',
   )
 }
-export async function gitDiffSave (
-  packageJsonList: IPackageJson[],
-  message = '',
-  separator = '',
-  git: SimpleGit = simpleGit(),
-) {
-  const nameAntVersionPackages = getPackageNameVersionList(packageJsonList, separator)
-  const packagesMessage = getDiffCommitMessage(nameAntVersionPackages)
-  await git.commit(gitCommitMessageFormat(message, packagesMessage || _tagMessage))
-  const tagList = nameAntVersionPackages.map(version => gitTag(version, message))
-  await Promise.all(tagList)
-}
 
 export function getCommitPackageListMessage (
   packageJsonList: IPackageJson[],
@@ -103,10 +91,6 @@ async function getChangeFiles (
 
   arr.pop()
 
-  // if (!arr.length && !isTest) {
-  //   warn(WARN_NOW_CHANGE)
-  //   process.exit()
-  // }
   return arr
 }
 export type DiffFile = string[] | boolean | undefined

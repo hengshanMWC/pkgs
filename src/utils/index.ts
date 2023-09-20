@@ -7,7 +7,6 @@ import { getPackagesDir } from '@abmao/forb'
 import { Command } from 'commander'
 import { isString } from 'lodash'
 import type { DefaultParams, ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
-import type { CommandResult } from '../command'
 import { DEPENDENCY_PREFIX, WORK_SPACE_REG_EXP, gitCommitMessage } from './regExp'
 export const isTest = process.env.NODE_ENV === 'test'
 export async function getJSON (dir: string): Promise<IPackageJson> {
@@ -106,10 +105,6 @@ export async function getYamlPackages (): Promise<string[]> {
   return doc.packages as string[]
 }
 
-export function getArray<T> (params: T | T[]): T[] {
-  return Array.isArray(params) ? params : [params]
-}
-
 export function sortFilesName (files: string[]) {
   return files.slice().sort((a, b) => a.localeCompare(b))
 }
@@ -139,15 +134,6 @@ export async function getDirPackageInfo (packagesPath: string | string[]) {
 
 export function fileMatch (files: string[], dir: string) {
   return files.some(file => file.includes(dir))
-}
-
-export function parserCommandResult (argv: string[]): CommandResult {
-  const _argv = argv.slice()
-  return {
-    agent: _argv.shift() || '',
-    args: _argv,
-    options: {},
-  }
 }
 
 export function mixinDefaultOptions (options?: Options): Options {
