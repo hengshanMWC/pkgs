@@ -3,7 +3,7 @@ import { simpleGit } from 'simple-git'
 import { Context } from '../../lib/context'
 import type { CommandPublishParams, HandleMainResult, PluginData } from '../type'
 import { getConfigValue } from '../../utils'
-import { Mode, ModeOptions } from '../../constant'
+import { Mode, ModeOptions, NoPushOptions, PushOptions } from '../../constant'
 import { BaseExecuteManage, GitExecuteTask, SerialExecuteManage } from '../../execute'
 import { createGitPushTagsCommand } from '../../instruct'
 import { getGitRemoteList } from '../../utils/git'
@@ -79,11 +79,12 @@ export function createPublishPlugin (): PluginData {
     description: 'publish package',
     option: [
       ModeOptions,
+      PushOptions,
+      NoPushOptions,
     ],
     allowUnknownOption: true,
     async action (context: Context, params: CommandPublishParams = {}) {
       context.assignOptions({
-        mode: params.mode,
         publish: params,
       })
       await commandMain(context)

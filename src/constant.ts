@@ -32,3 +32,7 @@ export enum Mode {
 }
 
 export const ModeOptions = ['--mode <type>', Object.values(Mode).join(' | ')] as const
+
+export const PushOptions = ['--push', 'git push'] as const
+
+export const NoPushOptions = ['--no-push', 'not git push'] as const

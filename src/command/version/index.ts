@@ -4,7 +4,7 @@ import {
   Context,
 } from '../../lib/context'
 import type { CommandVersionParams, HandleMainResult, PluginData } from '../type'
-import { Mode, ModeOptions } from '../../constant'
+import { Mode, ModeOptions, NoPushOptions, PushOptions } from '../../constant'
 import { getConfigValue } from '../../utils'
 import { BaseExecuteManage, GitExecuteTask, SerialExecuteManage } from '../../execute'
 import { createGitPushCommand } from '../../instruct'
@@ -87,6 +87,8 @@ export function createVersionPlugin (): PluginData {
     option: [
       ModeOptions,
       ['-m, --message <message>', 'commit message'],
+      PushOptions,
+      NoPushOptions,
     ],
     allowUnknownOption: true,
     async action (context: Context, config: CommandVersionParams = {}) {

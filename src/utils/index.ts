@@ -4,6 +4,8 @@ import yaml from 'js-yaml'
 import colors from 'colors'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { getPackagesDir } from '@abmao/forb'
+import { Command } from 'commander'
+import { isString } from 'lodash'
 import type { DefaultParams, ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import type { CommandResult } from '../command'
 import { DEPENDENCY_PREFIX, WORK_SPACE_REG_EXP, gitCommitMessage } from './regExp'
@@ -161,4 +163,22 @@ export function getConfigValue (
   key: keyof DefaultParams,
 ) {
   return config[module][key] ?? config[key]
+}
+
+export function getTTArgv (...args: any[]) {
+  const command = args.at(-1)
+  const ttArgv: string[] = []
+
+  // 拿到透传
+  if (command instanceof Command) {
+    const commandArgs = command.args
+    if (isString(args.at(0))) {
+      // run [cmd]
+      ttArgv.push(...commandArgs.slice(0))
+    }
+    else {
+      ttArgv.push(...commandArgs)
+    }
+  }
+  return ttArgv
 }

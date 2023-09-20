@@ -4,10 +4,12 @@ import { isUndefined } from 'lodash'
 import { cliVersion, cliSuccess } from '../utils/tips'
 import { Context } from '../lib/context'
 import type { PluginData } from '../command'
+import { getTTArgv } from '../utils'
 export async function cliMain (argv: NodeJS.Process['argv'], version: string) {
   const pluginGroup = new PluginGroup<PluginData>()
   const config = await Context.assignConfig()
   pluginGroup.use(...config.plugins)
+
   program
     .version(version, '-v, --version')
     .description('Simple monorepo combined with pnpm')
@@ -18,10 +20,13 @@ export async function cliMain (argv: NodeJS.Process['argv'], version: string) {
       .description(value.description)
       .action(async (...args) => {
         cliVersion(value.id)
+
         const context = await Context.create({
           args,
           argv,
+          ttArgv: getTTArgv(...args),
         })
+
         await value.action(context, ...args)
         cliSuccess()
       })
