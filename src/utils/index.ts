@@ -160,7 +160,7 @@ export function getTTArgv (...args: any[]) {
     const commandArgs = command.args
     if (isString(args.at(0))) {
       // run [cmd]
-      ttArgv.push(...commandArgs.slice(0))
+      ttArgv.push(...commandArgs.slice(1))
     }
     else {
       ttArgv.push(...commandArgs)

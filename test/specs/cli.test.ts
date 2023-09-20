@@ -1,11 +1,10 @@
-import path from 'path'
-import { stat, access, readFile, writeFile, appendFile } from 'fs-extra'
+import { stat, access } from 'fs-extra'
 import { cliMain } from '../../src/index'
 import { io } from '../__fixtures__'
 import { originVersion } from '../__fixtures__/constant'
 
 const ORIGINAL_CWD = process.cwd()
-const cmd = 'init'
+const cmd = 'cli'
 
 describe(cmd, () => {
   const prefix = 'init-test'
@@ -18,6 +17,8 @@ describe(cmd, () => {
     process.chdir(ORIGINAL_CWD)
   })
   test('default', async () => {
+    // await cliMain(['', '', 'run', 'test:bin-i'], originVersion)
+    // await cliMain(['', '', 'run', 'test:bin-i'], originVersion)
     const _path = await io.mkdtemp(prefix)
     process.chdir(_path)
     await cliMain(['', '', 'init'], originVersion)
@@ -27,5 +28,8 @@ describe(cmd, () => {
     expect(pkgsJsonNameResult).toBeUndefined()
     const packageJsonNameResult = await access(packageJsonName)
     expect(packageJsonNameResult).toBeUndefined()
-  })
+    const runTTargv = ['all', '--color']
+    const context = await cliMain(['', '', 'run', 'test', '--type', ...runTTargv], originVersion)
+    expect(context.ttArgv).toEqual(runTTargv)
+  }, 100000000)
 })
