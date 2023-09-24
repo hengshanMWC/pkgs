@@ -1,6 +1,6 @@
 import { simpleGit } from 'simple-git'
 import type { SimpleGit, FileStatusResult } from 'simple-git'
-import type IPackageJson from '@ts-type/package-dts'
+import type { IPackageJson } from '@ts-type/package-dts'
 import { GitExecuteTask } from '../execute'
 import { createGitCommand } from '../instruct'
 import { getPackageNameVersion, getPackageNameVersionList } from './packageJson'

@@ -1,4 +1,4 @@
-import type IPackageJson from '@ts-type/package-dts'
+import type { IPackageJson } from '@ts-type/package-dts'
 import { isString } from 'lodash'
 import { fileMatch, getDirPackageInfo, getJSONs, sortFilesName } from '../utils'
 import {

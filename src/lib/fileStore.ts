@@ -1,6 +1,6 @@
 import type { SimpleGit } from 'simple-git'
 import { simpleGit } from 'simple-git'
-import type IPackageJson from '@ts-type/package-dts'
+import type { IPackageJson } from '@ts-type/package-dts'
 import type { DiffFile } from '../utils/git'
 import { getStageInfo, getWorkInfo, getVersionDiffFile } from '../utils/git'
 import { getPackageNameVersion, gtPackageJson } from '../utils/packageJson'

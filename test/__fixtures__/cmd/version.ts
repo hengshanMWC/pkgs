@@ -1,4 +1,4 @@
-import type IPackageJson from '@ts-type/package-dts'
+import type { IPackageJson } from '@ts-type/package-dts'
 import type { SimpleGit } from 'simple-git'
 import { readJSON } from 'fs-extra'
 import { getPackages, tagExpect } from '../commit'

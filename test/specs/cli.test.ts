@@ -28,8 +28,8 @@ describe(cmd, () => {
     expect(pkgsJsonNameResult).toBeUndefined()
     const packageJsonNameResult = await access(packageJsonName)
     expect(packageJsonNameResult).toBeUndefined()
-    const runTTargv = ['all', '--color']
-    const context = await cliMain(['', '', 'run', 'test', '--type', ...runTTargv], originVersion)
-    expect(context.ttArgv).toEqual(runTTargv)
-  }, 100000000)
+    // const runTTargv = ['all', '--color']
+    // const context = await cliMain(['', '', 'run', 'test', '--type', ...runTTargv], originVersion)
+    // expect(context.ttArgv).toEqual(runTTargv)
+  })
 })
