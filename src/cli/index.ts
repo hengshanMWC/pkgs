@@ -5,7 +5,7 @@ import { cliVersion, cliSuccess } from '../utils/tips'
 import { Context } from '../lib/context'
 import type { PluginData } from '../command'
 import { getTTArgv } from '../utils'
-export async function cliMain (argv: NodeJS.Process['argv'], version: string): Promise<Context> {
+export async function cliMain (argv: NodeJS.Process['argv'], version = '0.0.0'): Promise<Context> {
   let _resolve: (context: Context) => void
   let _reject: (error: Error) => void
   const p: Promise<Context> = new Promise((resolve, reject) => {
