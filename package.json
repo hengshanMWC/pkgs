@@ -95,7 +95,7 @@
     "unbuild": "^2.0.0",
     "vite": "^4.3.9",
     "vite-tsconfig-paths": "^4.2.0",
-    "vitepress": "1.0.0-rc.20",
+    "vitepress": "1.0.0-beta.5",
     "vitest": "^0.32.0"
   },
   "lint-staged": {
