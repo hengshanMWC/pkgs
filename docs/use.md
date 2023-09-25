@@ -1,6 +1,8 @@
-# 安装
+# 快速起步
 
-## 全局安装
+## 安装
+
+### 全局安装
 
 ::: code-group
 
@@ -16,14 +18,14 @@
 
 :::
 
-### 使用
+#### 使用
 ```bash
 pkgs init // 创建项目
 pkgs version // 升级包
 pkgs publish // 发布包
 ```
 
-## 项目安装
+### 项目安装
 
 ::: code-group
 
@@ -39,7 +41,7 @@ pkgs publish // 发布包
 
 :::
 
-### 使用
+#### 使用
 在 package.json 的 scripts 定义命令
 ```json
 {
@@ -58,7 +60,7 @@ import { commandVersion, commandPublish } from '@abmao/pkgs'
 })()
 ```
 
-# 模板
+## 模板
 安装 [@abmao/items](https://github.com/hengshanMWC/items)，一键创建项目体验
 
 ::: code-group

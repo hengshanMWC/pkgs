@@ -1,0 +1,16 @@
+# 配置索引
+## 配置
+## 选项
+### packagesPath
+### mode
+### push
+### version
+#### version.mode
+#### version.message
+#### version.push
+### publish
+#### publish.mode
+#### publish.push
+### run
+#### run.type
+#### run.mode

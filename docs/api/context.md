@@ -1,0 +1,16 @@
+# Context
+## 简介
+## 属性
+### config
+### contextAnalysisDiagram
+### fileStore
+### packageManager
+### executeManage
+### argv
+### args
+### ttArgv
+### argvValue
+## 方法
+### create
+### assignConfig
+### assignOptions

@@ -42,15 +42,15 @@ export default defineConfig({
         items: [
           {
             text: 'Context',
-            link: '/lib',
+            link: 'api/context',
           },
           {
-            text: '命令',
-            link: '/command',
+            text: 'Command',
+            link: 'api/command',
           },
           {
             text: 'Cli',
-            link: '/cli',
+            link: 'api/cli',
           },
         ],
       },
@@ -60,7 +60,7 @@ export default defineConfig({
         items: [
           {
             text: '配置索引',
-            link: '/config',
+            link: 'config/index',
           },
         ],
       },
