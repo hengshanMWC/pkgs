@@ -5,7 +5,7 @@ import {
   warn,
 } from '../utils'
 import type { AnalysisBlockItem } from './analysisDiagram'
-export class ExecuteManage {
+export class Execute {
   private manage = new BaseExecuteManage()
   private affectedAnalysisBlockList: AnalysisBlockItem[] = []
 

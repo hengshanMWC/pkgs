@@ -10,14 +10,14 @@ import type { Manager } from '../manager'
 import { agentSmell } from '../manager'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
-import { ExecuteManage } from './executeManage'
+import { Execute } from './executeManage'
 
 export class Context {
   config: ExecuteCommandConfig
   contextAnalysisDiagram!: ContextAnalysisDiagram
   fileStore!: FileStore
   packageManager!: Manager
-  executeManage = new ExecuteManage()
+  executeManage = new Execute()
   argv: ContextParams['argv']
   args: ContextParams['args']
   ttArgv: ContextParams['ttArgv'] = []
