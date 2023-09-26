@@ -1,1 +1,0 @@
-import{_ as e,o as a,c as o,Q as i}from"./chunks/framework.fb0c8ff2.js";const m=JSON.parse('{"title":"配置索引","description":"","frontmatter":{},"headers":[],"relativePath":"config/index.md","filePath":"config/index.md"}'),r={name:"config/index.md"},s=i("",31),l=[s];function n(t,h,u,d,c,g){return a(),o("div",null,l)}const b=e(r,[["render",n]]);export{m as __pageData,b as default};
