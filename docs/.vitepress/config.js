@@ -9,7 +9,7 @@ export default defineConfig({
   outDir: path.join(__dirname ,'../dist'),
   title: '@abmao/pkgs',
   description: '一个简单的、既可以用于 Mono-repo 又可以用于 Multi-repo 的项目管理器。',
-  base: '/',
+  base: '/pkgs/docs/dist/',
   head: [
     ['link', { rel: 'icon', href: loginPath }]
   ],
