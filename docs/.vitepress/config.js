@@ -31,8 +31,8 @@ export default defineConfig({
             link: '/use',
           },
           {
-            text: '主要功能',
-            link: '/features',
+            text: '内部实现',
+            link: '/principle',
           },
         ],
       },
