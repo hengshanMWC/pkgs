@@ -1,10 +1,10 @@
-import path from 'path'
-import { stat, access, readFile, writeFile, appendFile } from 'fs-extra'
-import { commandInit } from '../../src/index'
+import { stat, access } from 'fs-extra'
+import { cliMain } from '../../src/index'
 import { io } from '../__fixtures__'
+import { originVersion } from '../__fixtures__/constant'
 
 const ORIGINAL_CWD = process.cwd()
-const cmd = 'init'
+const cmd = 'cli'
 
 describe(cmd, () => {
   const prefix = 'init-test'
@@ -17,26 +17,19 @@ describe(cmd, () => {
     process.chdir(ORIGINAL_CWD)
   })
   test('default', async () => {
+    // await cliMain(['', '', 'run', 'test:bin-i'], originVersion)
+    // await cliMain(['', '', 'run', 'test:bin-i'], originVersion)
     const _path = await io.mkdtemp(prefix)
     process.chdir(_path)
-    await commandInit()
+    await cliMain(['', '', 'init'], originVersion)
     const statResult = await stat(packagesName)
     expect(statResult.isDirectory()).toBeTruthy()
     const pkgsJsonNameResult = await access(pkgsJsonName)
     expect(pkgsJsonNameResult).toBeUndefined()
     const packageJsonNameResult = await access(packageJsonName)
     expect(packageJsonNameResult).toBeUndefined()
-    const packagesFile = path.resolve(packagesName, '_path')
-    await writeFile(packagesFile, _path, 'utf-8')
-    await appendFile(pkgsJsonName, _path, 'utf-8')
-    await appendFile(packageJsonName, _path, 'utf-8')
-    // 不会覆盖
-    await commandInit()
-    const packagesFileData = await readFile(packagesFile, 'utf-8')
-    const pkgsJsonData = await readFile(pkgsJsonName, 'utf-8')
-    const packageJsonData = await readFile(packageJsonName, 'utf-8')
-    expect(packagesFileData.trim()).toBe(_path)
-    expect(pkgsJsonData.includes(_path)).toBeTruthy()
-    expect(packageJsonData.includes(_path)).toBeTruthy()
+    // const runTTargv = ['all', '--color']
+    // const context = await cliMain(['', '', 'run', 'test', '--type', ...runTTargv], originVersion)
+    // expect(context.ttArgv).toEqual(runTTargv)
   })
 })

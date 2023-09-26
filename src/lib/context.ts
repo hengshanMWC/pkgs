@@ -10,14 +10,14 @@ import type { Manager } from '../manager'
 import { agentSmell } from '../manager'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
-import { ExecuteManage } from './executeManage'
+import { Execute } from './executeManage'
 
 export class Context {
   config: ExecuteCommandConfig
   contextAnalysisDiagram!: ContextAnalysisDiagram
   fileStore!: FileStore
   packageManager!: Manager
-  executeManage = new ExecuteManage()
+  executeManage = new Execute()
   argv: ContextParams['argv']
   args: ContextParams['args']
   ttArgv: ContextParams['ttArgv'] = []
@@ -30,6 +30,7 @@ export class Context {
       git,
       argv,
       args,
+      ttArgv,
     }: ContextParams,
   ) {
     let contextConfig: ConstructorParameters<typeof Context>[0]
@@ -48,7 +49,7 @@ export class Context {
     }, packageManagerConfig, contextConfig)
 
     // 创建上下文
-    const context = new Context(contextConfig, argv, args)
+    const context = new Context(contextConfig, argv, args, ttArgv)
     context.packageManager = packageManager
 
     // 生成包之间的图表关系
@@ -71,10 +72,14 @@ export class Context {
     config: ExecuteCommandConfig,
     argv: string[] = process.argv,
     args?: any[],
+    ttArgv?: string[],
   ) {
     this.config = config
     this.argv = argv
     this.args = args
+    if (ttArgv) {
+      this.ttArgv = ttArgv
+    }
   }
 
   get argvValue () {

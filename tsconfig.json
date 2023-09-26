@@ -11,11 +11,11 @@
     "esModuleInterop": true,
     "strict": true,
     "declaration": true,
-    "declarationDir": "./types",
+    "declarationDir": "./dist/types",
     "resolveJsonModule": true,
     "rootDir": ".",
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
   },
 }

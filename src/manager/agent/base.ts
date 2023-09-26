@@ -1,4 +1,4 @@
-import type IPackageJson from '@ts-type/package-dts'
+import type { IPackageJson } from '@ts-type/package-dts'
 import type { Options } from 'execa'
 import type { Manager } from '../type'
 import type { CommandResult } from '../../command'

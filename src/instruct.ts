@@ -1,4 +1,4 @@
-import type IPackageJson from '@ts-type/package-dts'
+import type { IPackageJson } from '@ts-type/package-dts'
 import type { CommandResult } from './command'
 import { Agent, DEFAULT_AGENT } from './constant'
 import { mixinDefaultOptions } from './utils'

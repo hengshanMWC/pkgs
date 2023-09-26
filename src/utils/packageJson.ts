@@ -22,7 +22,7 @@ export function dependentSearch (
     const relyAttrs = getRelyAttrs().reverse()
     // 循环所有依赖key
     relyAttrs.forEach(key => {
-      const relyKeyObject = packageJson[key]
+      const relyKeyObject = packageJson[key] as Record<string, string>
       if (!relyKeyObject) return
       const oldVersion = relyKeyObject[sourceName]
 
@@ -63,13 +63,14 @@ function dependencyUpdate (
   name: string,
   version: string,
 ) {
-  const oldVersion = packageJson[relyAttr][name]
+  const relyValue = packageJson[relyAttr] as Record<string, string>
+  const oldVersion: string = relyValue[name]
 
   if (isVersionStar(oldVersion)) return
 
   const versionRegExp = new RegExp(versionText)
-  packageJson[relyAttr][name] =
-        packageJson[relyAttr][name]
+  relyValue[name] =
+        relyValue[name]
           .replace(versionRegExp, version)
 }
 

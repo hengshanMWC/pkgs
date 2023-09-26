@@ -41,28 +41,28 @@ export async function testMain (
     }
   }
 
-  const ctxAll = await parseCommandRun(undefined, cmd, context.git)
+  const ctxAll = await parseCommandRun(cmd, undefined, context.git)
   const cmdListAll = getDirList(ctxAll)
   testCmdList(cmdListAll)
 
-  const ctxWork = await parseCommandRun({
+  const ctxWork = await parseCommandRun(cmd, {
     type: 'work',
-  }, cmd, context.git)
+  }, context.git)
   const cmdListWork = getDirList(ctxWork)
   testCmdList(cmdListWork)
 
   await context.git.add('.')
-  const ctxStage = await parseCommandRun({
+  const ctxStage = await parseCommandRun(cmd, {
     type: 'stage',
-  }, cmd, context.git)
+  }, context.git)
   const cmdListStage = getDirList(ctxStage)
   testCmdList(cmdListStage)
 
   await context.git.commit('save')
-  const ctxRepository = await parseCommandRun({
+  const ctxRepository = await parseCommandRun(cmd, {
     type: 'repository',
     mode,
-  }, cmd, context.git)
+  }, context.git)
   const cmdListRepository = getDirList(ctxRepository)
   testCmdList(cmdListRepository)
 
@@ -72,10 +72,10 @@ export async function testMain (
 
   await changePackagesFileGitCommit(context)
   await context.git.commit('save')
-  const ctxRepository2 = await parseCommandRun({
+  const ctxRepository2 = await parseCommandRun(cmd, {
     type: 'repository',
     mode,
-  }, cmd, context.git)
+  }, context.git)
   const cmdListRepository2 = getDirList(ctxRepository2)
   testCmdList(cmdListRepository2, arr2)
 }

@@ -5,7 +5,14 @@ import { cliVersion, cliSuccess } from '../utils/tips'
 import { Context } from '../lib/context'
 import type { PluginData } from '../command'
 import { getTTArgv } from '../utils'
-export async function cliMain (argv: NodeJS.Process['argv'], version: string) {
+export async function cliMain (argv: NodeJS.Process['argv'], version = '0.0.0'): Promise<Context> {
+  let _resolve: (context: Context) => void
+  let _reject: (error: Error) => void
+  const p: Promise<Context> = new Promise((resolve, reject) => {
+    _resolve = resolve
+    _reject = reject
+  })
+
   const pluginGroup = new PluginGroup<PluginData>()
   const config = await Context.assignConfig()
   pluginGroup.use(...config.plugins)
@@ -19,16 +26,21 @@ export async function cliMain (argv: NodeJS.Process['argv'], version: string) {
       .command(value.command)
       .description(value.description)
       .action(async (...args) => {
-        cliVersion(value.id)
+        try {
+          cliVersion(value.id)
+          const context = await Context.create({
+            args,
+            argv,
+            ttArgv: getTTArgv(...args),
+          })
 
-        const context = await Context.create({
-          args,
-          argv,
-          ttArgv: getTTArgv(...args),
-        })
-
-        await value.action(context, ...args)
-        cliSuccess()
+          await value.action(context, ...args)
+          _resolve(context)
+          cliSuccess()
+        }
+        catch (error) {
+          _reject(error as Error)
+        }
       })
     if (!isUndefined(value.allowUnknownOption)) {
       _program.allowUnknownOption(value.allowUnknownOption)
@@ -40,4 +52,5 @@ export async function cliMain (argv: NodeJS.Process['argv'], version: string) {
     }
   })
   program.parse(argv)
+  return p
 }

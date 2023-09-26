@@ -41,8 +41,8 @@ async function commandMain (context: Context, cmd: string) {
 }
 
 export async function parseCommandRun (
-  configParam: CommandRunParams = {},
   cmd: string,
+  configParam: CommandRunParams = {},
   git: SimpleGit = simpleGit(),
   argv?: string[],
 ) {
@@ -58,12 +58,12 @@ export async function parseCommandRun (
 }
 
 export async function commandRun (
-  configParam: CommandRunParams = {},
   cmd: string,
+  configParam: CommandRunParams = {},
   git: SimpleGit = simpleGit(),
   argv?: string[],
 ) {
-  const context = await parseCommandRun(configParam, cmd, git, argv)
+  const context = await parseCommandRun(cmd, configParam, git, argv)
   const executeCommandResult = await context.executeManage.execute()
   return {
     analysisBlockList: context.executeManage.getCommandData().analysisBlockList,

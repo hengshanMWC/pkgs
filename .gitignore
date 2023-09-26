@@ -17,3 +17,5 @@ coverage
 # Temporary files
 .temp
 .tmp
+
+docs/.vitepress/cache
