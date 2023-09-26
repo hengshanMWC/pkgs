@@ -1,1 +1,0 @@
-import{_ as a,o as e,c as t,Q as o}from"./chunks/framework.fb0c8ff2.js";const p=JSON.parse('{"title":"Command","description":"","frontmatter":{},"headers":[],"relativePath":"api/command.md","filePath":"api/command.md"}'),i={name:"api/command.md"},r=o("",7),n=[r];function h(d,s,l,c,m,u){return e(),t("div",null,n)}const b=a(i,[["render",h]]);export{p as __pageData,b as default};
