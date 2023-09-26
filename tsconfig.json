@@ -16,6 +16,6 @@
     "rootDir": ".",
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
   },
 }

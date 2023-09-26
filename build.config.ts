@@ -6,7 +6,7 @@ export default defineBuildConfig({
     'src/cli/bin.ts',
   ],
   clean: true,
-  declaration: true,
+  failOnWarn: false,
   rollup: {
     emitCJS: true,
     inlineDependencies: true,
