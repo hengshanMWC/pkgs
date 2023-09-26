@@ -38,7 +38,9 @@
     "pkgs": "dist/cli/bin.mjs"
   },
   "scripts": {
-    "build": "unbuild && tsc --emitDeclarationOnly",
+    "build:unbuild": "unbuild",
+    "tsc": "tsc --emitDeclarationOnly",
+    "build": "pnpm run build:unbuild && pnpm run tsc",
     "release": "esno ./scripts/release.ts",
 
     "prepare": "husky install",
