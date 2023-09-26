@@ -31,7 +31,7 @@ export default defineConfig({
             link: '/use',
           },
           {
-            text: '内部实现',
+            text: '内部运行',
             link: '/principle',
           },
         ],
