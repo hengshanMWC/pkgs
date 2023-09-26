@@ -1,6 +1,6 @@
 {
   "name": "@abmao/pkgs",
-  "version": "2.2.1-beta.1",
+  "version": "2.2.1-beta.2",
   "packageManager": "pnpm@7.21.0",
   "description": "Simple monorepo combined with pnpm",
   "keywords": [
@@ -42,16 +42,13 @@
     "tsc": "tsc --emitDeclarationOnly",
     "build": "pnpm run build:unbuild && pnpm run tsc",
     "release": "esno ./scripts/release.ts",
-
     "prepare": "husky install",
     "lint": "eslint --ext=js,ts,json,md .",
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",
-
     "test": "vitest",
     "test:cov": "vitest --coverage",
     "test:bin": "esno ./src/cli/bin.ts run test:bin-i --type all --color=false",
     "test:bin-i": "pnpm i",
-
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs"
