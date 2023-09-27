@@ -5,17 +5,16 @@ import type { DiffFile } from '../utils/git'
 import { getStageInfo, getWorkInfo, getVersionDiffFile } from '../utils/git'
 import { getPackageNameVersion, gtPackageJson } from '../utils/packageJson'
 import { fileMatch } from '../utils'
-import type { AnalysisBlockItem, ContextAnalysisDiagram } from './analysisDiagram'
+import type { FileStoreApi, ForPackCallback, contextAnalysisDiagramApi } from '.'
 export {
   FileStore,
-  ForPackCallback,
 }
 
-class FileStore {
-  contextAnalysisDiagram: ContextAnalysisDiagram
+class FileStore implements FileStoreApi {
+  contextAnalysisDiagram: contextAnalysisDiagramApi
   git: SimpleGit
   constructor (
-    contextAnalysisDiagram: ContextAnalysisDiagram,
+    contextAnalysisDiagram: contextAnalysisDiagramApi,
     git: SimpleGit = simpleGit(),
   ) {
     this.contextAnalysisDiagram = contextAnalysisDiagram
@@ -133,7 +132,3 @@ class FileStore {
     }
   }
 }
-type ForPackCallback = (
-  analysisBlock: AnalysisBlockItem,
-  index: number,
-) => Promise<any> | void

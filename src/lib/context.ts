@@ -11,12 +11,12 @@ import { agentSmell } from '../manager'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
 import { Execute } from './executeManage'
-import type { contextAnalysisDiagramApi } from '.'
+import type { FileStoreApi, contextAnalysisDiagramApi } from '.'
 
 export class Context {
   config: ExecuteCommandConfig
   contextAnalysisDiagram!: contextAnalysisDiagramApi
-  fileStore!: FileStore
+  fileStore!: FileStoreApi
   packageManager!: Manager
   executeManage = new Execute()
   argv: ContextParams['argv']
