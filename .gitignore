@@ -19,4 +19,3 @@ coverage
 .tmp
 
 docs/.vitepress/cache
-!docs/dist
