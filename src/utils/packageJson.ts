@@ -1,7 +1,7 @@
 import type { IPackageJson } from '@ts-type/package-dts'
 import { satisfies } from 'semver'
 import { gt } from 'lodash'
-import type { AnalysisBlockItem } from '../lib/analysisDiagram'
+import type { AnalysisBlockItem } from '../lib'
 import { getRelyAttrs } from './analysisDiagram'
 import { npmTag, versionText } from './regExp'
 import { getWorkspaceVersion, isVersionStar } from './index'
