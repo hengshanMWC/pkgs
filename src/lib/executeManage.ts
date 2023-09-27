@@ -4,8 +4,8 @@ import { BaseExecuteManage } from '../execute'
 import {
   warn,
 } from '../utils'
-import type { AnalysisBlockItem } from '.'
-export class Execute {
+import type { AnalysisBlockItem, ExecuteApi } from '.'
+export class Execute implements ExecuteApi {
   private manage = new BaseExecuteManage()
   private affectedAnalysisBlockList: AnalysisBlockItem[] = []
 

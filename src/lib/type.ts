@@ -2,6 +2,7 @@ import type IPackageJson from '@ts-type/package-dts'
 import type { SimpleGit } from 'simple-git'
 import type { ExecuteCommandConfig } from '../defaultOptions'
 import type { DiffFile } from '../utils/git'
+import type { CommandResult, HandleMainResult } from '../command'
 
 export interface AnalysisBlockItem {
   packageJson: IPackageJson
@@ -47,4 +48,14 @@ export interface FileStoreApi {
   getFileSyncList(separator?: string): Promise<DiffFile>
   getDiffFileList(createVersion: (packageJson: IPackageJson) => string): Promise<DiffFile[]>
   getRepositoryInfo(fileList: DiffFile[]): Promise<string[]>
+}
+
+export interface ExecuteApi {
+  enterMainResult(commandMainResult: HandleMainResult): this
+  setAffectedAnalysisBlockList(analysisBlockLis: AnalysisBlockItem[]): this
+  getCommandData(): {
+    analysisBlockList: AnalysisBlockItem[]
+    commandData: CommandResult<any>[]
+  }
+  execute(): Promise<any[]>
 }
