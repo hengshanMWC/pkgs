@@ -9,20 +9,12 @@ import {
   setRelyMyDirMap,
 } from '../utils/analysisDiagram'
 import type { ExecuteCommandConfig } from '../defaultOptions'
+import type { AnalysisBlockItem, AnalysisDiagram, contextAnalysisDiagramApi } from './type'
 
-export { ContextAnalysisDiagram, AnalysisBlockItem, AnalysisDiagram, SetAnalysisBlockObject }
+export { ContextAnalysisDiagram, SetAnalysisBlockObject }
 
-interface AnalysisBlockItem {
-  packageJson: IPackageJson
-  name: string
-  filePath: string
-  dir: string
-  relyMyDir: string[] // 依赖我的包
-  myRelyDir: string[] // 我依赖的包
-}
-type AnalysisDiagram = Record<string, AnalysisBlockItem>
 type SetAnalysisBlockObject = Set<AnalysisBlockItem>
-class ContextAnalysisDiagram {
+class ContextAnalysisDiagram implements contextAnalysisDiagramApi {
   packagesPath: ExecuteCommandConfig['packagesPath']
   analysisDiagram!: AnalysisDiagram
 
