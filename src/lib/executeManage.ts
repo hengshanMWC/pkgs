@@ -4,7 +4,7 @@ import { BaseExecuteManage } from '../execute'
 import {
   warn,
 } from '../utils'
-import type { AnalysisBlockItem } from './analysisDiagram'
+import type { AnalysisBlockItem } from '.'
 export class Execute {
   private manage = new BaseExecuteManage()
   private affectedAnalysisBlockList: AnalysisBlockItem[] = []
