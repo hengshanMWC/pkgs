@@ -26,9 +26,9 @@ export type AnalysisDiagram = Record<string, AnalysisBlockItem>
 export interface ContextAnalysisDiagramApi {
   packagesPath: ExecuteCommandConfig['packagesPath']
   analysisDiagram: AnalysisDiagram
-  get allDirs(): string[]
-  get allFilesPath(): (string | undefined)[]
-  get allPackagesJSON(): (IPackageJson<unknown> | undefined)[]
+  get allDirs(): string[] // 获取所有包地址
+  get allFilesPath(): string[] // 获取所有包package.json地址
+  get allPackagesJSON(): IPackageJson<unknown>[] // 获取所有包的package.json
   initData(): Promise<this>
   getRelatedDir(forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>): Promise<string[]>
   getRelatedPackagesDir(files: string[] | boolean | undefined): string[]

@@ -37,7 +37,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
     if (this.analysisDiagram) {
       return this.allDirs.map(
         key => this.dirToAnalysisDiagram(key)?.filePath,
-      )
+      ) as string[]
     }
     else {
       return []
@@ -49,7 +49,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
     if (this.analysisDiagram) {
       return this.allDirs.map(
         key => this.dirToAnalysisDiagram(key)?.packageJson,
-      )
+      ) as IPackageJson<unknown>[]
     }
     else {
       return []
