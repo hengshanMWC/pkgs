@@ -15,7 +15,7 @@ export interface AnalysisBlockItem {
 
 export type AnalysisDiagram = Record<string, AnalysisBlockItem>
 
-export interface contextAnalysisDiagramApi {
+export interface ContextAnalysisDiagramApi {
   packagesPath: ExecuteCommandConfig['packagesPath']
   analysisDiagram: AnalysisDiagram
   get allDirs(): string[]
@@ -36,7 +36,7 @@ export type ForPackCallback = (
 ) => Promise<any> | void
 
 export interface FileStoreApi {
-  contextAnalysisDiagram: contextAnalysisDiagramApi
+  contextAnalysisDiagram: ContextAnalysisDiagramApi
   git: SimpleGit
   getAllFIle(): string[]
   workDiffFile(): Promise<string[]>

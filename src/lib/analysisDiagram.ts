@@ -9,12 +9,12 @@ import {
   setRelyMyDirMap,
 } from '../utils/analysisDiagram'
 import type { ExecuteCommandConfig } from '../defaultOptions'
-import type { AnalysisBlockItem, AnalysisDiagram, contextAnalysisDiagramApi } from './type'
+import type { AnalysisBlockItem, AnalysisDiagram, ContextAnalysisDiagramApi } from './type'
 
 export { ContextAnalysisDiagram, SetAnalysisBlockObject }
 
 type SetAnalysisBlockObject = Set<AnalysisBlockItem>
-class ContextAnalysisDiagram implements contextAnalysisDiagramApi {
+class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
   packagesPath: ExecuteCommandConfig['packagesPath']
   analysisDiagram!: AnalysisDiagram
 
