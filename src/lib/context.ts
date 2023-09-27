@@ -1,4 +1,3 @@
-import type { SimpleGit } from 'simple-git'
 import { loadConfig } from 'load-code'
 import {
   assignOptions,
@@ -11,7 +10,7 @@ import { agentSmell } from '../manager'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
 import { Execute } from './executeManage'
-import type { ExecuteApi, FileStoreApi, ContextAnalysisDiagramApi } from '.'
+import type { ExecuteApi, FileStoreApi, ContextAnalysisDiagramApi, ContextParams } from '.'
 
 export class Context {
   config: ExecuteCommandConfig
@@ -104,12 +103,4 @@ export class Context {
     }
     return this
   }
-}
-
-interface ContextParams {
-  config?: ConstructorParameters<typeof Context>[0]
-  git?: SimpleGit
-  argv?: string[]
-  args?: any[]
-  ttArgv?: string[]
 }

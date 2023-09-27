@@ -4,6 +4,14 @@ import type { ExecuteCommandConfig } from '../defaultOptions'
 import type { DiffFile } from '../utils/git'
 import type { CommandResult, HandleMainResult } from '../command'
 
+export interface ContextParams {
+  config?: ExecuteCommandConfig
+  git?: SimpleGit
+  argv?: string[]
+  args?: any[]
+  ttArgv?: string[]
+}
+
 export interface AnalysisBlockItem {
   packageJson: IPackageJson
   name: string
