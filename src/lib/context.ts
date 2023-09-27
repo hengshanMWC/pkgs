@@ -34,13 +34,7 @@ export class Context {
       ttArgv,
     }: ContextParams,
   ) {
-    let contextConfig: ConstructorParameters<typeof Context>[0]
-    if (config) {
-      contextConfig = config
-    }
-    else {
-      contextConfig = await Context.assignConfig()
-    }
+    let contextConfig: ConstructorParameters<typeof Context>[0] = await Context.getDefault(config)
 
     // 初始化包管理
     const packageManager = await agentSmell()
@@ -67,6 +61,17 @@ export class Context {
   static async assignConfig (...config: ExecuteCommandCli[]) {
     const configData = await loadConfig(Context.cli)
     return assignOptions(defaultOptions, configData.data || {}, ...config)
+  }
+
+  static async getDefault (config?: ContextParams['config']) {
+    let result: ConstructorParameters<typeof Context>[0]
+    if (config) {
+      result = config
+    }
+    else {
+      result = await Context.assignConfig()
+    }
+    return result
   }
 
   constructor (
