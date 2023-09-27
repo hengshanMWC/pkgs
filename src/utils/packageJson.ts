@@ -104,7 +104,7 @@ export function gtPackageJsonToDir (
 }
 
 export function gtPackageJson (
-  aPackageJson?: IPackageJson,
+  aPackageJson: IPackageJson,
   bPackageJson?: IPackageJson,
 ) {
   if (bPackageJson && aPackageJson) {
