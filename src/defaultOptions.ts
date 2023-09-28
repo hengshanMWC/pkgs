@@ -17,7 +17,7 @@ export interface ExecuteCommandConfig extends DefaultParams {
   version: CommandVersionParams
   publish: CommandPublishParams
   run: CommandRunParams
-  plugins: Array<PluginData | string>
+  plugins: Array<(() => PluginData) | PluginData | string>
 }
 
 export type ExecuteCommandCli = DeepPartial<ExecuteCommandConfig>
@@ -33,10 +33,10 @@ export const defaultOptions: ExecuteCommandConfig = {
     type: 'all',
   },
   plugins: [
-    createVersionPlugin(),
-    createPublishPlugin(),
-    createRunPlugin(),
-    createInitPlugin(),
+    createVersionPlugin,
+    createPublishPlugin,
+    createRunPlugin,
+    createInitPlugin,
   ],
 }
 
