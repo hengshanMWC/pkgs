@@ -96,7 +96,8 @@ export function createVersionPlugin (): PluginData {
         version: config,
       })
       await commandMain(context)
-      await context.executeManage.execute()
+      const result = await context.executeManage.execute()
+      return result
     },
   }
 }

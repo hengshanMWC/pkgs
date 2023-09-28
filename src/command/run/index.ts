@@ -86,7 +86,8 @@ export function createRunPlugin (): PluginData {
         run: params,
       })
       await commandMain(context, cmd)
-      await context.executeManage.execute()
+      const result = await context.executeManage.execute()
+      return result
     },
   }
 }
