@@ -31,7 +31,7 @@ class FileStore implements FileStoreApi {
     const files = await getWorkInfo(this.git)
     const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
-      this.forPack(relatedPackagesDir, source => {
+      this.dirToAnalysisBlockFor(relatedPackagesDir, source => {
         cd(source)
       }),
     )
@@ -42,7 +42,7 @@ class FileStore implements FileStoreApi {
     const files = await getStageInfo(this.git)
     const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
-      this.forPack(relatedPackagesDir, source => {
+      this.dirToAnalysisBlockFor(relatedPackagesDir, source => {
         cd(source)
       }),
     )
@@ -70,7 +70,7 @@ class FileStore implements FileStoreApi {
     const file = await this.getFileSyncList(separator)
     if (file) {
       const relatedPackagesDir = await this.getRepositoryInfo([file])
-      await this.forPack(relatedPackagesDir, callback)
+      await this.dirToAnalysisBlockFor(relatedPackagesDir, callback)
     }
   }
 
@@ -79,7 +79,7 @@ class FileStore implements FileStoreApi {
       packageJson, separator,
     ))
     const relatedPackagesDir = await this.getRepositoryInfo(files)
-    await this.forPack(relatedPackagesDir, callback)
+    await this.dirToAnalysisBlockFor(relatedPackagesDir, callback)
   }
 
   async getFileSyncList (separator?: string) {
@@ -122,7 +122,7 @@ class FileStore implements FileStoreApi {
     return [...relatedPackagesDir]
   }
 
-  private async forPack (relatedPackagesDir: string[], callback: ForPackCallback) {
+  private async dirToAnalysisBlockFor (relatedPackagesDir: string[], callback: ForPackCallback) {
     for (let index = 0; index < relatedPackagesDir.length; index++) {
       const dir = relatedPackagesDir[index]
       const analysisBlock = this.contextAnalysisDiagram.dirToAnalysisDiagram(dir)
