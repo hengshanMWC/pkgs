@@ -36,6 +36,10 @@ export default defineConfig({
             text: '内部运行',
             link: '/principle',
           },
+          {
+            text: '插件',
+            link: '/plugin'
+          }
         ],
       },
       {
