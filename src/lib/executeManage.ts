@@ -17,7 +17,7 @@ export class Execute implements ExecuteApi {
     return this
   }
 
-  setAffectedAnalysisBlockList (analysisBlockLis: AnalysisBlockItem[]) {
+  private setAffectedAnalysisBlockList (analysisBlockLis: AnalysisBlockItem[]) {
     this.affectedAnalysisBlockList = analysisBlockLis
     return this
   }

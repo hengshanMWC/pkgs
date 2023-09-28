@@ -23,7 +23,9 @@ export interface AnalysisBlockItem {
 export type AnalysisDiagram = Record<string, AnalysisBlockItem>
 
 export interface ContextAnalysisDiagramApi {
+  // 工作区
   packagesPath: ExecuteCommandConfig['packagesPath']
+  // 图表依赖
   analysisDiagram: AnalysisDiagram
   get allDirs(): string[] // 获取所有包地址
   get allFilesPath(): string[] // 获取所有包package.json地址
@@ -47,7 +49,9 @@ export type ForPackCallback = (
 ) => Promise<any> | void
 
 export interface FileStoreApi {
+  // 图表依赖实例
   contextAnalysisDiagram: ContextAnalysisDiagramApi
+  // git实例
   git: SimpleGit
   // 获取所有包路径
   getAllFile(): string[]
@@ -66,8 +70,8 @@ export interface FileStoreApi {
 }
 
 export interface ExecuteApi {
+  // 录入数据
   enterMainResult(commandMainResult: HandleMainResult): this
-  setAffectedAnalysisBlockList(analysisBlockLis: AnalysisBlockItem[]): this
   getCommandData(): {
     analysisBlockList: AnalysisBlockItem[]
     commandData: CommandResult<any>[]
