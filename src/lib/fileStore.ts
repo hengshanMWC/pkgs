@@ -21,12 +21,10 @@ class FileStore implements FileStoreApi {
     this.git = git
   }
 
-  // 所有包路径
   getAllFile () {
     return this.contextAnalysisDiagram.allDirs
   }
 
-  // 工作区包路径
   async workDiffFile () {
     const files = await getWorkInfo(this.git)
     const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
@@ -37,7 +35,6 @@ class FileStore implements FileStoreApi {
     )
   }
 
-  // 暂存区包路径
   async stageDiffFile () {
     const files = await getStageInfo(this.git)
     const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
@@ -48,7 +45,6 @@ class FileStore implements FileStoreApi {
     )
   }
 
-  // 版本库diff包路径
   async repositoryDiffFile (separator?: string) {
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
       this.forRepositoryDiffPack(source => {
@@ -57,7 +53,6 @@ class FileStore implements FileStoreApi {
     )
   }
 
-  // 版本库sync包路径
   async repositorySyncFile (separator?: string) {
     return this.contextAnalysisDiagram.getRelatedDir(cd =>
       this.forRepositorySyncPack(source => {
@@ -82,7 +77,7 @@ class FileStore implements FileStoreApi {
     await this.dirToAnalysisBlockFor(relatedPackagesDir, callback)
   }
 
-  async getFileSyncList (separator?: string) {
+  private async getFileSyncList (separator?: string) {
     const packageJson = this.contextAnalysisDiagram.allPackagesJSON
       .reduce(
         (aPackageJson, bPackageJson) => gtPackageJson(aPackageJson, bPackageJson),
@@ -95,7 +90,7 @@ class FileStore implements FileStoreApi {
   }
 
   // 拿到相关包的文件修改范围
-  async getDiffFileList (createVersion: (packageJson: IPackageJson) => string) {
+  private async getDiffFileList (createVersion: (packageJson: IPackageJson) => string) {
     const fileList = this.contextAnalysisDiagram.allPackagesJSON
       .filter(packageJson => packageJson)
       .map(packageJson => getVersionDiffFile(
@@ -105,7 +100,7 @@ class FileStore implements FileStoreApi {
     return result
   }
 
-  async getRepositoryInfo (fileList: DiffFile[]) {
+  private async getRepositoryInfo (fileList: DiffFile[]) {
     const relatedPackagesDir: Set<string> = new Set()
     const dirs = this.contextAnalysisDiagram.allDirs
 

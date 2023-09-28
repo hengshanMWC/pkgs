@@ -1,7 +1,6 @@
 import type IPackageJson from '@ts-type/package-dts'
 import type { SimpleGit } from 'simple-git'
 import type { ExecuteCommandConfig } from '../defaultOptions'
-import type { DiffFile } from '../utils/git'
 import type { CommandResult, HandleMainResult } from '../command'
 
 export interface ContextParams {
@@ -50,16 +49,20 @@ export type ForPackCallback = (
 export interface FileStoreApi {
   contextAnalysisDiagram: ContextAnalysisDiagramApi
   git: SimpleGit
+  // 获取所有包路径
   getAllFile(): string[]
+  // 获取工作区包路径
   workDiffFile(): Promise<string[]>
+  // 获取暂存区包路径
   stageDiffFile(): Promise<string[]>
+  // 获取版本区diff模式包路径
   repositoryDiffFile(separator?: string): Promise<string[]>
+  // 获取版本区sync模式包路径
   repositorySyncFile(separator?: string): Promise<string[]>
+  // sync模式循环版本区
   forRepositorySyncPack(callback: ForPackCallback, separator?: string): Promise<void>
+  // diff模式循环版本区
   forRepositoryDiffPack(callback: ForPackCallback, separator?: string): Promise<void>
-  getFileSyncList(separator?: string): Promise<DiffFile>
-  getDiffFileList(createVersion: (packageJson: IPackageJson) => string): Promise<DiffFile[]>
-  getRepositoryInfo(fileList: DiffFile[]): Promise<string[]>
 }
 
 export interface ExecuteApi {
