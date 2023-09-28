@@ -82,7 +82,6 @@ export function createPublishPlugin (): PluginData {
       PushOptions,
       NoPushOptions,
     ],
-    allowUnknownOption: true,
     async action (context: Context, params: CommandPublishParams = {}) {
       context.assignOptions({
         publish: params,
