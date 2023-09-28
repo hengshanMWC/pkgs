@@ -4,9 +4,13 @@ import type { CommandResult, AgentType } from '../command'
 import type { ExecuteCommandCli } from '../defaultOptions'
 
 export interface ManagerApi {
+  // npm、pnpm之类
   agent: AgentType
+  // 获取包工作区配置
   getConfig(): Promise<ExecuteCommandCli>
+  // 例如：npm run [cmd]
   run(cmd: string, args?: string[], options?: Options): CommandResult
+  // 例如：npm publish
   publish(
     packageJson: IPackageJson<any>,
     args?: string[], // 命令参数
