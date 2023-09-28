@@ -1,5 +1,20 @@
 # 配置索引
-## 配置
+
+## 类型
+```ts
+interface DefaultParams {
+  mode: Mode
+  push: boolean
+}
+interface ExecuteCommandConfig extends DefaultParams {
+  packagesPath: string | string[] | undefined
+  version: CommandVersionParams
+  publish: CommandPublishParams
+  run: CommandRunParams
+  plugins: Array<PluginData | string>
+}
+```
+## 配置读取
 支持的配置方式如下:
 - 根目录
   - pkgs.config.ts
