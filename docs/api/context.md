@@ -14,7 +14,7 @@ class Context {
   fileStore: FileStoreApi
   // 包管理器
   packageManager: ManagerApi
-  // 命令执行
+  // 命令管理
   executeManage: ExecuteApi
   // NodeJS.Process['argv']
   argv: ContextParams['argv']
@@ -40,6 +40,8 @@ class Context {
 ### config
 配置
 #### 描述
+混合多方配置生成
+
 `项目配置文件 + 包管理器配置 + 默认配置 = config`
 
 优先级：项目配置文件 > 包管理器配置 > 默认配置
@@ -54,29 +56,104 @@ class Context {
 #### 类型
 ```ts
 interface ContextAnalysisDiagramApi {
+  // 工作区
   packagesPath: ExecuteCommandConfig['packagesPath']
+  // 图表依赖
   analysisDiagram: AnalysisDiagram
-  get allDirs(): string[]
-  get allFilesPath(): (string | undefined)[]
-  get allPackagesJSON(): (IPackageJson<unknown> | undefined)[]
-  initData(): Promise<this>
+  get allDirs(): string[] // 获取所有包地址
+  get allFilesPath(): string[] // 获取所有包package.json地址
+  get allPackagesJSON(): IPackageJson<unknown>[] // 获取所有包的package.json
+  initData(): Promise<this> // 初始化图表依赖
+  // 获取依赖我的包目录
   getRelatedDir(forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>): Promise<string[]>
+  // 通过文件路径获取包目录
   getRelatedPackagesDir(files: string[] | boolean | undefined): string[]
+  // 拓扑排序
   getDirTopologicalSorting(dirs: string[]): string[]
+  // package.json交换包信息
   packageJsonToAnalysisBlock(value: IPackageJson): AnalysisBlockItem | null
+  // 目录交换包信息
   dirToAnalysisBlock(value: string): AnalysisBlockItem | null
-  dataToAnalysisDiagram(value: any, key: keyof AnalysisBlockItem): AnalysisBlockItem | null
+}
+
+// 包名: AnalysisBlockItem
+type AnalysisDiagram = Record<string, AnalysisBlockItem>
+
+interface AnalysisBlockItem {
+  packageJson: IPackageJson // 包 package.json
+  name: string // 包名
+  filePath: string // 包 package.json 路径
+  dir: string // 包目录路径
+  relyMyDir: string[] // 依赖我的包
+  myRelyDir: string[] // 我依赖的包
 }
 ```
 
 ### fileStore
+文件仓库
+
+#### 描述
+基于 git 和图表依赖通过多种方式处理文件，模式：diff、sync，git：工作区、暂存区、版本区
+
+#### 类型
+```ts
+interface FileStoreApi {
+  // 图表依赖实例
+  contextAnalysisDiagram: ContextAnalysisDiagramApi
+  // git实例
+  git: SimpleGit
+  // 获取所有包路径
+  getAllFile(): string[]
+  // 获取工作区包路径
+  workDiffFile(): Promise<string[]>
+  // 获取暂存区包路径
+  stageDiffFile(): Promise<string[]>
+  // 获取版本区diff模式包路径
+  repositoryDiffFile(separator?: string): Promise<string[]>
+  // 获取版本区sync模式包路径
+  repositorySyncFile(separator?: string): Promise<string[]>
+  // sync模式循环版本区
+  forRepositorySyncPack(callback: ForPackCallback, separator?: string): Promise<void>
+  // diff模式循环版本区
+  forRepositoryDiffPack(callback: ForPackCallback, separator?: string): Promise<void>
+}
+```
 ### packageManager
+包管理器
+#### 描述
+实现包管理器的一些命令行为
+#### 类型
+```ts
+interface ManagerApi {
+  // npm、pnpm之类
+  agent: AgentType
+  // 获取包工作区配置
+  getConfig(): Promise<ExecuteCommandCli>
+  // 例如：npm run [cmd]
+  run(cmd: string, args?: string[], options?: Options): CommandResult
+  // 例如：npm publish
+  publish(
+    packageJson: IPackageJson<any>,
+    args?: string[], // 命令参数
+    options?: Options, // 触发命令方法的参数
+  ): CommandResult
+}
+```
 ### executeManage
-### argv
-### args
-### ttArgv
-### argvValue
-## 方法
-### create
-### assignConfig
-### assignOptions
+命令管理
+#### 描述
+用来执行各种命令
+#### 类型
+```ts
+interface ExecuteApi {
+  // 录入命令数据
+  enterMainResult(commandMainResult: HandleMainResult): this
+  // 返回命令数据
+  getCommandData(): {
+    analysisBlockList: AnalysisBlockItem[]
+    commandData: CommandResult<any>[]
+  }
+  // 执行
+  execute(): Promise<any[]>
+}
+```
