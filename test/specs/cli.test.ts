@@ -21,7 +21,7 @@ describe(cmd, () => {
     // await cliMain(['', '', 'run', 'test:bin-i'], originVersion)
     const _path = await io.mkdtemp(prefix)
     process.chdir(_path)
-    await cliMain(['', '', 'init'], originVersion)
+    await cliMain(['', '', 'init'])
     const statResult = await stat(packagesName)
     expect(statResult.isDirectory()).toBeTruthy()
     const pkgsJsonNameResult = await access(pkgsJsonName)
