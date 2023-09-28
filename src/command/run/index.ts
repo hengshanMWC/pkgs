@@ -76,7 +76,7 @@ export function createRunPlugin (): PluginData {
     id: 'run',
     command: 'run <cmd>',
     description: 'run diff scripts.\n type: all | work | stage | repository, default: all',
-    option: [
+    options: [
       ['--type <type>', 'all | work | stage | repository', 'all'],
       ModeOptions,
     ],

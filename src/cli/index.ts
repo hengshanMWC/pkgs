@@ -45,9 +45,9 @@ export async function cliMain (argv: NodeJS.Process['argv'], version = '0.0.0'):
     if (!isUndefined(value.allowUnknownOption)) {
       _program.allowUnknownOption(value.allowUnknownOption)
     }
-    if (value.option) {
-      value.option.forEach(item => {
-        _program = _program.option(...item)
+    if (value.options) {
+      value.options.forEach(option => {
+        _program = _program.option(...option)
       })
     }
   })

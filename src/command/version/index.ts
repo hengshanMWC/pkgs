@@ -84,7 +84,7 @@ export function createVersionPlugin (): PluginData {
     id: 'version',
     command: 'version',
     description: 'version package',
-    option: [
+    options: [
       ModeOptions,
       ['-m, --message <message>', 'commit message'],
       PushOptions,

@@ -77,7 +77,7 @@ export function createPublishPlugin (): PluginData {
     id: 'publish',
     command: 'publish',
     description: 'publish package',
-    option: [
+    options: [
       ModeOptions,
       PushOptions,
       NoPushOptions,
