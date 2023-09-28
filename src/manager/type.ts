@@ -3,7 +3,7 @@ import type { IPackageJson } from '@ts-type/package-dts'
 import type { CommandResult, AgentType } from '../command'
 import type { ExecuteCommandCli } from '../defaultOptions'
 
-export interface Manager {
+export interface ManagerApi {
   agent: AgentType
   getConfig(): Promise<ExecuteCommandCli>
   run(cmd: string, args?: string[], options?: Options): CommandResult

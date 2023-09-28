@@ -1,10 +1,10 @@
 import type { IPackageJson } from '@ts-type/package-dts'
 import type { Options } from 'execa'
-import type { Manager } from '../type'
+import type { ManagerApi } from '../type'
 import type { CommandResult } from '../../command'
 import { createCommand, createPublishCommand } from '../../instruct'
 
-export class BaseManager implements Manager {
+export class BaseManager implements ManagerApi {
   agent = 'base'
   async getConfig () {
     return {}

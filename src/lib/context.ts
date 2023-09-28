@@ -5,7 +5,7 @@ import {
 import type { ExecuteCommandCli, ExecuteCommandConfig } from '../defaultOptions'
 import { defaultOptions } from '../defaultOptions'
 import { Agent, PACKAGES_PATH } from '../constant'
-import type { Manager } from '../manager'
+import type { ManagerApi } from '../manager'
 import { agentSmell } from '../manager'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
@@ -16,7 +16,7 @@ export class Context {
   config: ExecuteCommandConfig
   contextAnalysisDiagram!: ContextAnalysisDiagramApi
   fileStore!: FileStoreApi
-  packageManager!: Manager
+  packageManager!: ManagerApi
   executeManage: ExecuteApi = new Execute()
   argv: ContextParams['argv']
   args: ContextParams['args']
