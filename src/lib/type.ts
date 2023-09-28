@@ -29,13 +29,17 @@ export interface ContextAnalysisDiagramApi {
   get allDirs(): string[] // 获取所有包地址
   get allFilesPath(): string[] // 获取所有包package.json地址
   get allPackagesJSON(): IPackageJson<unknown>[] // 获取所有包的package.json
-  initData(): Promise<this>
+  initData(): Promise<this> // 初始化图表依赖
+  // 获取依赖我的包目录
   getRelatedDir(forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>): Promise<string[]>
+  // 通过文件路径获取包目录
   getRelatedPackagesDir(files: string[] | boolean | undefined): string[]
+  // 拓扑排序
   getDirTopologicalSorting(dirs: string[]): string[]
+  // package.json交换包信息
   packageJsonToAnalysisBlock(value: IPackageJson): AnalysisBlockItem | null
+  // 目录交换包信息
   dirToAnalysisDiagram(value: string): AnalysisBlockItem | null
-  dataToAnalysisDiagram(value: any, key: keyof AnalysisBlockItem): AnalysisBlockItem | null
 }
 
 export type ForPackCallback = (

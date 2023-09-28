@@ -124,7 +124,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
     return this.dataToAnalysisDiagram(value, 'dir')
   }
 
-  dataToAnalysisDiagram (value: any, key: keyof AnalysisBlockItem) {
+  private dataToAnalysisDiagram (value: any, key: keyof AnalysisBlockItem) {
     const nameList = Object.keys(this.analysisDiagram)
     const name = nameList.find(val => this.analysisDiagram[val][key] === value)
     if (isString(name)) {
@@ -167,6 +167,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
     return this
   }
 
+  // 获取依赖我的包目录
   private getRelatedContent (source: AnalysisBlockItem, triggerSign: SetAnalysisBlockObject) {
     if (triggerSign.has(source)) return
     triggerSign.add(source)
