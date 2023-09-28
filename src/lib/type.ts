@@ -70,11 +70,13 @@ export interface FileStoreApi {
 }
 
 export interface ExecuteApi {
-  // 录入数据
+  // 录入命令数据
   enterMainResult(commandMainResult: HandleMainResult): this
+  // 返回命令数据
   getCommandData(): {
     analysisBlockList: AnalysisBlockItem[]
     commandData: CommandResult<any>[]
   }
+  // 执行
   execute(): Promise<any[]>
 }
