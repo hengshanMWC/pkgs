@@ -1,8 +1,8 @@
-import { createInitPlugin, createRunPlugin, createVersionPlugin, createPublishPlugin } from './command'
-import type { CommandPublishParams } from './command/publish/type'
-import type { CommandRunParams } from './command/run/type'
-import type { PluginData } from './command/type'
-import type { CommandVersionParams } from './command/version/type'
+import { createInitPlugin, createRunPlugin, createVersionPlugin, createPublishPlugin } from './plugin'
+import type { CommandPublishParams } from './plugin/publish/type'
+import type { CommandRunParams } from './plugin/run/type'
+import type { PluginData } from './plugin/type'
+import type { CommandVersionParams } from './plugin/version/type'
 import { Mode } from './constant'
 
 export interface DefaultParams {

@@ -1,7 +1,7 @@
 import { execa } from 'execa'
 import { access, copyFile, mkdir, stat, writeJSON } from 'fs-extra'
 import type { SimpleGit } from 'simple-git'
-import type { CommandResult } from '../command'
+import type { CommandResult } from '../plugin'
 import { Agent } from '../constant'
 import type {
   CopyFileExecuteCommandData,

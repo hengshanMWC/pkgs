@@ -1,4 +1,4 @@
-import type { AgentType, CommandResult } from '../command'
+import type { AgentType, CommandResult } from '../plugin'
 import type { AnalysisBlockItem } from '../lib'
 export interface ExecuteManage<T = CommandResult<any>> extends ExecuteTaskFunc<T[]> {
   taskGroup: (ExecuteTaskFunc<T> | ExecuteManage<T>)[]

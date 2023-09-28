@@ -1,4 +1,4 @@
-import type { HandleMainResult } from '../command'
+import type { HandleMainResult } from '../plugin'
 import { WARN_NOW_RUN } from '../constant'
 import { BaseExecuteManage } from '../execute'
 import {

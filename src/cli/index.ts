@@ -3,7 +3,7 @@ import { PluginGroup } from 'plugin-group'
 import { isUndefined } from 'lodash'
 import { cliVersion, cliSuccess } from '../utils/tips'
 import { Context } from '../lib/context'
-import type { PluginData } from '../command'
+import type { PluginData } from '../plugin'
 import { getTTArgv } from '../utils'
 export async function cliMain (argv: NodeJS.Process['argv'], version = '0.0.0'): Promise<Context> {
   let _resolve: (context: Context) => void

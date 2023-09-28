@@ -1,5 +1,5 @@
 import type { IPackageJson } from '@ts-type/package-dts'
-import type { CommandResult } from './command'
+import type { CommandResult } from './plugin'
 import { Agent, DEFAULT_AGENT } from './constant'
 import { mixinDefaultOptions } from './utils'
 import { getDiffTagArgs, getGitTag } from './utils/git'

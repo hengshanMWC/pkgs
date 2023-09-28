@@ -1,7 +1,7 @@
 import type { IPackageJson } from '@ts-type/package-dts'
 import type { Options } from 'execa'
 import type { ManagerApi } from '../type'
-import type { CommandResult } from '../../command'
+import type { CommandResult } from '../../plugin'
 import { createCommand, createPublishCommand } from '../../instruct'
 
 export class BaseManager implements ManagerApi {

@@ -1,7 +1,7 @@
 import type IPackageJson from '@ts-type/package-dts'
 import type { SimpleGit } from 'simple-git'
 import type { ExecuteCommandConfig } from '../defaultOptions'
-import type { CommandResult, HandleMainResult } from '../command'
+import type { CommandResult, HandleMainResult } from '../plugin'
 
 export interface ContextParams {
   config?: ExecuteCommandConfig

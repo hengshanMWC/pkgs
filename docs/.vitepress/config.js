@@ -51,8 +51,8 @@ export default defineConfig({
             link: 'api/context',
           },
           {
-            text: 'Command',
-            link: 'api/command',
+            text: 'Plugin',
+            link: 'api/plugin',
           },
           {
             text: 'Cli',
