@@ -25,7 +25,7 @@ export async function handleDiffRun (context: Context) {
 
 function handleRun (context: Context) {
   if (context.config.run.type === 'all') {
-    return context.fileStore.getAllFIle()
+    return context.fileStore.getAllFile()
   }
   else if (context.config.run.type === 'work') {
     return context.fileStore.workDiffFile()

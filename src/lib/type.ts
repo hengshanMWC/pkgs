@@ -50,7 +50,7 @@ export type ForPackCallback = (
 export interface FileStoreApi {
   contextAnalysisDiagram: ContextAnalysisDiagramApi
   git: SimpleGit
-  getAllFIle(): string[]
+  getAllFile(): string[]
   workDiffFile(): Promise<string[]>
   stageDiffFile(): Promise<string[]>
   repositoryDiffFile(separator?: string): Promise<string[]>

@@ -22,7 +22,7 @@ class FileStore implements FileStoreApi {
   }
 
   // 所有包路径
-  getAllFIle () {
+  getAllFile () {
     return this.contextAnalysisDiagram.allDirs
   }
 
