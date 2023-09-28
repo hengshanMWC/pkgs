@@ -155,8 +155,8 @@ async function versionTagToDir (context: Context) {
 // 获取包里面版本最高的包路径
 function getVersionMax (context: Context) {
   return context.contextAnalysisDiagram.allDirs.reduce((a, b) => {
-    const aPackageJson = context.contextAnalysisDiagram.dirToAnalysisDiagram(a)?.packageJson
-    const bPackageJson = context.contextAnalysisDiagram.dirToAnalysisDiagram(b)?.packageJson
+    const aPackageJson = context.contextAnalysisDiagram.dirToAnalysisBlock(a)?.packageJson
+    const bPackageJson = context.contextAnalysisDiagram.dirToAnalysisBlock(b)?.packageJson
     return gtPackageJsonToDir(a, b, aPackageJson, bPackageJson)
   })
 }
@@ -171,7 +171,7 @@ async function getSyncTargetVersionDir (context: Context) {
 }
 async function getChangeVersion (context: Context, appointVersion?: string) {
   const dir = await getSyncTargetVersionDir(context)
-  const analysisBlock = context.contextAnalysisDiagram.dirToAnalysisDiagram(dir)
+  const analysisBlock = context.contextAnalysisDiagram.dirToAnalysisBlock(dir)
   const oldVersion = analysisBlock?.packageJson?.version
   const version = await changeVersion(dir, appointVersion)
 
@@ -223,7 +223,7 @@ async function changeRelyMyVersion (
 
   for (let i = 0; i < relyMyDir.length; i++) {
     const relyDir = relyMyDir[i]
-    const analysisBlockRelyMy = context.contextAnalysisDiagram.dirToAnalysisDiagram(relyDir)
+    const analysisBlockRelyMy = context.contextAnalysisDiagram.dirToAnalysisBlock(relyDir)
     if (analysisBlockRelyMy) {
       const isChange = dependentSearch(analysisBlock, analysisBlockRelyMy)
 

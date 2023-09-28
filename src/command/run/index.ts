@@ -20,13 +20,13 @@ async function commandMain (context: Context, cmd: string) {
 
   // scripts有该功能才触发
   const cmdDirs = diffDirs.filter(
-    dir => !!context.contextAnalysisDiagram.dirToAnalysisDiagram(dir)?.packageJson?.scripts?.[cmd],
+    dir => !!context.contextAnalysisDiagram.dirToAnalysisBlock(dir)?.packageJson?.scripts?.[cmd],
   )
 
   const cwds = context.contextAnalysisDiagram.getDirTopologicalSorting(cmdDirs)
 
   const analysisBlockList = cwds
-    .map(cwd => context.contextAnalysisDiagram.dirToAnalysisDiagram(cwd))
+    .map(cwd => context.contextAnalysisDiagram.dirToAnalysisBlock(cwd))
     .filter(analysisBlock => analysisBlock) as AnalysisBlockItem[]
   const taskList = cwds.map(cwd => {
     return new BaseExecuteTask(

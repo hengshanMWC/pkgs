@@ -39,7 +39,7 @@ export interface ContextAnalysisDiagramApi {
   // package.json交换包信息
   packageJsonToAnalysisBlock(value: IPackageJson): AnalysisBlockItem | null
   // 目录交换包信息
-  dirToAnalysisDiagram(value: string): AnalysisBlockItem | null
+  dirToAnalysisBlock(value: string): AnalysisBlockItem | null
 }
 
 export type ForPackCallback = (

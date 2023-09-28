@@ -125,7 +125,7 @@ class FileStore implements FileStoreApi {
   private async dirToAnalysisBlockFor (relatedPackagesDir: string[], callback: ForPackCallback) {
     for (let index = 0; index < relatedPackagesDir.length; index++) {
       const dir = relatedPackagesDir[index]
-      const analysisBlock = this.contextAnalysisDiagram.dirToAnalysisDiagram(dir)
+      const analysisBlock = this.contextAnalysisDiagram.dirToAnalysisBlock(dir)
       if (analysisBlock) {
         await callback(analysisBlock, index)
       }

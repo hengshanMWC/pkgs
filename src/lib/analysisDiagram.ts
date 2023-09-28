@@ -36,7 +36,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
   get allFilesPath () {
     if (this.analysisDiagram) {
       return this.allDirs.map(
-        key => this.dirToAnalysisDiagram(key)?.filePath,
+        key => this.dirToAnalysisBlock(key)?.filePath,
       ) as string[]
     }
     else {
@@ -48,7 +48,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
   get allPackagesJSON () {
     if (this.analysisDiagram) {
       return this.allDirs.map(
-        key => this.dirToAnalysisDiagram(key)?.packageJson,
+        key => this.dirToAnalysisBlock(key)?.packageJson,
       ) as IPackageJson<unknown>[]
     }
     else {
@@ -120,7 +120,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
     return this.dataToAnalysisDiagram(value, 'packageJson')
   }
 
-  dirToAnalysisDiagram (value: string) {
+  dirToAnalysisBlock (value: string) {
     return this.dataToAnalysisDiagram(value, 'dir')
   }
 
@@ -179,7 +179,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
 
     for (let i = 0; i < relyMyDir.length; i++) {
       const relyDir = relyMyDir[i]
-      const analysisBlock = this.dirToAnalysisDiagram(relyDir)
+      const analysisBlock = this.dirToAnalysisBlock(relyDir)
       if (!analysisBlock || triggerSign.has(analysisBlock)) continue
 
       for (let j = 0; j < relyAttrs.length; j++) {
@@ -201,11 +201,11 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
       if (stack.includes(dir) || result.includes(dir)) return
       stack.push(dir)
 
-      const myRelyDir = this.dirToAnalysisDiagram(dir)?.myRelyDir
+      const myRelyDir = this.dirToAnalysisBlock(dir)?.myRelyDir
       myRelyDir?.forEach(item => {
         if (!stack.includes(item)) {
           stack.push(item)
-          const myRelyDir = this.dirToAnalysisDiagram(item)?.myRelyDir
+          const myRelyDir = this.dirToAnalysisBlock(item)?.myRelyDir
           if (myRelyDir) {
             this.dependencyTracking(myRelyDir, result, stack, cd)
           }

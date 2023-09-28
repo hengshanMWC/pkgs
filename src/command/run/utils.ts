@@ -58,7 +58,7 @@ async function changeRelyMyVersion (
 
   for (let i = 0; i < relyMyDir.length; i++) {
     const relyDir = relyMyDir[i]
-    const analysisBlockRelyMy = context.contextAnalysisDiagram.dirToAnalysisDiagram(relyDir)
+    const analysisBlockRelyMy = context.contextAnalysisDiagram.dirToAnalysisBlock(relyDir)
     if (analysisBlockRelyMy) {
       const isChange = dependentSearch(analysisBlock, analysisBlockRelyMy)
 
