@@ -81,3 +81,21 @@ version 成功后，会进行一次 `git commit` ，你可以自定义它的 mes
 - __默认值：__ 'sync'
 
 优先级比 mode 高
+
+
+### plugins
+插件入口，支持函数、路径、模块名
+
+#### 类型
+```ts
+interface BasePluginData<T extends any[] = any> {
+  id: string // 插件唯一标识
+  command: string // 命令
+  description: string // 详情
+  options?: PluginOption[] // 选择命令
+  allowUnknownOption?: boolean // 是否允许传输未定义的 options 命令参数
+  action: (context: Context, ...args: T) => void // 执行逻辑
+}
+type PluginData = Readonly<BasePluginData>
+type PluginOption = readonly [flags: string, description?: string, defaultValue?: string | boolean]
+```
