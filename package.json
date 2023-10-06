@@ -40,7 +40,7 @@
   "scripts": {
     "build:unbuild": "unbuild",
     "tsc": "tsc --emitDeclarationOnly",
-    "build": "npm run build:unbuild && npm run tsc",
+    "build": "esno ./scripts/build.ts",
     "release": "esno ./scripts/release.ts",
     "prepare": "husky install",
     "lint": "eslint --ext=js,ts,json,md .",
