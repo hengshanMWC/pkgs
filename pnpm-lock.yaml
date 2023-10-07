@@ -49,7 +49,6 @@ dependencies:
   import-local: 3.1.0
   js-yaml: 4.1.0
   load-code: 2.0.0
-  lodash: 4.17.21
   npmlog: 7.0.1
   plugin-group: 1.0.5
   semver: 7.5.3
@@ -74,6 +73,7 @@ devDependencies:
   fs-extra: 11.1.1
   husky: 7.0.4
   lint-staged: 13.2.2
+  lodash: 4.17.21
   mkdirp: 3.0.1
   typescript: 5.2.2
   unbuild: 2.0.0_typescript@5.2.2
@@ -4516,6 +4516,7 @@ packages:
 
   /lodash/4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+    dev: true
 
   /log-update/4.0.0:
     resolution: {integrity: sha512-9fkkDevMefjg0mmzWFBW8YkFP91OrizzkW3diF7CpG+S2EYdy4+TVfGwz1zeF8x7hCx1ovSPTOE9Ngib74qqUg==}
