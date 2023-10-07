@@ -44,6 +44,6 @@ type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 }
 
-export function defineConfig(config?: ExecuteCommandCli) {
+export function defineConfig(config: ExecuteCommandCli =  {}): ExecuteCommandCli {
   return config
 }
