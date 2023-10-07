@@ -48,10 +48,11 @@ export class BaseExecuteManage implements ExecuteManage {
 
 export class SerialExecuteManage extends BaseExecuteManage {
   async execute() {
-    const result = []
-    for (const task of this.taskGroup)
-      result.push(await task.execute())
-
+    const result: any[] = []
+    for (const task of this.taskGroup) {
+      const value = await task.execute()
+      result.push(value)
+    }
     return result
   }
 }
