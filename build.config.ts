@@ -6,9 +6,9 @@ export default defineBuildConfig({
     'src/cli/bin.ts',
   ],
   clean: true,
-  failOnWarn: false,
   declaration: true,
   rollup: {
+    cjsBridge: true,
     emitCJS: true,
     inlineDependencies: true,
     dts: {
