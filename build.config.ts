@@ -13,6 +13,6 @@ export default defineBuildConfig({
     inlineDependencies: true,
     dts: {
       respectExternal: false,
-    }
+    },
   },
 })

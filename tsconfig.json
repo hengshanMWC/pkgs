@@ -1,21 +1,21 @@
 {
-  "exclude": ["node_modules", "**/dist"],
-  "include": [
-    "src",
-  ],
   "compilerOptions": {
     "target": "ESNext",
-    "module": "esnext",
     "lib": ["ESNext"],
+    "module": "esnext",
+    "rootDir": ".",
     "moduleResolution": "node",
-    "esModuleInterop": true,
-    "strict": true,
+    "resolveJsonModule": true,
     "declaration": true,
     "declarationDir": "./dist/types",
-    "resolveJsonModule": true,
-    "rootDir": ".",
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
+    "esModuleInterop": true,
+    "strict": true,
     "noUnusedLocals": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true
   },
+  "include": [
+    "src"
+  ],
+  "exclude": ["node_modules", "**/dist"]
 }

@@ -3,6 +3,16 @@
   "version": "2.2.1-beta.6",
   "packageManager": "pnpm@7.21.0",
   "description": "Simple monorepo combined with pnpm",
+  "author": "mawencan",
+  "license": "MIT",
+  "homepage": "https://github.com/hengshanMWC/pkgs#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hengshanMWC/pkgs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hengshanMWC/pkgs/issues"
+  },
   "keywords": [
     "monorepo",
     "packages",
@@ -14,16 +24,7 @@
     "publish",
     "version"
   ],
-  "license": "MIT",
-  "author": "mawencan",
   "access": "public",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hengshanMWC/pkgs.git"
-  },
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -31,12 +32,15 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "bin": {
     "pkgs": "dist/cli/bin.mjs"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build:unbuild": "unbuild",
     "build": "esno ./scripts/build.ts",
@@ -52,10 +56,6 @@
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs"
   },
-  "bugs": {
-    "url": "https://github.com/hengshanMWC/pkgs/issues"
-  },
-  "homepage": "https://github.com/hengshanMWC/pkgs#readme",
   "dependencies": {
     "@abmao/bump": "^0.0.1",
     "@abmao/forb": "^2.0.5",
@@ -73,7 +73,7 @@
     "simple-git": "^3.19.1"
   },
   "devDependencies": {
-    "@abmao/eslint-config-ts": "^0.1.0",
+    "@antfu/eslint-config-ts": "^0.43.1",
     "@commitlint/cli": "^16.2.3",
     "@commitlint/config-conventional": "^16.2.1",
     "@ts-type/package-dts": "^2.0.8",
