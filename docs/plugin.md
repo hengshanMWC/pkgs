@@ -68,7 +68,13 @@ export default {
 ```
 
 ```bash
+pkgs -h
+```
+![pkgs -h](./assets/images//packages.png)
+```bash
 pkgs packages
 ```
+![pkgs -h](./assets/images//packages.png)
+
 
 
