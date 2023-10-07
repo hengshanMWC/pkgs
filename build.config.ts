@@ -14,5 +14,7 @@ export default defineBuildConfig({
     dts: {
       respectExternal: false,
     },
+    commonjs: {},
+    esbuild: {}
   },
 })
