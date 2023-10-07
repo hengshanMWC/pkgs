@@ -37,6 +37,8 @@ export async function cliMain(argv: NodeJS.Process['argv'], version = '0.0.0'): 
 
           await value.action(context, ...args)
           _resolve(context)
+
+          console.log('\n')
           cliSuccess()
         }
         catch (error) {
