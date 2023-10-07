@@ -130,7 +130,18 @@ export async function getDirPackageInfo(packagesPath: string | string[]) {
 }
 
 export function fileMatch(files: string[], dir: string) {
-  return files.some(file => file.includes(dir))
+  return files.some(file => {
+    // 根目录包
+    if(dir === '') {
+      return true
+    } else {
+      const filePathNameList = file.split('/')
+      const dirPathNameList = dir.split('/')
+      return dirPathNameList.every((dirPathName, index) => {
+        return dirPathName === filePathNameList[index]
+      })
+    }
+  })
 }
 
 export function mixinDefaultOptions(options?: Options): Options {
