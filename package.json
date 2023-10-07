@@ -39,7 +39,6 @@
   },
   "scripts": {
     "build:unbuild": "unbuild",
-    "tsc": "tsc --emitDeclarationOnly",
     "build": "esno ./scripts/build.ts",
     "release": "esno ./scripts/release.ts",
     "prepare": "husky install",

@@ -7,8 +7,12 @@ export default defineBuildConfig({
   ],
   clean: true,
   failOnWarn: false,
+  declaration: true,
   rollup: {
     emitCJS: true,
     inlineDependencies: true,
+    dts: {
+      respectExternal: false,
+    }
   },
 })
