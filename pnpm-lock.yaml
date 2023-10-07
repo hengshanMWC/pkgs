@@ -26,7 +26,7 @@ specifiers:
   import-local: ^3.1.0
   js-yaml: ^4.1.0
   lint-staged: ^13.2.2
-  load-code: 2.0.0
+  load-code: 2.1.1
   lodash: ^4.17.21
   mkdirp: ^3.0.1
   npmlog: ^7.0.1
@@ -48,7 +48,7 @@ dependencies:
   commander: 10.0.1
   import-local: 3.1.0
   js-yaml: 4.1.0
-  load-code: 2.0.0
+  load-code: 2.1.1
   npmlog: 7.0.1
   plugin-group: 1.0.5
   semver: 7.5.3
@@ -2613,8 +2613,8 @@ packages:
       semver: 7.5.4
     dev: true
 
-  /bundle-require/4.0.1:
-    resolution: {integrity: sha512-9NQkRHlNdNpDBGmLpngF3EFDcwodhMUuLz9PaWYciVcQF9SE4LFjM2DB/xV1Li5JiuDMv7ZUWuC3rGbqR0MAXQ==}
+  /bundle-require/4.0.2:
+    resolution: {integrity: sha512-jwzPOChofl67PSTW2SGubV9HBQAhhR2i6nskiOThauo9dzwDUgOWQScFVaJkjEfYX+UXiD+LEx8EblQMc2wIag==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     peerDependencies:
       esbuild: '>=0.17'
@@ -4473,12 +4473,12 @@ packages:
       wrap-ansi: 7.0.0
     dev: true
 
-  /load-code/2.0.0:
-    resolution: {integrity: sha512-5h11v2v9IdTjdDfqdCTBsUvuSdgQUZXiEPMMqQxeI5BCV1H/HeFG4ZwvbuiL5jFrPctDfZx6MHNLUuSYwo97gQ==}
+  /load-code/2.1.1:
+    resolution: {integrity: sha512-yQxjoT+o1cftYRwFajQLMeomdJiMT3WVGuc4eMdj1JwokM6cmMcyWKG6AGY0UuaQhcHxcjmV3OwZ1rD4P0JfgA==}
     dependencies:
-      bundle-require: 4.0.1
+      bundle-require: 4.0.2
       joycon: 3.1.1
-      strip-json-comments: 5.0.0
+      strip-json-comments: 5.0.1
     transitivePeerDependencies:
       - esbuild
     dev: false
@@ -5539,8 +5539,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /strip-json-comments/5.0.0:
-    resolution: {integrity: sha512-V1LGY4UUo0jgwC+ELQ2BNWfPa17TIuwBLg+j1AA/9RPzKINl1lhxVEu2r+ZTTO8aetIsUzE5Qj6LMSBkoGYKKw==}
+  /strip-json-comments/5.0.1:
+    resolution: {integrity: sha512-0fk9zBqO67Nq5M/m45qHCJxylV/DhBlIOVExqgOMiCCrzrhU6tCibRXNqE3jwJLftzE9SNuZtYbpzcO+i9FiKw==}
     engines: {node: '>=14.16'}
     dev: false
 
