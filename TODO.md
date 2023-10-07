@@ -10,3 +10,4 @@
 - [ ] 优化配置合并 assignOption 函数
 - [ ] git tag 相同不重新打
 - [ ] 指定分支使用 version 和 publish
+- [ ] 版本升级确认
