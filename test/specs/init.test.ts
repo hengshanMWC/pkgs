@@ -1,5 +1,5 @@
-import path from 'path'
-import { stat, access, readFile, writeFile, appendFile } from 'fs-extra'
+import path from 'node:path'
+import { access, appendFile, readFile, stat, writeFile } from 'fs-extra'
 import { commandInit } from '../../src/index'
 import { io } from '../__fixtures__'
 

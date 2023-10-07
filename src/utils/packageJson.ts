@@ -6,7 +6,7 @@ import { getRelyAttrs } from './analysisDiagram'
 import { npmTag, versionText } from './regExp'
 import { getWorkspaceVersion, isVersionStar } from './index'
 
-export function dependentSearch (
+export function dependentSearch(
   source: AnalysisBlockItem,
   analysisBlockRelyMy: AnalysisBlockItem,
 ) {
@@ -21,9 +21,10 @@ export function dependentSearch (
     const packageJson = analysisBlockRelyMy.packageJson
     const relyAttrs = getRelyAttrs().reverse()
     // 循环所有依赖key
-    relyAttrs.forEach(key => {
+    relyAttrs.forEach((key) => {
       const relyKeyObject = packageJson[key] as Record<string, string>
-      if (!relyKeyObject) return
+      if (!relyKeyObject)
+        return
       const oldVersion = relyKeyObject[sourceName]
 
       if (oldVersion) {
@@ -49,15 +50,15 @@ export function dependentSearch (
   return result
 }
 // TODO: 只有packageJsonVersion是预发布版本才会被version预发布版本更新
-function isVersionLegalUpdate (
+function isVersionLegalUpdate(
   version: string,
   oldVersion: string,
 ) {
   // *、~、^每次都会更新
-  return isVersionStar(oldVersion) ||
-    satisfies(version, getWorkspaceVersion(oldVersion))
+  return isVersionStar(oldVersion)
+    || satisfies(version, getWorkspaceVersion(oldVersion))
 }
-function dependencyUpdate (
+function dependencyUpdate(
   packageJson: IPackageJson,
   relyAttr: string,
   name: string,
@@ -66,58 +67,56 @@ function dependencyUpdate (
   const relyValue = packageJson[relyAttr] as Record<string, string>
   const oldVersion: string = relyValue[name]
 
-  if (isVersionStar(oldVersion)) return
+  if (isVersionStar(oldVersion))
+    return
 
   const versionRegExp = new RegExp(versionText)
-  relyValue[name] =
-        relyValue[name]
-          .replace(versionRegExp, version)
+  relyValue[name]
+        = relyValue[name]
+      .replace(versionRegExp, version)
 }
 
-export function getPackageNameVersion (packageJson: IPackageJson, separator = '') {
+export function getPackageNameVersion(packageJson: IPackageJson, separator = '') {
   return `${packageJson.name}@${separator}${packageJson.version}`
 }
 
-export function getPackageNameVersionList (packageJsonList: IPackageJson[], separator = '') {
+export function getPackageNameVersionList(packageJsonList: IPackageJson[], separator = '') {
   return packageJsonList.map(packageJson => getPackageNameVersion(packageJson, separator))
 }
 
-export function getPackageNameVersionStr (packageJsonList: IPackageJson[], separator = '') {
+export function getPackageNameVersionStr(packageJsonList: IPackageJson[], separator = '') {
   return getPackageNameVersionList(packageJsonList, separator).join(', ')
 }
 
-export function gtPackageJsonToDir (
+export function gtPackageJsonToDir(
   aDir: string,
   bDir: string,
   aPackageJson?: IPackageJson,
   bPackageJson?: IPackageJson,
 ) {
-  if (bPackageJson && aPackageJson) {
+  if (bPackageJson && aPackageJson)
     return gt(bPackageJson.version as string, aPackageJson.version as string) ? bDir : aDir
-  }
-  else if (aPackageJson) {
+
+  else if (aPackageJson)
     return aDir
-  }
-  else {
+
+  else
     return bDir
-  }
 }
 
-export function gtPackageJson (
+export function gtPackageJson(
   aPackageJson: IPackageJson,
   bPackageJson?: IPackageJson,
 ) {
-  if (bPackageJson && aPackageJson) {
+  if (bPackageJson && aPackageJson)
     return gt(bPackageJson.version as string, aPackageJson.version as string) ? bPackageJson : aPackageJson
-  }
-  else {
+
+  else
     return aPackageJson || bPackageJson
-  }
 }
 
-export function getPackageVersionTag (version: string) {
+export function getPackageVersionTag(version: string) {
   const tagArr = version.match(new RegExp(npmTag))
-  if (tagArr) {
+  if (tagArr)
     return tagArr[1]
-  }
 }

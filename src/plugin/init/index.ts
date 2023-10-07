@@ -1,10 +1,10 @@
-import path from 'path'
+import path from 'node:path'
 import type { PluginData } from '../type'
 import type { CopyFileExecuteCommandData } from '../../execute'
 import { BaseExecuteManage, CopyFileExecuteTask, MkdirExecuteTask } from '../../execute'
 import { createPkgsCommand } from '../../instruct'
 
-export function parseCommandInit () {
+export function parseCommandInit() {
   const packagesName = 'packages'
   const pkgsJsonName = 'pkgs.config.js'
   const packageJsonName = 'package.json'
@@ -22,7 +22,7 @@ export function parseCommandInit () {
   ]
 }
 
-export async function commandInit () {
+export async function commandInit() {
   const executeManage = new BaseExecuteManage()
   const executeResult = await executeManage
     .pushTask(...parseCommandInit())
@@ -32,7 +32,7 @@ export async function commandInit () {
   }
 }
 
-export function createInitPlugin (): PluginData {
+export function createInitPlugin(): PluginData {
   return {
     id: 'init',
     command: 'init',

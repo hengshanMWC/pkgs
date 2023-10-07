@@ -1,6 +1,6 @@
-import path, { join } from 'path'
-import type { WriteFileOptions } from 'fs'
-import { existsSync, mkdir, mkdtemp, realpathSync, writeFile } from 'fs'
+import path, { join } from 'node:path'
+import type { WriteFileOptions } from 'node:fs'
+import { existsSync, mkdir, mkdtemp, realpathSync, writeFile } from 'node:fs'
 import type { SimpleGit } from 'simple-git'
 import { copy } from 'fs-extra'
 import { newSimpleGit } from './instance'
@@ -30,68 +30,65 @@ export interface SimpleGitTestContext {
 }
 
 export const io = {
-  mkdir (path: string): Promise<string> {
+  mkdir(path: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      if (existsSync(path)) {
+      if (existsSync(path))
         return resolve(path)
-      }
 
       mkdir(path, { recursive: true }, err => err ? reject(err) : resolve(path))
     })
   },
-  mkdtemp (prefix): Promise<string> {
+  mkdtemp(prefix): Promise<string> {
     return new Promise((resolve, reject) => {
       mkdtemp(`${process.env.TMPDIR || '/.tmp/pkgs-'}${prefix}-`, (err, path) => {
         err ? reject(err) : resolve(path)
       })
     })
   },
-  writeFile (path: string, content: string, encoding: WriteFileOptions = 'utf-8'): Promise<string> {
+  writeFile(path: string, content: string, encoding: WriteFileOptions = 'utf-8'): Promise<string> {
     return new Promise((resolve, reject) => {
-      writeFile(path, content, encoding, err => {
+      writeFile(path, content, encoding, (err) => {
         err ? reject(err) : resolve(path)
       })
     })
   },
 }
 
-export async function createTestContext (prefix: string, dir?: string): Promise<SimpleGitTestContext> {
+export async function createTestContext(prefix: string, dir?: string): Promise<SimpleGitTestContext> {
   const _root = await io.mkdtemp(prefix)
   const root = dir ? join(_root, dir) : _root
 
   const context: SimpleGitTestContext = {
-    path (...segments) {
+    path(...segments) {
       return join(root, ...segments)
     },
-    async dir (...paths) {
-      if (!paths.length) {
+    async dir(...paths) {
+      if (!paths.length)
         return root
-      }
 
       return io.mkdir(context.path(...paths))
     },
-    async file (path, content = `File content ${path}`) {
-      if (Array.isArray(path)) {
+    async file(path, content = `File content ${path}`) {
+      if (Array.isArray(path))
         await context.dir(path[0])
-      }
+
       const pathArray = Array.isArray(path) ? path : [path]
       return io.writeFile(context.path(...pathArray), content)
     },
-    async files (...paths) {
-      for (const path of paths) {
+    async files(...paths) {
+      for (const path of paths)
         await context.file(path)
-      }
     },
-    get root () {
+    get root() {
       return root
     },
-    get _root () {
+    get _root() {
       return _root
     },
-    get rootResolvedPath () {
+    get rootResolvedPath() {
       return realpathSync(context.root)
     },
-    get git () {
+    get git() {
       return newSimpleGit(root)
     },
   }
@@ -99,7 +96,7 @@ export async function createTestContext (prefix: string, dir?: string): Promise<
   return context
 }
 
-export async function handleCommand (dir: string, prefix: string) {
+export async function handleCommand(dir: string, prefix: string) {
   const context: SimpleGitTestContext = await createTestContext(prefix, dir)
 
   process.chdir(context._root)

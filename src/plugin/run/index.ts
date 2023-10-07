@@ -8,15 +8,15 @@ import { getConfigValue } from '../../utils'
 import { Mode, ModeOptions } from '../../constant'
 import type { CommandRunParams } from './type'
 import { handleDiffRun, handleSyncRun } from './utils'
-async function commandMain (context: Context, cmd: string) {
+
+async function commandMain(context: Context, cmd: string) {
   let diffDirs: string[]
 
-  if (getConfigValue(context.config, 'run', 'mode') === Mode.DIFF) {
+  if (getConfigValue(context.config, 'run', 'mode') === Mode.DIFF)
     diffDirs = await handleDiffRun(context)
-  }
-  else {
+
+  else
     diffDirs = await handleSyncRun(context)
-  }
 
   // scripts有该功能才触发
   const cmdDirs = diffDirs.filter(
@@ -28,7 +28,7 @@ async function commandMain (context: Context, cmd: string) {
   const analysisBlockList = cwds
     .map(cwd => context.contextAnalysisDiagram.dirToAnalysisBlock(cwd))
     .filter(analysisBlock => analysisBlock) as AnalysisBlockItem[]
-  const taskList = cwds.map(cwd => {
+  const taskList = cwds.map((cwd) => {
     return new BaseExecuteTask(
       context.packageManager.run(cmd, context.ttArgv, { cwd }),
     )
@@ -40,7 +40,7 @@ async function commandMain (context: Context, cmd: string) {
   return context
 }
 
-export async function parseCommandRun (
+export async function parseCommandRun(
   cmd: string,
   configParam: CommandRunParams = {},
   git: SimpleGit = simpleGit(),
@@ -57,7 +57,7 @@ export async function parseCommandRun (
   return commandMain(context, cmd)
 }
 
-export async function commandRun (
+export async function commandRun(
   cmd: string,
   configParam: CommandRunParams = {},
   git: SimpleGit = simpleGit(),
@@ -71,7 +71,7 @@ export async function commandRun (
   }
 }
 
-export function createRunPlugin (): PluginData {
+export function createRunPlugin(): PluginData {
   return {
     id: 'run',
     command: 'run <cmd>',

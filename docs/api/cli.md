@@ -11,6 +11,7 @@ function cliMain(
 ## 使用
 ```ts
 import { cliMain } from '@abmao/pkgs'
+
 // 运行pkgs init
 cliMain(['', '', 'init'])
 ```

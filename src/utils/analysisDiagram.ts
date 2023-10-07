@@ -1,19 +1,20 @@
 import type { IPackageJson } from '@ts-type/package-dts'
 import { RELY_KEYS } from '../constant'
 import { sortFilesName } from '.'
-export function getPackagesName (packagesJSON: IPackageJson[]): string[] {
+
+export function getPackagesName(packagesJSON: IPackageJson[]): string[] {
   return packagesJSON
     .map(item => item.name)
     .filter(item => item !== undefined) as string []
 }
-export function createRelyMyDirMap (packagesName: string[]) {
+export function createRelyMyDirMap(packagesName: string[]) {
   const result: Record<string, string[]> = {}
-  packagesName.forEach(item => {
+  packagesName.forEach((item) => {
     result[item] = []
   })
   return result
 }
-export function setRelyMyDirMap (
+export function setRelyMyDirMap(
   dir: string,
   packageJson: IPackageJson,
   relyMyMp: Record<string, string[]>,
@@ -26,31 +27,29 @@ export function setRelyMyDirMap (
   }
 
   sortFilesName(Object.keys(relyMyMp))
-    .forEach(key => {
+    .forEach((key) => {
       const dependenciesValue = dependencies[key]
 
-      if (dependenciesValue) {
+      if (dependenciesValue)
         relyMyMp[key].push(dir)
-      }
     })
 }
-export function getMyRelyPackageName (
+export function getMyRelyPackageName(
   packagesName: string[],
   packageJson: IPackageJson,
 ) {
   const result: string[] = []
   const dependencies = getRely(packageJson)
 
-  packagesName.forEach(key => {
+  packagesName.forEach((key) => {
     const dependenciesValue = dependencies[key]
 
-    if (dependenciesValue) {
+    if (dependenciesValue)
       result.push(key)
-    }
   })
   return result
 }
-function getRely (packageJson: IPackageJson) {
+function getRely(packageJson: IPackageJson) {
   const result: IPackageJson['dependencies'] = {}
   const relyAttrs = getRelyAttrs()
 
@@ -58,6 +57,6 @@ function getRely (packageJson: IPackageJson) {
 
   return result
 }
-export function getRelyAttrs () {
+export function getRelyAttrs() {
   return RELY_KEYS.slice()
 }

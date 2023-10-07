@@ -6,15 +6,15 @@ import { createCommand, createPublishCommand } from '../../instruct'
 
 export class BaseManager implements ManagerApi {
   agent = 'base'
-  async getConfig () {
+  async getConfig() {
     return {}
   }
 
-  run (cmd: string, args: string[] = [], options?: Options) {
+  run(cmd: string, args: string[] = [], options?: Options) {
     return createCommand(this.agent, ['run', cmd, ...args], options)
   }
 
-  publish (packageJson: IPackageJson<any>, args: string[] = [], options: Options = {}): CommandResult {
+  publish(packageJson: IPackageJson<any>, args: string[] = [], options: Options = {}): CommandResult {
     return createPublishCommand(packageJson.version as string, {
       agent: this.agent,
       args,

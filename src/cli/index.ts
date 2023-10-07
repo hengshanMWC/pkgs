@@ -1,11 +1,12 @@
 import { program } from 'commander'
 import { PluginGroup } from 'plugin-group'
 import { isUndefined } from 'lodash'
-import { cliVersion, cliSuccess } from '../utils/tips'
+import { cliSuccess, cliVersion } from '../utils/tips'
 import { Context } from '../lib/context'
 import type { PluginData } from '../plugin'
 import { getTTArgv } from '../utils'
-export async function cliMain (argv: NodeJS.Process['argv'], version = '0.0.0'): Promise<Context> {
+
+export async function cliMain(argv: NodeJS.Process['argv'], version = '0.0.0'): Promise<Context> {
   let _resolve: (context: Context) => void
   let _reject: (error: Error) => void
   const p: Promise<Context> = new Promise((resolve, reject) => {
@@ -21,7 +22,7 @@ export async function cliMain (argv: NodeJS.Process['argv'], version = '0.0.0'):
     .version(version, '-v, --version')
     .description('Simple monorepo combined with pnpm')
 
-  pluginGroup.map.forEach(value => {
+  pluginGroup.map.forEach((value) => {
     let _program = program
       .command(value.command)
       .description(value.description)
@@ -42,11 +43,11 @@ export async function cliMain (argv: NodeJS.Process['argv'], version = '0.0.0'):
           _reject(error as Error)
         }
       })
-    if (!isUndefined(value.allowUnknownOption)) {
+    if (!isUndefined(value.allowUnknownOption))
       _program.allowUnknownOption(value.allowUnknownOption)
-    }
+
     if (value.options) {
-      value.options.forEach(option => {
+      value.options.forEach((option) => {
         _program = _program.option(...option)
       })
     }

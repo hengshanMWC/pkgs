@@ -6,7 +6,7 @@ import { BaseExecuteManage, BaseExecuteTask, GitExecuteTask, SerialExecuteManage
 import { createGitTagPackageCommand, createGitTagPackageListCommand } from '../../instruct'
 import { getTagPublish } from './git'
 
-export async function handleSyncPublish (context: Context): Promise<HandleMainResult> {
+export async function handleSyncPublish(context: Context): Promise<HandleMainResult> {
   const version = await getTagPublish(context)
   const { allDirs } = context.contextAnalysisDiagram
   const analysisBlockList: AnalysisBlockItem[] = []
@@ -16,7 +16,8 @@ export async function handleSyncPublish (context: Context): Promise<HandleMainRe
 
   for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
     const packageJson = context.contextAnalysisDiagram.allPackagesJSON[index]
-    if (!packageJson) continue
+    if (!packageJson)
+      continue
     const analysisBlock = context.contextAnalysisDiagram.packageJsonToAnalysisBlock(packageJson)
     const currentVersion = packageJson?.version as string
     if (analysisBlock && (!version || gt(version, currentVersion))) {
@@ -68,11 +69,11 @@ export async function handleSyncPublish (context: Context): Promise<HandleMainRe
   }
 }
 
-export async function handleDiffPublish (context: Context): Promise<HandleMainResult> {
+export async function handleDiffPublish(context: Context): Promise<HandleMainResult> {
   const triggerSign: SetAnalysisBlockObject = new Set()
   const taskList: TaskItem[] = []
 
-  await context.fileStore.forRepositoryDiffPack(async function (analysisBlock) {
+  await context.fileStore.forRepositoryDiffPack(async (analysisBlock) => {
     const command = context.packageManager.publish(
       analysisBlock.packageJson,
       context.ttArgv,

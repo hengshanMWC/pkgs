@@ -18,22 +18,21 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
   packagesPath: ExecuteCommandConfig['packagesPath']
   analysisDiagram!: AnalysisDiagram
 
-  constructor (packagesPath: ExecuteCommandConfig['packagesPath']) {
+  constructor(packagesPath: ExecuteCommandConfig['packagesPath']) {
     this.packagesPath = packagesPath
   }
 
   // 获取所有包目录路径
-  get allDirs () {
-    if (this.analysisDiagram) {
+  get allDirs() {
+    if (this.analysisDiagram)
       return sortFilesName(Object.keys(this.analysisDiagram).map(name => this.analysisDiagram[name].dir))
-    }
-    else {
+
+    else
       return []
-    }
   }
 
   // 获取所有包package.json文件路径
-  get allFilesPath () {
+  get allFilesPath() {
     if (this.analysisDiagram) {
       return this.allDirs.map(
         key => this.dirToAnalysisBlock(key)?.filePath,
@@ -45,7 +44,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
   }
 
   // 获取所有包的package.json
-  get allPackagesJSON () {
+  get allPackagesJSON() {
     if (this.analysisDiagram) {
       return this.allDirs.map(
         key => this.dirToAnalysisBlock(key)?.packageJson,
@@ -56,7 +55,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
     }
   }
 
-  async initData () {
+  async initData() {
     // 根目录信息
     const values: [string[], string[], IPackageJson[]] = [
       [],
@@ -82,60 +81,58 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
     return this
   }
 
-  async getRelatedDir (
+  async getRelatedDir(
     forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>,
   ) {
     const triggerSign: SetAnalysisBlockObject = new Set()
-    await forCD(source => {
+    await forCD((source) => {
       this.getRelatedContent(source, triggerSign)
     })
     return [...triggerSign].map(item => item.dir)
   }
 
-  getRelatedPackagesDir (files: string[] | boolean | undefined) {
-    if (Array.isArray(files)) {
+  getRelatedPackagesDir(files: string[] | boolean | undefined) {
+    if (Array.isArray(files))
       return this.allDirs.filter(key => fileMatch(files, key))
-    }
-    else {
+
+    else
       return []
-    }
   }
 
   // 拓扑排序
-  getDirTopologicalSorting (dirs: string[]) {
+  getDirTopologicalSorting(dirs: string[]) {
     const result: string[] = []
     const stack: string[] = []
 
-    this.dependencyTracking(dirs, result, stack, function () {
+    this.dependencyTracking(dirs, result, stack, () => {
       const value = stack.at(-1)
-      if (value !== undefined && !result.includes(value)) {
+      if (value !== undefined && !result.includes(value))
         result.push(value)
-      }
+
       stack.pop()
     })
     return result
   }
 
-  packageJsonToAnalysisBlock (value: IPackageJson) {
+  packageJsonToAnalysisBlock(value: IPackageJson) {
     return this.dataToAnalysisDiagram(value, 'packageJson')
   }
 
-  dirToAnalysisBlock (value: string) {
+  dirToAnalysisBlock(value: string) {
     return this.dataToAnalysisDiagram(value, 'dir')
   }
 
-  private dataToAnalysisDiagram (value: any, key: keyof AnalysisBlockItem) {
+  private dataToAnalysisDiagram(value: any, key: keyof AnalysisBlockItem) {
     const nameList = Object.keys(this.analysisDiagram)
     const name = nameList.find(val => this.analysisDiagram[val][key] === value)
-    if (isString(name)) {
+    if (isString(name))
       return this.analysisDiagram[name]
-    }
-    else {
+
+    else
       return null
-    }
   }
 
-  private createContextAnalysisDiagram (
+  private createContextAnalysisDiagram(
     dirs: string[],
     filesPath: string[],
     packagesJSON: IPackageJson[],
@@ -149,7 +146,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
       const packageJson = packagesJSON[index]
       setRelyMyDirMap(dir, packageJson, relyMyMap)
       const names = getMyRelyPackageName(packagesName, packageJson)
-      const myRelyDir = names.map(name => {
+      const myRelyDir = names.map((name) => {
         const i = packagesJSON.findIndex(item => item.name === name)
         return dirs[i]
       })
@@ -168,47 +165,52 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
   }
 
   // 获取依赖我的包目录
-  private getRelatedContent (source: AnalysisBlockItem, triggerSign: SetAnalysisBlockObject) {
-    if (triggerSign.has(source)) return
+  private getRelatedContent(source: AnalysisBlockItem, triggerSign: SetAnalysisBlockObject) {
+    if (triggerSign.has(source))
+      return
     triggerSign.add(source)
     const relyMyDir = source.relyMyDir
 
     // 没有依赖则跳出去
-    if (!Array.isArray(source.relyMyDir)) return
+    if (!Array.isArray(source.relyMyDir))
+      return
     const relyAttrs = getRelyAttrs().reverse()
 
     for (let i = 0; i < relyMyDir.length; i++) {
       const relyDir = relyMyDir[i]
       const analysisBlock = this.dirToAnalysisBlock(relyDir)
-      if (!analysisBlock || triggerSign.has(analysisBlock)) continue
+      if (!analysisBlock || triggerSign.has(analysisBlock))
+        continue
 
       for (let j = 0; j < relyAttrs.length; j++) {
         const key = relyAttrs[i]
         const relyKeyObject = analysisBlock.packageJson[key]
-        if (!relyKeyObject) return
+        if (!relyKeyObject)
+          return
         this.getRelatedContent(analysisBlock, triggerSign)
       }
     }
   }
 
-  private dependencyTracking (
+  private dependencyTracking(
     dirs: string[],
     result: string[],
     stack: string[],
     cd: Function,
   ) {
-    dirs.forEach(dir => {
-      if (stack.includes(dir) || result.includes(dir)) return
+    dirs.forEach((dir) => {
+      if (stack.includes(dir) || result.includes(dir))
+        return
       stack.push(dir)
 
       const myRelyDir = this.dirToAnalysisBlock(dir)?.myRelyDir
-      myRelyDir?.forEach(item => {
+      myRelyDir?.forEach((item) => {
         if (!stack.includes(item)) {
           stack.push(item)
           const myRelyDir = this.dirToAnalysisBlock(item)?.myRelyDir
-          if (myRelyDir) {
+          if (myRelyDir)
             this.dependencyTracking(myRelyDir, result, stack, cd)
-          }
+
           cd()
         }
       })

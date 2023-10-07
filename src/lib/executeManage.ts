@@ -5,11 +5,12 @@ import {
   warn,
 } from '../utils'
 import type { AnalysisBlockItem, ExecuteApi } from '.'
+
 export class Execute implements ExecuteApi {
   private manage = new BaseExecuteManage()
   private affectedAnalysisBlockList: AnalysisBlockItem[] = []
 
-  enterMainResult (commandMainResult: HandleMainResult) {
+  enterMainResult(commandMainResult: HandleMainResult) {
     this
       .setAffectedAnalysisBlockList(commandMainResult.analysisBlockList)
       .manage
@@ -17,22 +18,22 @@ export class Execute implements ExecuteApi {
     return this
   }
 
-  private setAffectedAnalysisBlockList (analysisBlockLis: AnalysisBlockItem[]) {
+  private setAffectedAnalysisBlockList(analysisBlockLis: AnalysisBlockItem[]) {
     this.affectedAnalysisBlockList = analysisBlockLis
     return this
   }
 
-  getCommandData () {
+  getCommandData() {
     return {
       analysisBlockList: this.affectedAnalysisBlockList,
       commandData: this.manage.getCommandData(),
     }
   }
 
-  execute () {
-    if (!this.manage.existTask) {
+  execute() {
+    if (!this.manage.existTask)
       warn(WARN_NOW_RUN)
-    }
+
     return this.manage.execute()
   }
 }

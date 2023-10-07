@@ -5,9 +5,8 @@ import npmlog from 'npmlog'
 import { version } from '../../package.json'
 import { cliMain } from '.'
 
-if (importLocal(__filename)) {
+if (importLocal(__filename))
   npmlog.info('cli', 'using local version of pkgs')
-}
-else {
+
+else
   cliMain(process.argv, version)
-}

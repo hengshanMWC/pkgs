@@ -1,6 +1,6 @@
 import type { Options } from 'execa'
 import type { IPackageJson } from '@ts-type/package-dts'
-import type { CommandResult, AgentType } from '../plugin'
+import type { AgentType, CommandResult } from '../plugin'
 import type { ExecuteCommandCli } from '../defaultOptions'
 
 export interface ManagerApi {

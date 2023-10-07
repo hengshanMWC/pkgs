@@ -10,7 +10,7 @@ import { agentSmell } from '../manager'
 import { ContextAnalysisDiagram } from './analysisDiagram'
 import { FileStore } from './fileStore'
 import { Execute } from './executeManage'
-import type { ExecuteApi, FileStoreApi, ContextAnalysisDiagramApi, ContextParams } from '.'
+import type { ContextAnalysisDiagramApi, ContextParams, ExecuteApi, FileStoreApi } from '.'
 
 export class Context {
   config: ExecuteCommandConfig
@@ -24,7 +24,7 @@ export class Context {
 
   static cli = Agent.PKGS
 
-  static async create (
+  static async create(
     {
       config,
       git,
@@ -57,23 +57,23 @@ export class Context {
     return context
   }
 
-  static async assignConfig (...config: ExecuteCommandCli[]) {
+  static async assignConfig(...config: ExecuteCommandCli[]) {
     const configData = await loadConfig(Context.cli)
     return assignOptions(defaultOptions, configData.data || {}, ...config)
   }
 
-  static async getDefault (config?: ContextParams['config']) {
+  static async getDefault(config?: ContextParams['config']) {
     let result: ConstructorParameters<typeof Context>[0]
-    if (config) {
+    if (config)
       result = config
-    }
-    else {
+
+    else
       result = await Context.assignConfig()
-    }
+
     return result
   }
 
-  constructor (
+  constructor(
     config: ExecuteCommandConfig,
     argv: string[] = process.argv,
     args?: any[],
@@ -82,25 +82,23 @@ export class Context {
     this.config = config
     this.argv = argv
     this.args = args
-    if (ttArgv) {
+    if (ttArgv)
       this.ttArgv = ttArgv
-    }
   }
 
-  get argvValue () {
-    if (this.argv) {
+  get argvValue() {
+    if (this.argv)
       return this.argv.slice(2).filter(Boolean)
-    }
-    else {
+
+    else
       return []
-    }
   }
 
-  assignOptions (...config: ExecuteCommandCli[]) {
+  assignOptions(...config: ExecuteCommandCli[]) {
     this.config = assignOptions(this.config, ...config)
-    if (this.contextAnalysisDiagram) {
+    if (this.contextAnalysisDiagram)
       this.contextAnalysisDiagram.packagesPath = this.config.packagesPath
-    }
+
     return this
   }
 }

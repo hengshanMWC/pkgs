@@ -7,7 +7,7 @@ import { getCommitPackageListMessage } from '../../utils/git'
 import { WARN_NOW_VERSION } from '../../constant'
 import { dependentSearch, gtPackageJsonToDir } from '../../utils/packageJson'
 import type { TaskItem } from '../../execute'
-import { JsonExecuteTask, GitExecuteTask, SerialExecuteManage, BaseExecuteManage } from '../../execute'
+import { BaseExecuteManage, GitExecuteTask, JsonExecuteTask, SerialExecuteManage } from '../../execute'
 import {
   createGitAddCommand,
   createGitCommitCommand,
@@ -16,7 +16,7 @@ import {
 } from '../../instruct'
 import { getTagVersion } from './git'
 
-export async function handleSyncVersion (context: Context, appointVersion?: string) {
+export async function handleSyncVersion(context: Context, appointVersion?: string) {
   const version = await getChangeVersion(context, appointVersion)
   const analysisBlockList: AnalysisBlockItem[] = []
   const taskList: TaskItem[] = []
@@ -24,7 +24,8 @@ export async function handleSyncVersion (context: Context, appointVersion?: stri
   // 依赖更新
   for (let index = 0; index < context.contextAnalysisDiagram.allPackagesJSON.length; index++) {
     const packageJson = context.contextAnalysisDiagram.allPackagesJSON[index]
-    if (!packageJson) break
+    if (!packageJson)
+      break
     const analysisBlock = context.contextAnalysisDiagram.packageJsonToAnalysisBlock(packageJson)
     packageJson.version = version
 
@@ -69,10 +70,10 @@ export async function handleSyncVersion (context: Context, appointVersion?: stri
   }
 }
 
-export async function handleDiffVersion (context: Context, appointVersion?: string) {
+export async function handleDiffVersion(context: Context, appointVersion?: string) {
   const triggerSign: SetAnalysisBlockObject = new Set()
 
-  await context.fileStore.forRepositoryDiffPack(async function (analysisBlock) {
+  await context.fileStore.forRepositoryDiffPack(async (analysisBlock) => {
     await changeVersionResultItem(
       context,
       analysisBlock,
@@ -88,7 +89,7 @@ export async function handleDiffVersion (context: Context, appointVersion?: stri
   if (analysisBlockList.length) {
     const packageJsonManage = new BaseExecuteManage()
     // 写入package.json
-    const packageJsonCommand = analysisBlockList.map(analysisBlock => {
+    const packageJsonCommand = analysisBlockList.map((analysisBlock) => {
       return new JsonExecuteTask({
         args: analysisBlock,
       })
@@ -118,7 +119,7 @@ export async function handleDiffVersion (context: Context, appointVersion?: stri
 
     const gitTagManage = new BaseExecuteManage()
     // git tag
-    const gitTagCommand = analysisBlockList.map(analysisBlock => {
+    const gitTagCommand = analysisBlockList.map((analysisBlock) => {
       return new GitExecuteTask(createGitTagPackageCommand({
         packageJson: analysisBlock.packageJson,
         separator: 'v',
@@ -141,19 +142,18 @@ export async function handleDiffVersion (context: Context, appointVersion?: stri
 }
 
 // 获取仓库最新版本对应的包路径
-async function versionTagToDir (context: Context) {
+async function versionTagToDir(context: Context) {
   const version = await getTagVersion(context, 'v')
   if (version) {
     const index = context.contextAnalysisDiagram.allPackagesJSON
       .findIndex(packageJson => packageJson?.version === version)
-    if (index !== -1) {
+    if (index !== -1)
       return context.contextAnalysisDiagram.allDirs[index]
-    }
   }
 }
 
 // 获取包里面版本最高的包路径
-function getVersionMax (context: Context) {
+function getVersionMax(context: Context) {
   return context.contextAnalysisDiagram.allDirs.reduce((a, b) => {
     const aPackageJson = context.contextAnalysisDiagram.dirToAnalysisBlock(a)?.packageJson
     const bPackageJson = context.contextAnalysisDiagram.dirToAnalysisBlock(b)?.packageJson
@@ -162,14 +162,14 @@ function getVersionMax (context: Context) {
 }
 
 // 获取包路径用于做版本升级依据
-async function getSyncTargetVersionDir (context: Context) {
+async function getSyncTargetVersionDir(context: Context) {
   const dir = await versionTagToDir(context)
-  if (isString(dir)) {
+  if (isString(dir))
     return dir
-  }
+
   return getVersionMax(context)
 }
-async function getChangeVersion (context: Context, appointVersion?: string) {
+async function getChangeVersion(context: Context, appointVersion?: string) {
   const dir = await getSyncTargetVersionDir(context)
   const analysisBlock = context.contextAnalysisDiagram.dirToAnalysisBlock(dir)
   const oldVersion = analysisBlock?.packageJson?.version
@@ -188,7 +188,7 @@ async function getChangeVersion (context: Context, appointVersion?: string) {
 }
 
 // 升级包
-async function changeVersionResultItem (
+async function changeVersionResultItem(
   context: Context,
   analysisBlock: AnalysisBlockItem,
   dir: string,
@@ -197,7 +197,8 @@ async function changeVersionResultItem (
 ) {
   const { packageJson } = analysisBlock
 
-  if (triggerSign.has(analysisBlock)) return
+  if (triggerSign.has(analysisBlock))
+    return
   triggerSign.add(analysisBlock)
 
   const oldVersion = packageJson.version
@@ -211,7 +212,7 @@ async function changeVersionResultItem (
 }
 
 // 用来升级依赖当前包的包
-async function changeRelyMyVersion (
+async function changeRelyMyVersion(
   context: Context,
   analysisBlock: AnalysisBlockItem,
   triggerSign?: SetAnalysisBlockObject,
@@ -219,7 +220,8 @@ async function changeRelyMyVersion (
 ) {
   const relyMyDir = analysisBlock.relyMyDir
   // 没有任务依赖当前包则跳出去
-  if (!Array.isArray(relyMyDir)) return
+  if (!Array.isArray(relyMyDir))
+    return
 
   for (let i = 0; i < relyMyDir.length; i++) {
     const relyDir = relyMyDir[i]
@@ -241,7 +243,7 @@ async function changeRelyMyVersion (
   }
 }
 
-async function changeVersion (cwd?: string, release?: string) {
+async function changeVersion(cwd?: string, release?: string) {
   const versionBumpResults = await versionBumpInfo({
     release,
     cwd,

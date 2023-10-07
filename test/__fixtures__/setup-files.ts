@@ -1,7 +1,7 @@
 import { changePackagesFile, changeRootFile } from './constant'
 import type { SimpleGitTestContext } from './create-test-context'
 
-export async function setUpFilesAdded (
+export async function setUpFilesAdded(
   { git, files }: SimpleGitTestContext,
   fileNames: string[],
   addSelector: string | string[] = '.',
@@ -12,7 +12,7 @@ export async function setUpFilesAdded (
   await git.commit(message)
 }
 
-export async function changePackagesFileGitCommit (context: SimpleGitTestContext) {
+export async function changePackagesFileGitCommit(context: SimpleGitTestContext) {
   try {
     await setUpFilesAdded(context, [changePackagesFile])
   }

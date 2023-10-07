@@ -9,14 +9,13 @@ import { createGitPushTagsCommand } from '../../instruct'
 import { getGitRemoteList } from '../../utils/git'
 import { handleDiffPublish, handleSyncPublish } from './utils'
 
-async function commandMain (context: Context) {
+async function commandMain(context: Context) {
   let commandMainResult: HandleMainResult
-  if (getConfigValue(context.config, 'publish', 'mode') === Mode.DIFF) {
+  if (getConfigValue(context.config, 'publish', 'mode') === Mode.DIFF)
     commandMainResult = await handleDiffPublish(context)
-  }
-  else {
+
+  else
     commandMainResult = await handleSyncPublish(context)
-  }
 
   if (getConfigValue(context.config, 'publish', 'push')) {
     const remoteList = await getGitRemoteList(context.fileStore.git)
@@ -28,7 +27,7 @@ async function commandMain (context: Context) {
       serialExecuteManage.pushTask(
         baseExecuteManage,
         // 提交tags到所有源
-        ...remoteList.map(remote => {
+        ...remoteList.map((remote) => {
           return new GitExecuteTask(createGitPushTagsCommand([remote]), context.fileStore.git)
         }),
       )
@@ -40,7 +39,7 @@ async function commandMain (context: Context) {
   return context
 }
 
-export async function parseCommandPublish (
+export async function parseCommandPublish(
   configParam: CommandPublishParams = {},
   git: SimpleGit = simpleGit(),
   argv?: string[],
@@ -59,7 +58,7 @@ export async function parseCommandPublish (
   return commandMain(context)
 }
 
-export async function commandPublish (
+export async function commandPublish(
   configParam: CommandPublishParams = {},
   git: SimpleGit = simpleGit(),
   argv?: string[],
@@ -72,7 +71,7 @@ export async function commandPublish (
   }
 }
 
-export function createPublishPlugin (): PluginData {
+export function createPublishPlugin(): PluginData {
   return {
     id: 'publish',
     command: 'publish',
@@ -82,7 +81,7 @@ export function createPublishPlugin (): PluginData {
       PushOptions,
       NoPushOptions,
     ],
-    async action (context: Context, params: CommandPublishParams = {}) {
+    async action(context: Context, params: CommandPublishParams = {}) {
       context.assignOptions({
         publish: params,
       })
