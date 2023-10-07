@@ -5,10 +5,10 @@ import { cliSuccess, cliVersion } from './utils/tips'
 import { Context } from './lib/context'
 import type { PluginData } from './plugin'
 import { getJSON, getTTArgv } from './utils'
-
+import path from 'path'
 export async function cliMain(argv: NodeJS.Process['argv'], version?: string): Promise<Context> {
   if (!version) {
-    const { version: _version } = await getJSON('../package.json')
+    const { version: _version } = await getJSON(path.resolve(__dirname, '../package.json'))
     version = _version || '0.0.0'
   }
   let _resolve: (context: Context) => void
