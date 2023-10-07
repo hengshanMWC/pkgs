@@ -1,12 +1,16 @@
 import { program } from 'commander'
 import { PluginGroup } from 'plugin-group'
 import { isUndefined } from 'lodash'
-import { cliSuccess, cliVersion } from '../utils/tips'
-import { Context } from '../lib/context'
-import type { PluginData } from '../plugin'
-import { getTTArgv } from '../utils'
+import { cliSuccess, cliVersion } from './utils/tips'
+import { Context } from './lib/context'
+import type { PluginData } from './plugin'
+import { getJSON, getTTArgv } from './utils'
 
-export async function cliMain(argv: NodeJS.Process['argv'], version = '0.0.0'): Promise<Context> {
+export async function cliMain(argv: NodeJS.Process['argv'], version?: string): Promise<Context> {
+  if (!version) {
+    const { version: _version } = await getJSON('../package.json')
+    version = _version || '0.0.0'
+  }
   let _resolve: (context: Context) => void
   let _reject: (error: Error) => void
   const p: Promise<Context> = new Promise((resolve, reject) => {

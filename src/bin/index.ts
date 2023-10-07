@@ -2,11 +2,11 @@
 
 import importLocal from 'import-local'
 import npmlog from 'npmlog'
-import { version } from '../../package.json'
-import { cliMain } from '.'
+import { cliMain } from '../cli'
 
-if (importLocal(__filename))
+if (importLocal(__filename)) {
   npmlog.info('cli', 'using local version of pkgs')
 
-else
-  cliMain(process.argv, version)
+} else {
+  cliMain(process.argv)
+}

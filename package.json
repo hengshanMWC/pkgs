@@ -36,7 +36,7 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "bin": {
-    "pkgs": "dist/cli/bin.mjs"
+    "pkgs": "dist/bin/index.mjs"
   },
   "files": [
     "dist"

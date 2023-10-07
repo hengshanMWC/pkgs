@@ -9,4 +9,3 @@ export function cliSuccess() {
   const text = colors.white.bold('success')
   console.log(`pkgs cli: ${text}`)
 }
-cliSuccess()

@@ -3,7 +3,7 @@ import { defineBuildConfig } from 'unbuild'
 export default defineBuildConfig({
   entries: [
     'src/index.ts',
-    'src/cli/bin.ts',
+    'src/bin/index.ts',
   ],
   clean: true,
   declaration: true,
