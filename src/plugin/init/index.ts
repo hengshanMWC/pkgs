@@ -1,8 +1,11 @@
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import type { PluginData } from '../type'
 import type { CopyFileExecuteCommandData } from '../../execute'
 import { BaseExecuteManage, CopyFileExecuteTask, MkdirExecuteTask } from '../../execute'
 import { createPkgsCommand } from '../../instruct'
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 export function parseCommandInit() {
   const packagesName = 'packages'
