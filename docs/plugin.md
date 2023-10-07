@@ -30,7 +30,7 @@ export default function createPackagesPlugin(): PluginData {
 import type { Context } from '@abmao/pkgs'
 
 // ./plugin.ts
-export async function parsecCommandPackages(context: Context): string[] {
+export async function parsecCommandPackages(context: Context): Promise<string[]> {
   // 获取工作区包目录路径（包括间接影响
   const files = await context.fileStore.workDiffFile()
   // 通过扑排序返回，返回依赖顺序的包目录数组
@@ -43,7 +43,7 @@ export async function parsecCommandPackages(context: Context): string[] {
   return packageNameList
 }
 
-export async function commandPackages(context: Context): string[] {
+export async function commandPackages(context: Context): Promise<string[]> {
   // 接收命令
   const packageNameList = await parsecCommandPackages(context)
   // 序列化成字符串
