@@ -66,15 +66,15 @@ export default {
   ],
 }
 ```
-
+运行命令
 ```bash
 pkgs -h
 ```
-![pkgs -h](./assets/images//packages.png)
+![pkgs -h](./assets/images/packages.png)
 ```bash
 pkgs packages
 ```
-![pkgs -h](./assets/images//packages.png)
+![pkgs packages](./assets/images/runPackages.png)
 
 
 
