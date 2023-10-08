@@ -33,6 +33,10 @@ export default defineConfig({
             link: '/use',
           },
           {
+            text: '命令',
+            link: '/command',
+          },
+          {
             text: '内部运行',
             link: '/principle',
           },
