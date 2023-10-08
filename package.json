@@ -1,6 +1,6 @@
 {
   "name": "@abmao/pkgs",
-  "version": "2.2.1",
+  "version": "2.2.3",
   "packageManager": "pnpm@7.21.0",
   "description": "Simple monorepo combined with pnpm",
   "author": "mawencan",
@@ -37,7 +37,7 @@
       "require": "./dist/index.cjs"
     }
   },
-  "main": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "bin": {
@@ -72,7 +72,7 @@
     "js-yaml": "^4.1.0",
     "load-code": "2.1.1",
     "npmlog": "^7.0.1",
-    "plugin-group": "^1.0.5",
+    "plugin-group": "^1.0.6",
     "semver": "^7.5.2",
     "simple-git": "^3.19.1"
   },
