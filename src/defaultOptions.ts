@@ -1,4 +1,4 @@
-import { createInitPlugin, createRunPlugin, createVersionPlugin, createPublishPlugin } from './plugin'
+import { createInitPlugin, createPublishPlugin, createRunPlugin, createVersionPlugin } from './plugin'
 import type { CommandPublishParams } from './plugin/publish/type'
 import type { CommandRunParams } from './plugin/run/type'
 import type { PluginData } from './plugin/type'
@@ -42,4 +42,8 @@ export const defaultOptions: ExecuteCommandConfig = {
 
 type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+}
+
+export function defineConfig(config: ExecuteCommandCli = {}): ExecuteCommandCli {
+  return config
 }

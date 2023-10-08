@@ -3,12 +3,17 @@ import { defineBuildConfig } from 'unbuild'
 export default defineBuildConfig({
   entries: [
     'src/index.ts',
-    'src/cli/bin.ts',
+    'src/bin/index.ts',
   ],
   clean: true,
-  failOnWarn: false,
+  declaration: true,
   rollup: {
+    cjsBridge: true,
     emitCJS: true,
     inlineDependencies: true,
+    dts: {
+      respectExternal: false,
+    },
+    esbuild: {}
   },
 })

@@ -1,6 +1,7 @@
 # Cli
 ## 简介
-主要用来接收命令行参数，执行对应命令
+命令行入口，用来接收命令行参数，执行对应命令。
+
 ## 类型
 ```ts
 function cliMain(
@@ -11,6 +12,7 @@ function cliMain(
 ## 使用
 ```ts
 import { cliMain } from '@abmao/pkgs'
-// 运行pkgs init
+
+// 相当于运行pkgs init
 cliMain(['', '', 'init'])
 ```

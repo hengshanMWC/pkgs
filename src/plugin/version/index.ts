@@ -11,14 +11,13 @@ import { createGitPushCommand } from '../../instruct'
 import { getGitRemoteList } from '../../utils/git'
 import { handleDiffVersion, handleSyncVersion } from './utils'
 
-async function commandMain (context: Context, appointVersion?: string) {
+async function commandMain(context: Context, appointVersion?: string) {
   let commandMainResult: HandleMainResult
-  if (getConfigValue(context.config, 'version', 'mode') === Mode.DIFF) {
+  if (getConfigValue(context.config, 'version', 'mode') === Mode.DIFF)
     commandMainResult = await handleDiffVersion(context, appointVersion)
-  }
-  else {
+
+  else
     commandMainResult = await handleSyncVersion(context, appointVersion)
-  }
 
   if (getConfigValue(context.config, 'version', 'push')) {
     // 拿到remote数组
@@ -31,7 +30,7 @@ async function commandMain (context: Context, appointVersion?: string) {
       serialExecuteManage.pushTask(
         baseExecuteManage,
         // 提交所有远程源
-        ...remoteList.map(remote => {
+        ...remoteList.map((remote) => {
           return new GitExecuteTask(
             createGitPushCommand([remote, 'HEAD', '--follow-tags', '--no-verify', '--atomic']),
             context.fileStore.git,
@@ -46,7 +45,7 @@ async function commandMain (context: Context, appointVersion?: string) {
   return context
 }
 
-export async function parseCommandVersion (
+export async function parseCommandVersion(
   configParam: CommandVersionParams = {},
   git: SimpleGit = simpleGit(),
   appointVersion?: string,
@@ -65,7 +64,7 @@ export async function parseCommandVersion (
   return commandMain(context, appointVersion)
 }
 
-export async function commandVersion (
+export async function commandVersion(
   configParam: CommandVersionParams = {},
   git: SimpleGit = simpleGit(),
   appointVersion?: string,
@@ -79,7 +78,7 @@ export async function commandVersion (
   }
 }
 
-export function createVersionPlugin (): PluginData {
+export function createVersionPlugin(): PluginData {
   return {
     id: 'version',
     command: 'version',
@@ -91,7 +90,7 @@ export function createVersionPlugin (): PluginData {
       NoPushOptions,
     ],
     allowUnknownOption: true,
-    async action (context: Context, config: CommandVersionParams = {}) {
+    async action(context: Context, config: CommandVersionParams = {}) {
       context.assignOptions({
         version: config,
       })

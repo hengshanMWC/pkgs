@@ -5,7 +5,7 @@ import { BaseManager } from './base'
 export class PnpmManager extends BaseManager {
   agent = Agent.PNPM
 
-  async getConfig () {
+  async getConfig() {
     try {
       const packagesPath = await getYamlPackages()
       return {

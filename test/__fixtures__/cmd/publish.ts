@@ -2,23 +2,24 @@ import type { SimpleGit } from 'simple-git'
 import { tagExpect } from '../commit'
 import type { CommandResult } from '../../../src'
 import {
-  parseCommandPublish,
   commandVersion,
-  createGitTagPackageListCommand,
   createGitTagPackageCommand,
+  createGitTagPackageListCommand,
+  parseCommandPublish,
 } from '../../../src'
 import { getPublishCommand } from '../utils'
 import { GitExecuteTask, SerialExecuteManage } from '../../../src/execute'
 import { Mode } from '../../../src/constant'
 import { createName } from './version'
+
 export const cmd = 'publish'
 
-export async function tagCommit (version: string, git: SimpleGit) {
+export async function tagCommit(version: string, git: SimpleGit) {
   const tagCommitId = await tagExpect(version, git)
   expect(tagCommitId).not.toBeUndefined()
 }
 
-export async function syncTest (version: string, arr: string[], git: SimpleGit) {
+export async function syncTest(version: string, arr: string[], git: SimpleGit) {
   await commandVersion({}, git, version)
   const context = await parseCommandPublish({}, git)
   const analysisBlockList = context.executeManage.getCommandData().analysisBlockList
@@ -45,7 +46,7 @@ export async function syncTest (version: string, arr: string[], git: SimpleGit) 
   await tagCommit(version, git)
 }
 
-export async function diffTest (version: string, arr: string[], git: SimpleGit) {
+export async function diffTest(version: string, arr: string[], git: SimpleGit) {
   await commandVersion({
     mode: Mode.DIFF,
   }, git, version)

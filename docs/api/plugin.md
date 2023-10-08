@@ -22,6 +22,7 @@ function parseCommandVersion(
 ##### 调用
 ```ts
 import { parseCommandVersion } from '@abmao/pkgs'
+
 parseCommandVersion()
 ```
 
@@ -45,6 +46,7 @@ function commandVersion(
 ##### 调用
 ```ts
 import { commandVersion } from '@abmao/pkgs'
+
 commandVersion()
 ```
 
@@ -64,6 +66,7 @@ function parseCommandPublish(
 ##### 调用
 ```ts
 import { parseCommandPublish } from '@abmao/pkgs'
+
 parseCommandPublish()
 ```
 
@@ -86,6 +89,7 @@ function commandPublish(
 ##### 调用
 ```ts
 import { commandPublish } from '@abmao/pkgs'
+
 commandPublish()
 ```
 ### run
@@ -105,6 +109,7 @@ function parseCommandRun(
 ##### 调用
 ```ts
 import { parseCommandRun } from '@abmao/pkgs'
+
 // 传入命令 test，遍历包生成对应的 npm run test 命令
 parseCommandRun('test')
 ```
@@ -129,6 +134,7 @@ function commandRun(
 ##### 调用
 ```ts
 import { commandRun } from '@abmao/pkgs'
+
 // 传入命令 test，遍历包执行 npm run test 命令
 commandRun('test')
 ```
@@ -157,6 +163,7 @@ class MkdirExecuteTask implements ExecuteTask {
 ##### 调用
 ```ts
 import { parseCommandInit } from '@abmao/pkgs'
+
 parseCommandInit()
 ```
 
@@ -174,5 +181,6 @@ function commandInit(): Promise<{
 ##### 调用
 ```ts
 import { commandInit } from '@abmao/pkgs'
+
 commandInit()
 ```

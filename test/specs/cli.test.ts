@@ -1,7 +1,6 @@
-import { stat, access } from 'fs-extra'
+import { access, stat } from 'fs-extra'
 import { cliMain } from '../../src/index'
 import { io } from '../__fixtures__'
-import { originVersion } from '../__fixtures__/constant'
 
 const ORIGINAL_CWD = process.cwd()
 const cmd = 'cli'

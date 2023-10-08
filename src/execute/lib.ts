@@ -17,41 +17,41 @@ import type {
 export class BaseExecuteManage implements ExecuteManage {
   taskGroup: TaskItem[] = []
 
-  get existTask () {
+  get existTask() {
     return !!this.taskGroup.length
   }
 
-  pushTask (...task: TaskItem[]): this {
+  pushTask(...task: TaskItem[]): this {
     this.taskGroup.push(...task)
     return this
   }
 
-  getCommandData () {
+  getCommandData() {
     const commandData: CommandResult<any>[] = []
-    this.taskGroup.forEach(task => {
+    this.taskGroup.forEach((task) => {
       const data = task.getCommandData()
-      if (Array.isArray(data)) {
+      if (Array.isArray(data))
         commandData.push(...data)
-      }
-      else {
+
+      else
         commandData.push(data)
-      }
     })
     return commandData
   }
 
-  execute () {
-    return Promise.all(this.taskGroup.map(task => {
+  execute() {
+    return Promise.all(this.taskGroup.map((task) => {
       return task.execute()
     }))
   }
 }
 
 export class SerialExecuteManage extends BaseExecuteManage {
-  async execute () {
-    const result = []
+  async execute() {
+    const result: any[] = []
     for (const task of this.taskGroup) {
-      result.push(await task.execute())
+      const value = await task.execute()
+      result.push(value)
     }
     return result
   }
@@ -59,15 +59,15 @@ export class SerialExecuteManage extends BaseExecuteManage {
 
 export class BaseExecuteTask implements ExecuteTask {
   commandData: CommandResult
-  constructor (commandData: CommandResult) {
+  constructor(commandData: CommandResult) {
     this.commandData = commandData
   }
 
-  getCommandData (): CommandResult {
+  getCommandData(): CommandResult {
     return this.commandData
   }
 
-  execute () {
+  execute() {
     const { agent, args, options } = this.commandData
     return execa(agent, args, options)
   }
@@ -75,18 +75,18 @@ export class BaseExecuteTask implements ExecuteTask {
 
 export class JsonExecuteTask implements ExecuteTask<FileExecuteCommandResult> {
   commandData: FileExecuteCommandResult
-  constructor (commandData: FileExecuteCommandData) {
+  constructor(commandData: FileExecuteCommandData) {
     this.commandData = {
       agent: Agent.PKGS,
       ...commandData,
     }
   }
 
-  getCommandData () {
+  getCommandData() {
     return this.commandData
   }
 
-  execute () {
+  execute() {
     const { args, options } = this.commandData
     return writeJSON(
       args.filePath,
@@ -99,7 +99,7 @@ export class JsonExecuteTask implements ExecuteTask<FileExecuteCommandResult> {
 export class GitExecuteTask implements ExecuteTask {
   commandData: CommandResult
   git: SimpleGit
-  constructor (commandData: ExecuteCommandData, git: SimpleGit) {
+  constructor(commandData: ExecuteCommandData, git: SimpleGit) {
     this.commandData = {
       agent: Agent.GIT,
       ...commandData,
@@ -107,11 +107,11 @@ export class GitExecuteTask implements ExecuteTask {
     this.git = git
   }
 
-  getCommandData () {
+  getCommandData() {
     return this.commandData
   }
 
-  execute () {
+  execute() {
     const { args } = this.commandData
     return this.git.raw(args)
   }
@@ -119,18 +119,18 @@ export class GitExecuteTask implements ExecuteTask {
 
 export class CopyFileExecuteTask implements ExecuteTask<CopyFileExecuteCommandResult> {
   commandData: CopyFileExecuteCommandResult
-  constructor (commandData: CopyFileExecuteCommandData) {
+  constructor(commandData: CopyFileExecuteCommandData) {
     this.commandData = {
       agent: Agent.PKGS,
       ...commandData,
     }
   }
 
-  getCommandData () {
+  getCommandData() {
     return this.commandData
   }
 
-  async execute () {
+  async execute() {
     const { args, options } = this.commandData
     const dir = args[0]
     try {
@@ -144,25 +144,25 @@ export class CopyFileExecuteTask implements ExecuteTask<CopyFileExecuteCommandRe
 
 export class MkdirExecuteTask implements ExecuteTask {
   commandData: CommandResult
-  constructor (commandData: ExecuteCommandData) {
+  constructor(commandData: ExecuteCommandData) {
     this.commandData = {
       agent: Agent.PKGS,
       ...commandData,
     }
   }
 
-  getCommandData () {
+  getCommandData() {
     return this.commandData
   }
 
-  async execute () {
+  async execute() {
     const { args } = this.commandData
     const dir = args[0]
     try {
       const statResult = await stat(dir)
-      if (!statResult.isDirectory()) {
-        throw new Error()
-      }
+      if (!statResult.isDirectory())
+        throw new Error('Not a directory')
+
       return statResult
     }
     catch {

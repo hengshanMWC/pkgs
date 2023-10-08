@@ -1,4 +1,3 @@
-
 import { Mode } from '../../src/constant'
 import { cmd, createRun, testMain } from '../__fixtures__/cmd/run'
 import {
@@ -17,6 +16,7 @@ import {
   rootPackageJsonCommandOrderChange1,
   single,
 } from '../__fixtures__/constant'
+
 const ORIGINAL_CWD = process.cwd()
 
 describe(cmd, () => {

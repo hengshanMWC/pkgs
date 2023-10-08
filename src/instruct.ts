@@ -5,7 +5,7 @@ import { mixinDefaultOptions } from './utils'
 import { getDiffTagArgs, getGitTag } from './utils/git'
 import { getPackageNameVersionStr, getPackageVersionTag } from './utils/packageJson'
 
-export function createCommand (
+export function createCommand(
   agent: CommandResult['agent'],
   args: CommandResult['args'] = [],
   options?: CommandResult['options'],
@@ -17,22 +17,21 @@ export function createCommand (
   }
 }
 
-export function createPkgsCommand (args?: string[] | string, options?: CommandResult['options']): CommandResult {
+export function createPkgsCommand(args?: string[] | string, options?: CommandResult['options']): CommandResult {
   return createCommand(Agent.PKGS, !Array.isArray(args) && args ? [args] : (args as string[]), options)
 }
 
-export function createGitCommand (args?: CommandResult['args']): CommandResult {
+export function createGitCommand(args?: CommandResult['args']): CommandResult {
   return createCommand(Agent.GIT, args)
 }
 
-export function createPublishCommand (version: string, commandData: Partial<CommandResult>): CommandResult {
+export function createPublishCommand(version: string, commandData: Partial<CommandResult>): CommandResult {
   const args = ['publish', ...(commandData.args ?? [])]
   const argTag = '--tag'
   if (args.every(arg => arg !== argTag)) {
     const tag = getPackageVersionTag(version)
-    if (tag) {
+    if (tag)
       args.push(argTag, tag)
-    }
   }
   return createCommand(commandData.agent ?? DEFAULT_AGENT, args, commandData.options)
 }
@@ -43,7 +42,7 @@ interface createGitTagPackageListCommandType {
   separator?: string
 }
 
-export function createGitTagPackageListCommand (
+export function createGitTagPackageListCommand(
   {
     version,
     packageJsonList,
@@ -66,7 +65,7 @@ interface createGitTagPackageCommandType {
   separator?: string
 }
 
-export function createGitTagPackageCommand (
+export function createGitTagPackageCommand(
   {
     packageJson,
     separator,
@@ -80,18 +79,18 @@ export function createGitTagPackageCommand (
   )
 }
 
-export function createGitAddCommand (filePath: string[]) {
+export function createGitAddCommand(filePath: string[]) {
   return createGitCommand(['add', ...filePath])
 }
 
-export function createGitCommitCommand (message: string) {
+export function createGitCommitCommand(message: string) {
   return createGitCommand(['commit', '-m', message])
 }
 
-export function createGitPushCommand (args: string[]) {
+export function createGitPushCommand(args: string[]) {
   return createGitCommand(['push', ...args])
 }
 
-export function createGitPushTagsCommand (args?: string[]) {
+export function createGitPushTagsCommand(args?: string[]) {
   return createGitPushCommand([...(args ?? []), '--tags'])
 }

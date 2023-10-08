@@ -1,5 +1,5 @@
 import { simpleGit } from 'simple-git'
-import type { SimpleGit, FileStatusResult } from 'simple-git'
+import type { FileStatusResult, SimpleGit } from 'simple-git'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { GitExecuteTask } from '../execute'
 import { createGitCommand } from '../instruct'
@@ -8,14 +8,14 @@ import { gitCommitMessageFormat, sortFilesName } from './index'
 
 export type TagType = 'publish' | 'version' | string
 const _tagMessage = 'pkgs update tag'
-export function getDiffCommitMessage (nameAntVersionPackages: string[]) {
+export function getDiffCommitMessage(nameAntVersionPackages: string[]) {
   return nameAntVersionPackages.reduce(
     (total, text) => `${total}\n- ${text}`,
     '\n',
   )
 }
 
-export function getCommitPackageListMessage (
+export function getCommitPackageListMessage(
   packageJsonList: IPackageJson[],
   separator = '',
   message = '',
@@ -25,7 +25,7 @@ export function getCommitPackageListMessage (
   return gitCommitMessageFormat(message, packagesMessage || _tagMessage)
 }
 
-export function getDiffTagArgs (
+export function getDiffTagArgs(
   packageJson: IPackageJson,
   separator = '',
   packagesMessage?: string,
@@ -34,14 +34,14 @@ export function getDiffTagArgs (
   return getGitTag(nameAntVersionPackages, packagesMessage)
 }
 
-export function getGitTag (
+export function getGitTag(
   version: string,
   packagesMessage = _tagMessage,
 ) {
   return ['tag', '-a', version, '-m', packagesMessage]
 }
 
-export async function getVersionTag (version: string, git: SimpleGit = simpleGit()) {
+export async function getVersionTag(version: string, git: SimpleGit = simpleGit()) {
   try {
     const result = await git.raw([
       'describe',
@@ -56,7 +56,7 @@ export async function getVersionTag (version: string, git: SimpleGit = simpleGit
 
   }
 }
-export async function gitTag (
+export async function gitTag(
   version: string,
   packagesMessage = _tagMessage,
   git: SimpleGit = simpleGit(),
@@ -64,12 +64,12 @@ export async function gitTag (
   await git.tag(['-a', version, '-m', packagesMessage])
 }
 
-export async function getNewestCommitId (git: SimpleGit = simpleGit()) {
+export async function getNewestCommitId(git: SimpleGit = simpleGit()) {
   const newestCommitId = await git.raw(['rev-parse', 'HEAD'])
   return newestCommitId.replace('\n', '')
 }
 
-export async function getTagCommitId (
+export async function getTagCommitId(
   tag: string,
   git: SimpleGit = simpleGit(),
 ) {
@@ -78,7 +78,7 @@ export async function getTagCommitId (
   return tagCommitInfoRows.at(-1)
 }
 
-async function getChangeFiles (
+async function getChangeFiles(
   newestCommitId: string,
   tagCommitId: string,
   git: SimpleGit = simpleGit(),
@@ -94,51 +94,50 @@ async function getChangeFiles (
   return arr
 }
 export type DiffFile = string[] | boolean | undefined
-export async function getVersionDiffFile (
+export async function getVersionDiffFile(
   version: string,
   git: SimpleGit = simpleGit(),
 ): Promise<DiffFile> {
   const versionTag = await getVersionTag(version)
-  if (!versionTag) {
+  if (!versionTag)
     return true
-  }
+
   const result = await getCommitDiffFile(versionTag, git)
   return result
 }
-export async function getCommitDiffFile (tag: string, git: SimpleGit = simpleGit()): Promise<string[]> {
-  if (!tag) {
+export async function getCommitDiffFile(tag: string, git: SimpleGit = simpleGit()): Promise<string[]> {
+  if (!tag)
     return []
-  }
+
   const tagCommitId = await getTagCommitId(tag, git)
   const newestCommitId = await getNewestCommitId(git)
 
-  if (tagCommitId) {
+  if (tagCommitId)
     return getChangeFiles(newestCommitId, tagCommitId, git)
-  }
-  else {
+
+  else
     return []
-  }
 }
 
-export async function getStageInfo (
+export async function getStageInfo(
   git: SimpleGit = simpleGit(),
 ): Promise<string[]> {
   const { files } = await git.status()
   return sortFilter(files.filter(file => file.index))
 }
 
-export async function getWorkInfo (
+export async function getWorkInfo(
   git: SimpleGit = simpleGit(),
 ): Promise<string[]> {
   const { files } = await git.status()
   return sortFilter(files.filter(file => file.working_dir))
 }
 
-function sortFilter (files: FileStatusResult[]) {
+function sortFilter(files: FileStatusResult[]) {
   return sortFilesName(files.map(file => file.path))
 }
 
-export async function getGitRemoteList (git: SimpleGit = simpleGit()) {
+export async function getGitRemoteList(git: SimpleGit = simpleGit()) {
   const gitExecuteTask = new GitExecuteTask(createGitCommand(['remote']), git)
   try {
     const removes = await gitExecuteTask.execute()

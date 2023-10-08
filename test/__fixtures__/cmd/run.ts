@@ -1,17 +1,17 @@
 import type { CommandParams, CommandResult, Context } from '../../../src'
-import { parseCommandRun, commandVersion } from '../../../src'
+import { commandVersion, parseCommandRun } from '../../../src'
 import type { Mode } from '../../../src/constant'
 import { newVersion } from '../constant'
 import { handleCommand } from '../create-test-context'
 import { changePackagesFileGitCommit } from '../setup-files'
 import { createPackagePath } from '../utils'
 
-function getDirList (ctx: Context): CommandResult[] {
+function getDirList(ctx: Context): CommandResult[] {
   return ctx.executeManage.getCommandData().commandData
 }
 
-export function createRun (names: string[]): CommandParams<string[]>[] {
-  return names.map(name => {
+export function createRun(names: string[]): CommandParams<string[]>[] {
+  return names.map((name) => {
     return {
       args: ['run', 'test'],
       options: {
@@ -23,7 +23,7 @@ export function createRun (names: string[]): CommandParams<string[]>[] {
 export const cmd = 'run'
 
 const prefix = `${cmd}-test`
-export async function testMain (
+export async function testMain(
   dir: string,
   arr: CommandParams<string[]>[],
   arr2: CommandParams<string[]>[],

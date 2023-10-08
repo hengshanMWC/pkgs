@@ -46,14 +46,15 @@ pkgs publish // 发布包
 ```json
 {
   "scripts": {
-    "release": "pkgs version && pkgs publish",
+    "release": "pkgs version && pkgs publish"
   }
 }
 ```
 
 代码调用
 ```js
-import { commandVersion, commandPublish } from '@abmao/pkgs'
+import { commandPublish, commandVersion } from '@abmao/pkgs'
+
 (async function () {
   await commandVersion()
   await commandPublish()

@@ -14,8 +14,9 @@ pkgs 支持插件化，通过配置文件 plugins 引入，支持函数、路径
 默认导出一个插件函数
 ```ts
 import type { PluginData } from '@abmao/pkgs'
+
 // ./plugin.ts
-export default function createPackagesPlugin (): PluginData {
+export default function createPackagesPlugin(): PluginData {
   return {
     id: 'packages',
     command: 'packages',
@@ -29,7 +30,7 @@ export default function createPackagesPlugin (): PluginData {
 import type { Context } from '@abmao/pkgs'
 
 // ./plugin.ts
-export async function parsecCommandPackages (context: Context): string[] {
+export async function parsecCommandPackages(context: Context): Promise<string[]> {
   // 获取工作区包目录路径（包括间接影响
   const files = await context.fileStore.workDiffFile()
   // 通过扑排序返回，返回依赖顺序的包目录数组
@@ -42,7 +43,7 @@ export async function parsecCommandPackages (context: Context): string[] {
   return packageNameList
 }
 
-export async function commandPackages (context: Context): string[] {
+export async function commandPackages(context: Context): Promise<string[]> {
   // 接收命令
   const packageNameList = await parsecCommandPackages(context)
   // 序列化成字符串
@@ -58,15 +59,22 @@ export async function commandPackages (context: Context): string[] {
 ```ts
 // ./pkgs.config.ts
 import { createPackagesPlugin } from './plugin.ts'
+
 export default {
   plugins: [
     createPackagesPlugin,
   ],
 }
 ```
-
+运行命令
+```bash
+pkgs -h
+```
+![pkgs -h](./assets/images/packages.png)
 ```bash
 pkgs packages
 ```
+![pkgs packages](./assets/images/runPackages.png)
+
 
 

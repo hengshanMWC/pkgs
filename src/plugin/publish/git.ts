@@ -2,7 +2,7 @@ import { GitExecuteTask } from '../../execute'
 import { createGitCommand } from '../../instruct'
 import type { Context } from '../../lib'
 
-export async function getTagPublish (context: Context) {
+export async function getTagPublish(context: Context) {
   const task = new GitExecuteTask(createGitCommand(
     [
       'tag',

@@ -14,6 +14,14 @@ interface ExecuteCommandConfig extends DefaultParams {
   plugins: Array<PluginData | string>
 }
 ```
+
+通过类型提示编写配置
+```ts
+// pkgs.config.ts
+import { defineConfig } from '@abmao/pkgs'
+
+export default defineConfig({})
+```
 ## 配置读取
 支持的配置方式如下:
 - 根目录
