@@ -1,6 +1,6 @@
 # 简介
 ## @abmao/pkgs 是什么
-一个简单的、以包为单位，无关 Mono-repo 或 Multi-repo 的项目管理器。主要用于版本升级和发布
+一个简单的、以包为单位、无关 Mono-repo 或 Multi-repo 的项目管理器。主要用于**版本升级和发布**
 
 与实现了包版本 workspace 的包管理器（pnpm、yarn、npm等）配合
 

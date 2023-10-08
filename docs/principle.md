@@ -4,7 +4,7 @@
 基于 git 做对比，通过 pkg 调用，实现命令可以多种方式按需调用
 
 ### 语义化？
-pkgs 有一个鼻子，首先会判断项目使用的包管理器，基于包管理器的 workspace 读取工作区，没有读取到工作区会默认检测 packages/* 目录，检测失败则会认为该项目是 MultiRepo。当然你也可以通过 `pkgs.config.json` 来定义workspace，项目会优先读取该配置文件的字段
+pkgs 有一个鼻子，首先会判断项目使用的包管理器，基于包管理器的 workspace 读取工作区，没有读取到工作区会默认检测 packages/* 目录，检测失败则会认为该项目是 MultiRepo。当然你也可以通过 [`pkgs.config.json`](/config/) 来定义workspace，项目会优先读取该配置文件的字段
 
 ![workspace检测](./assets//images/workspace.png)
 
