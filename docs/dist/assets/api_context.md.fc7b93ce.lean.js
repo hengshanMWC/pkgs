@@ -1,0 +1,1 @@
+import{_ as s,o as a,c as n,Q as l}from"./chunks/framework.bfdd83ff.js";const E=JSON.parse('{"title":"Context","description":"","frontmatter":{},"headers":[],"relativePath":"api/context.md","filePath":"api/context.md"}'),o={name:"api/context.md"},p=l("",38),t=[p];function e(c,r,y,B,D,F){return a(),n("div",null,t)}const A=s(o,[["render",e]]);export{E as __pageData,A as default};
