@@ -24,6 +24,11 @@
     "publish",
     "version"
   ],
+  "config": {
+    "commitizen": {
+        "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
   "access": "public",
   "exports": {
     ".": {
@@ -42,6 +47,7 @@
     "dist"
   ],
   "scripts": {
+    "commit": "cz",
     "build:unbuild": "unbuild",
     "build": "esno ./scripts/build.ts",
     "release": "esno ./scripts/release.ts",
@@ -83,6 +89,8 @@
     "@types/semver": "^7.5.0",
     "@vitest/coverage-v8": "^0.32.0",
     "c8": "^7.11.0",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.51.0",
     "esno": "^0.14.1",
     "execa": "^8.0.1",
