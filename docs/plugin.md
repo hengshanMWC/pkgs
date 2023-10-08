@@ -7,8 +7,12 @@ pkgs 支持插件化，通过配置文件 plugins 引入，支持函数、路径
 
 插件格式基于 `commander` 封装，插件 action 方法会接受 context 与 插件定义的命令参数
 
+
+
 ## 实现插件
 下列例子实现一个插件，返回工作区所有的包（包括间接影响的包），并基于依赖顺序打印到命令行上
+
+[项目示例](https://gitee.com/turn_three_degrees/monorepo-template-test)
 
 ### 实现过程
 默认导出一个插件函数
