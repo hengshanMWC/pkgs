@@ -20,7 +20,7 @@ export async function cliMain(argv: NodeJS.Process['argv'], version?: string): P
 
   const pluginGroup = new PluginGroup<PluginData>()
   const config = await Context.assignConfig()
-  pluginGroup.use(...config.plugins)
+  await pluginGroup.use(...config.plugins)
 
   program
     .version(version, '-v, --version')
