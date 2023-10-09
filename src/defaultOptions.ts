@@ -31,7 +31,7 @@ export const defaultOptions: ExecuteCommandConfig = {
   publish: {},
   run: {
     type: 'all',
-    DAG: true
+    DAG: true,
   },
   plugins: [
     createVersionPlugin,

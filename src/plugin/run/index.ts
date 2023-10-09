@@ -5,10 +5,10 @@ import type { PluginData } from '../type'
 import type { AnalysisBlockItem } from '../../lib'
 import { BaseExecuteTask, SerialExecuteManage } from '../../execute/lib'
 import { getConfigValue } from '../../utils'
-import { Mode, ModeOptions, DAG, NoDAG } from '../../constant'
+import { DAG, Mode, ModeOptions, NoDAG } from '../../constant'
+import type { TaskItem } from '../../execute'
 import type { CommandRunParams } from './type'
 import { handleDiffRun, handleSyncRun } from './utils'
-import { TaskItem } from '../../execute'
 
 async function commandMain(context: Context, cmd: string) {
   let diffDirs: string[]
@@ -92,7 +92,7 @@ export function createRunPlugin(): PluginData {
       ['--type <type>', 'all | work | stage | repository'],
       ModeOptions,
       DAG,
-      NoDAG
+      NoDAG,
     ],
     allowUnknownOption: true,
     action: async (context: Context, cmd: string, params: CommandRunParams = {}) => {
