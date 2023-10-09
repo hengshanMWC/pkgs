@@ -76,6 +76,9 @@ function assignOption(
 
     if (object.run.mode !== undefined)
       templateObject.run.mode = object.run.mode
+
+    if (object.run.DAG !== undefined)
+      templateObject.run.DAG = object.run.DAG
   }
   if (object.plugins !== undefined) {
     if (templateObject.plugins === undefined)
