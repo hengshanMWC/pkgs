@@ -32,7 +32,7 @@ export class Execute implements ExecuteApi {
 
   async execute() {
     const result = await this.manage.execute()
-    if (!result.length)
+    if (!result.toString())
       warn(WARN_NOW_RUN)
 
     return result
