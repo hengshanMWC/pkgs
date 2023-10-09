@@ -3,10 +3,11 @@ import type { PluginData } from '../type'
 import type { CopyFileExecuteCommandData } from '../../execute'
 import { BaseExecuteManage, CopyFileExecuteTask, MkdirExecuteTask } from '../../execute'
 import { createPkgsCommand } from '../../instruct'
+import { Agent } from '../../constant'
 
 export function parseCommandInit() {
   const packagesName = 'packages'
-  const pkgsJsonName = 'pkgs.config.js'
+  const pkgsJsonName = `${Agent.PKGS}.config.js`
   const packageJsonName = 'package.json'
   const dirPath = path.resolve(__dirname, './template')
   const pkgsJson = path.resolve(dirPath, pkgsJsonName)
@@ -36,7 +37,7 @@ export function createInitPlugin(): PluginData {
   return {
     id: 'init',
     command: 'init',
-    description: 'create pkgs file',
+    description: `create ${Agent.PKGS} file`,
     action: commandInit,
   }
 }

@@ -1,5 +1,5 @@
 import { access, stat } from 'fs-extra'
-import { cliMain } from '../../src/index'
+import { Agent, cliMain } from '../../src/index'
 import { io } from '../__fixtures__'
 
 const ORIGINAL_CWD = process.cwd()
@@ -8,7 +8,7 @@ const cmd = 'cli'
 describe(cmd, () => {
   const prefix = 'init-test'
   const packagesName = 'packages'
-  const pkgsJsonName = 'pkgs.config.js'
+  const pkgsJsonName = `${Agent.PKGS}.config.js`
   const packageJsonName = 'package.json'
 
   afterEach(() => {
