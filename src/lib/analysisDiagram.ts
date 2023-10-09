@@ -81,7 +81,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
     return this
   }
 
-  async getRelatedDir(
+  async getRelyMyDir(
     forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>,
   ) {
     const triggerSign: SetAnalysisBlockObject = new Set()
@@ -99,8 +99,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
       return []
   }
 
-  // 拓扑排序
-  getDirTopologicalSorting(dirs: string[]) {
+  getMyRelyDir(dirs: string[]) {
     const result: string[] = []
     const stack: string[] = []
 

@@ -64,12 +64,12 @@ interface ContextAnalysisDiagramApi {
   get allFilesPath(): string[] // 获取所有包package.json地址
   get allPackagesJSON(): IPackageJson<unknown>[] // 获取所有包的package.json
   initData(): Promise<this> // 初始化图表依赖
-  // 获取依赖我的包目录
-  getRelatedDir(forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>): Promise<string[]>
+  // 获取依赖我的包目录（例如测试的时候，需要对直接和间接依赖了当前包的包也进行测试，才能确定是否影响
+  getRelyMyDir(forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>): Promise<string[]>
   // 通过文件路径获取包目录
   getRelatedPackagesDir(files: string[] | boolean | undefined): string[]
-  // 拓扑排序
-  getDirTopologicalSorting(dirs: string[]): string[]
+  // 获取我依赖的包目录（拓扑排序，例如构建之前，需要先构建我依赖的包，从而才能正确构建本身，不然我依赖的包如果没有构建物，会导致构建失败
+  getMyRelyDir(dirs: string[]): string[]
   // package.json交换包信息
   packageJsonToAnalysisBlock(value: IPackageJson): AnalysisBlockItem | null
   // 目录交换包信息

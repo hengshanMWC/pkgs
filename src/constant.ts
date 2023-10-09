@@ -33,8 +33,10 @@ export enum Mode {
 export const ModeOptions = ['--mode <type>', Object.values(Mode).join(' | ')] as const
 
 export const PushOptions = ['--push', 'git push'] as const
-
 export const NoPushOptions = ['--no-push', 'not git push'] as const
 
 export const DAG = ['--DAG', 'Is DAG enabled'] as const
 export const NoDAG = ['--no-DAG', 'Do you want to turn off DAG'] as const
+
+export const Serial = ['--serial', 'Whether to turn on command serialization'] as const
+export const NoDSerial = ['--no-serial', 'Whether to turn off command serialization'] as const

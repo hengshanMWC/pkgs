@@ -5,7 +5,7 @@ import type { PluginData } from '../type'
 import type { AnalysisBlockItem } from '../../lib'
 import { BaseExecuteTask, SerialExecuteManage } from '../../execute/lib'
 import { getConfigValue } from '../../utils'
-import { DAG, Mode, ModeOptions, NoDAG } from '../../constant'
+import { DAG, Mode, ModeOptions, NoDAG, NoDSerial, Serial } from '../../constant'
 import type { TaskItem } from '../../execute'
 import type { CommandRunParams } from './type'
 import { handleDiffRun, handleSyncRun } from './utils'
@@ -20,6 +20,7 @@ async function commandMain(context: Context, cmd: string) {
     diffDirs = await handleSyncRun(context)
 
   const DAG = context.config.run.DAG
+  const serial = context.config.run.serial
 
   // scripts有该功能才触发
   const cmdDirs = diffDirs.filter(
@@ -27,7 +28,7 @@ async function commandMain(context: Context, cmd: string) {
   )
 
   // 拓扑排序
-  const cwds = DAG ? context.contextAnalysisDiagram.getDirTopologicalSorting(cmdDirs) : cmdDirs
+  const cwds = DAG ? context.contextAnalysisDiagram.getMyRelyDir(cmdDirs) : cmdDirs
 
   const analysisBlockList = cwds
     .map(cwd => context.contextAnalysisDiagram.dirToAnalysisBlock(cwd))
@@ -39,8 +40,8 @@ async function commandMain(context: Context, cmd: string) {
     )
   })
 
-  // 按顺序触发
-  if (DAG) {
+  // 串行
+  if (serial) {
     const serialExecuteManage = new SerialExecuteManage()
     taskList = [serialExecuteManage.pushTask(...taskList)]
   }
@@ -93,6 +94,8 @@ export function createRunPlugin(): PluginData {
       ModeOptions,
       DAG,
       NoDAG,
+      Serial,
+      NoDSerial,
     ],
     allowUnknownOption: true,
     action: async (context: Context, cmd: string, params: CommandRunParams = {}) => {

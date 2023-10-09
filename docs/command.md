@@ -82,8 +82,12 @@ Options:
   --mode <type>  sync | diff
   # 是否打开 DAG 模式，默认true
   --DAG          Is DAG enabled
-  # 关闭 DAG 模式
-  --no-DAG       Do you want to turn off DAG
+  # 关闭 DAG 模式，默认false
+  --no-DAG       Do you want to turn off MRD
+  # 是否打开命令串行，默认true
+  --serial          Whether to turn on command serialization
+  # 是否关闭命令串行，默认false
+  --no-serial      Whether to turn off command serialization
   -h, --help     display help for command
 ```
 ### 示例

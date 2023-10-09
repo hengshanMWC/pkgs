@@ -9,3 +9,19 @@ export function formatDateTime(date = new Date()) {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`
 }
+
+export function formatElapsedTime(startTime: number, endTime: number): string {
+  const elapsedMilliseconds: number = endTime - startTime
+
+  const hours: number = Math.floor(elapsedMilliseconds / 3600000)
+  const minutes: number = Math.floor((elapsedMilliseconds % 3600000) / 60000)
+  const seconds: number = Math.floor((elapsedMilliseconds % 60000) / 1000)
+  const milliseconds: number = elapsedMilliseconds % 1000
+
+  const hoursText = hours.toString().padStart(2, '0')
+  const minutesText = minutes.toString().padStart(2, '0')
+  const secondsText = seconds.toString().padStart(2, '0')
+  const millisecondsText = milliseconds.toString().padStart(3, '0')
+
+  return `${hoursText}:${minutesText}:${secondsText}.${millisecondsText}`
+}

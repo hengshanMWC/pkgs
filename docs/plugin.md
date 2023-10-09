@@ -35,10 +35,10 @@ import type { Context } from '@abmao/pkgs'
 
 // ./plugin.ts
 export async function parsecCommandPackages(context: Context): Promise<string[]> {
-  // 获取工作区包目录路径（包括间接影响
+  // 获取工作区包目录路径，包括直接和间接依赖这些包的包
   const files = await context.fileStore.workDiffFile()
-  // 通过扑排序返回，返回依赖顺序的包目录数组
-  const packageDirList = context.contextAnalysisDiagram.getDirTopologicalSorting(files)
+  // 通过扑排序返回直接和间接这些包的依赖包
+  const packageDirList = context.contextAnalysisDiagram.getMyRelyDir(files)
 
   const packageNameList = packageDirList
     // 包目录映射到对应的图表，拿到包名
