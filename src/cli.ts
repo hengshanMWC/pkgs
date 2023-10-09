@@ -2,16 +2,17 @@ import path from 'node:path'
 import { program } from 'commander'
 import { PluginGroup } from 'plugin-group'
 import { isUndefined } from 'lodash'
+import { dim } from 'colors'
 import { cliSuccess, cliVersion } from './utils/tips'
 import { Context } from './lib/context'
 import type { PluginData } from './plugin'
 import { getJSON, getTTArgv } from './utils'
 import { Agent } from './constant'
-import { formatDateTime } from './utils/time'
+import { formatDateTime, formatElapsedTime } from './utils/time'
 
 export async function cliMain(argv: NodeJS.Process['argv'], version?: string): Promise<Context> {
-  const dateTimeText = `${Agent.PKGS} start ${formatDateTime()}`
-  console.time(dateTimeText)
+  const startDate = new Date()
+  const startDateTimeText = dim(`${Agent.PKGS} start time: ${formatDateTime(startDate)}`)
   if (!version) {
     const { version: _version } = await getJSON(path.resolve(__dirname, '../package.json'))
     version = _version || '0.0.0'
@@ -48,8 +49,14 @@ export async function cliMain(argv: NodeJS.Process['argv'], version?: string): P
           _resolve(context)
 
           console.log('\n')
-          console.timeEnd(dateTimeText)
-          console.log(`${Agent.PKGS} end ${formatDateTime()}`)
+
+          console.log(startDateTimeText)
+          const endDate = new Date()
+          const endDateTimeText = dim(`${Agent.PKGS} end time: ${formatDateTime(endDate)}`)
+          console.log(endDateTimeText)
+          console.log(dim(`total duration: ${formatElapsedTime(startDate.getTime(), endDate.getTime())}`))
+
+          console.log('\n')
           cliSuccess()
         }
         catch (error) {
