@@ -107,6 +107,6 @@
     "vitest": "^0.32.0"
   },
   "lint-staged": {
-    "{packages}/*.{js,ts,json,md,tsx}": "pnpm lint"
+    "**/*.{js,jsx,tsx,ts,less,md,json}": "pnpm lint"
   }
 }
