@@ -7,9 +7,11 @@ import { Context } from './lib/context'
 import type { PluginData } from './plugin'
 import { getJSON, getTTArgv } from './utils'
 import { Agent } from './constant'
+import { formatDateTime } from './utils/time'
 
 export async function cliMain(argv: NodeJS.Process['argv'], version?: string): Promise<Context> {
-  console.time(Agent.PKGS)
+  const dateTimeText = `${Agent.PKGS} start ${formatDateTime()}`
+  console.time(dateTimeText)
   if (!version) {
     const { version: _version } = await getJSON(path.resolve(__dirname, '../package.json'))
     version = _version || '0.0.0'
@@ -46,7 +48,8 @@ export async function cliMain(argv: NodeJS.Process['argv'], version?: string): P
           _resolve(context)
 
           console.log('\n')
-          console.timeEnd(Agent.PKGS)
+          console.timeEnd(dateTimeText)
+          console.log(`${Agent.PKGS} end ${formatDateTime()}`)
           cliSuccess()
         }
         catch (error) {
