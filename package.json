@@ -1,6 +1,6 @@
 {
   "name": "@abmao/pkgs",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "packageManager": "pnpm@7.21.0",
   "description": "Simple monorepo combined with pnpm",
   "author": "mawencan",
