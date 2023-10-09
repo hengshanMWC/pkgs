@@ -30,10 +30,11 @@ export class Execute implements ExecuteApi {
     }
   }
 
-  execute() {
-    if (!this.manage.existTask)
+  async execute() {
+    const result = await this.manage.execute()
+    if (!result.length)
       warn(WARN_NOW_RUN)
 
-    return this.manage.execute()
+    return result
   }
 }
