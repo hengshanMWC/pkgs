@@ -38,7 +38,7 @@ export async function parsecCommandPackages(context: Context): Promise<string[]>
   // 获取工作区包目录路径（包括间接影响
   const files = await context.fileStore.workDiffFile()
   // 通过扑排序返回，返回依赖顺序的包目录数组
-  const packageDirList = context.contextAnalysisDiagram.getDirTopologicalSorting(files)
+  const packageDirList = context.contextAnalysisDiagram.getMyRelyDir(files)
 
   const packageNameList = packageDirList
     // 包目录映射到对应的图表，拿到包名

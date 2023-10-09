@@ -99,8 +99,7 @@ class ContextAnalysisDiagram implements ContextAnalysisDiagramApi {
       return []
   }
 
-  // 拓扑排序
-  getDirTopologicalSorting(dirs: string[]) {
+  getMyRelyDir(dirs: string[]) {
     const result: string[] = []
     const stack: string[] = []
 

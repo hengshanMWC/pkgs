@@ -35,8 +35,8 @@ export interface ContextAnalysisDiagramApi {
   getRelatedDir(forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>): Promise<string[]>
   // 通过文件路径获取包目录
   getRelatedPackagesDir(files: string[] | boolean | undefined): string[]
-  // 拓扑排序
-  getDirTopologicalSorting(dirs: string[]): string[]
+  // 获取我依赖的包目录（拓扑排序
+  getMyRelyDir(dirs: string[]): string[]
   // package.json交换包信息
   packageJsonToAnalysisBlock(value: IPackageJson): AnalysisBlockItem | null
   // 目录交换包信息

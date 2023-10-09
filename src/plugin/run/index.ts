@@ -27,7 +27,7 @@ async function commandMain(context: Context, cmd: string) {
   )
 
   // 拓扑排序
-  const cwds = DAG ? context.contextAnalysisDiagram.getDirTopologicalSorting(cmdDirs) : cmdDirs
+  const cwds = DAG ? context.contextAnalysisDiagram.getMyRelyDir(cmdDirs) : cmdDirs
 
   const analysisBlockList = cwds
     .map(cwd => context.contextAnalysisDiagram.dirToAnalysisBlock(cwd))

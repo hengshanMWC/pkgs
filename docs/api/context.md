@@ -69,7 +69,7 @@ interface ContextAnalysisDiagramApi {
   // 通过文件路径获取包目录
   getRelatedPackagesDir(files: string[] | boolean | undefined): string[]
   // 拓扑排序
-  getDirTopologicalSorting(dirs: string[]): string[]
+  getMyRelyDir(dirs: string[]): string[]
   // package.json交换包信息
   packageJsonToAnalysisBlock(value: IPackageJson): AnalysisBlockItem | null
   // 目录交换包信息
