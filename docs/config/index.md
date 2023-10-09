@@ -90,6 +90,14 @@ version 成功后，会进行一次 `git commit` ，你可以自定义它的 mes
 
 优先级比 mode 高
 
+##### run.DAG
+- __类型：__ boolean
+- __默认值：__ true
+
+DAG 是指：是否开启运 拓扑排序 & 依次执行。
+
+例如：`pkgs run build`，会按依赖顺序，依次执行，保证能正常取到上游依赖构建物
+
 
 ### plugins
 插件入口，支持函数、路径、模块名
