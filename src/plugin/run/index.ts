@@ -3,11 +3,12 @@ import { simpleGit } from 'simple-git'
 import { Context } from '../../lib/context'
 import type { PluginData } from '../type'
 import type { AnalysisBlockItem } from '../../lib'
-import { BaseExecuteTask } from '../../execute/lib'
+import { BaseExecuteTask, SerialExecuteManage } from '../../execute/lib'
 import { getConfigValue } from '../../utils'
 import { Mode, ModeOptions } from '../../constant'
 import type { CommandRunParams } from './type'
 import { handleDiffRun, handleSyncRun } from './utils'
+import { TaskItem } from '../../execute'
 
 async function commandMain(context: Context, cmd: string) {
   let diffDirs: string[]
@@ -22,17 +23,20 @@ async function commandMain(context: Context, cmd: string) {
   const cmdDirs = diffDirs.filter(
     dir => !!context.contextAnalysisDiagram.dirToAnalysisBlock(dir)?.packageJson?.scripts?.[cmd],
   )
-
+  // 拓扑排序
   const cwds = context.contextAnalysisDiagram.getDirTopologicalSorting(cmdDirs)
 
   const analysisBlockList = cwds
     .map(cwd => context.contextAnalysisDiagram.dirToAnalysisBlock(cwd))
     .filter(analysisBlock => analysisBlock) as AnalysisBlockItem[]
-  const taskList = cwds.map((cwd) => {
+  let taskList: TaskItem[] = cwds.map((cwd) => {
     return new BaseExecuteTask(
       context.packageManager.run(cmd, context.ttArgv, { cwd }),
     )
   })
+  // 按顺序触发
+  const serialExecuteManage = new SerialExecuteManage()
+  taskList = [serialExecuteManage.pushTask(...taskList)]
   context.executeManage.enterMainResult({
     analysisBlockList,
     taskList,
