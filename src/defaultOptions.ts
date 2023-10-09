@@ -32,6 +32,7 @@ export const defaultOptions: ExecuteCommandConfig = {
   run: {
     type: 'all',
     DAG: true,
+    serial: true,
   },
   plugins: [
     createVersionPlugin,
