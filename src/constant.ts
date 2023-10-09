@@ -35,3 +35,6 @@ export const ModeOptions = ['--mode <type>', Object.values(Mode).join(' | ')] as
 export const PushOptions = ['--push', 'git push'] as const
 
 export const NoPushOptions = ['--no-push', 'not git push'] as const
+
+export const DAG = ['--DAG', 'Is DAG enabled'] as const
+export const NoDAG = ['--no-DAG', 'Do you want to turn off DAG'] as const

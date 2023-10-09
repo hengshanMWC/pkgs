@@ -3,11 +3,12 @@ import type { FileStatusResult, SimpleGit } from 'simple-git'
 import type { IPackageJson } from '@ts-type/package-dts'
 import { GitExecuteTask } from '../execute'
 import { createGitCommand } from '../instruct'
+import { Agent } from '../constant'
 import { getPackageNameVersion, getPackageNameVersionList } from './packageJson'
 import { gitCommitMessageFormat, sortFilesName } from './index'
 
 export type TagType = 'publish' | 'version' | string
-const _tagMessage = 'pkgs update tag'
+const _tagMessage = `${Agent.PKGS} update tag`
 export function getDiffCommitMessage(nameAntVersionPackages: string[]) {
   return nameAntVersionPackages.reduce(
     (total, text) => `${total}\n- ${text}`,

@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { access, appendFile, readFile, stat, writeFile } from 'fs-extra'
-import { commandInit } from '../../src/index'
+import { Agent, commandInit } from '../../src/index'
 import { io } from '../__fixtures__'
 
 const ORIGINAL_CWD = process.cwd()
@@ -9,7 +9,7 @@ const cmd = 'init'
 describe(cmd, () => {
   const prefix = 'init-test'
   const packagesName = 'packages'
-  const pkgsJsonName = 'pkgs.config.js'
+  const pkgsJsonName = `${Agent.PKGS}.config.js`
   const packageJsonName = 'package.json'
 
   afterEach(() => {

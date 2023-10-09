@@ -1,5 +1,23 @@
 # 命令
-![command](./assets//images/command.png)
+```bash
+pkgs -h
+
+Usage: index [options] [command]
+
+Simple monorepo combined with pnpm
+
+Options:
+  -v, --version        output the version number
+  -h, --help           display help for command
+
+Commands:
+  version [options]    version package
+  publish [options]    publish package
+  run [options] <cmd>  run diff scripts.
+   type: all | work | stage | repository, default: all
+  init                 create pkgs file
+  help [command]       display help for command
+```
 ## version
 描述：版本升级
 ```bash
@@ -50,7 +68,7 @@ pkgs publish --mode=sync --no-push=false
 ## run
 描述：运行包命令
 ```bash
-pkgs publish -h
+pkgs run -h
 
 Usage: pkgs run [options] <cmd>
 
@@ -62,6 +80,10 @@ Options:
   --type <type>  all | work | stage | repository
   # 同步模式 | 对比模式，默认是同步模式
   --mode <type>  sync | diff
+  # 是否打开 DAG 模式，默认true
+  --DAG          Is DAG enabled
+  # 关闭 DAG 模式
+  --no-DAG       Do you want to turn off DAG
   -h, --help     display help for command
 ```
 ### 示例

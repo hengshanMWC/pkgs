@@ -76,6 +76,9 @@ function assignOption(
 
     if (object.run.mode !== undefined)
       templateObject.run.mode = object.run.mode
+
+    if (object.run.DAG !== undefined)
+      templateObject.run.DAG = object.run.DAG
   }
   if (object.plugins !== undefined) {
     if (templateObject.plugins === undefined)
@@ -130,11 +133,12 @@ export async function getDirPackageInfo(packagesPath: string | string[]) {
 }
 
 export function fileMatch(files: string[], dir: string) {
-  return files.some(file => {
+  return files.some((file) => {
     // 根目录包
-    if(dir === '') {
+    if (dir === '') {
       return true
-    } else {
+    }
+    else {
       const filePathNameList = file.split('/')
       const dirPathNameList = dir.split('/')
       return dirPathNameList.every((dirPathName, index) => {
