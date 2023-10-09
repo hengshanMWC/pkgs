@@ -72,7 +72,7 @@ export default {
 ```
 
 ### 项目背景
-[项目示例](https://gitee.com/turn_three_degrees/monorepo-template-test)有3个包，分别是demo、demo2和demo3，demo3依赖了demo，我们修改demo3包在工作区上，通过`pkgs packages`就可以依次打印出demo和demo3
+[项目示例](https://gitee.com/turn_three_degrees/monorepo-template-test)有3个包，分别是demo、demo2和demo3，demo依赖了demo3，我们修改demo3包在工作区上，通过`pkgs packages`就可以依次打印出demo3和demo
 ![](./assets//images/workDiff.png)
 
 ### 运行命令
