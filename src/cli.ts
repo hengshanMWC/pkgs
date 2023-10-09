@@ -6,8 +6,10 @@ import { cliSuccess, cliVersion } from './utils/tips'
 import { Context } from './lib/context'
 import type { PluginData } from './plugin'
 import { getJSON, getTTArgv } from './utils'
+import { Agent } from './constant'
 
 export async function cliMain(argv: NodeJS.Process['argv'], version?: string): Promise<Context> {
+  console.time(Agent.PKGS)
   if (!version) {
     const { version: _version } = await getJSON(path.resolve(__dirname, '../package.json'))
     version = _version || '0.0.0'
@@ -44,6 +46,7 @@ export async function cliMain(argv: NodeJS.Process['argv'], version?: string): P
           _resolve(context)
 
           console.log('\n')
+          console.timeEnd(Agent.PKGS)
           cliSuccess()
         }
         catch (error) {
