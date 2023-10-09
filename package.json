@@ -47,6 +47,7 @@
     "dist"
   ],
   "scripts": {
+    "init": "pnpm i && npm run prepare",
     "commit": "cz",
     "build:unbuild": "unbuild",
     "build": "esno ./scripts/build.ts",
@@ -106,6 +107,6 @@
     "vitest": "^0.32.0"
   },
   "lint-staged": {
-    "{server,client}/*.{js,ts,json,md,tsx}": "pnpm lint"
+    "{packages}/*.{js,ts,json,md,tsx}": "pnpm lint"
   }
 }
