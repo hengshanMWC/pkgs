@@ -56,8 +56,7 @@
     "lint:fix": "eslint --fix --ext=js,ts,json,md .",
     "test": "vitest",
     "test:cov": "vitest --coverage",
-    "test:bin": "esno ./src/cli/bin.ts run test:bin-i --type all --color=false",
-    "test:bin-i": "npm i",
+    "test:bin": "esno ./src/bin/index.ts -h",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs"
