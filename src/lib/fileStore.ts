@@ -29,7 +29,7 @@ class FileStore implements FileStoreApi {
   async workDiffFile() {
     const files = await getWorkInfo(this.git)
     const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
-    return this.contextAnalysisDiagram.getRelatedDir(cd =>
+    return this.contextAnalysisDiagram.getRelyMyDir(cd =>
       this.dirToAnalysisBlockFor(relatedPackagesDir, (source) => {
         cd(source)
       }),
@@ -39,7 +39,7 @@ class FileStore implements FileStoreApi {
   async stageDiffFile() {
     const files = await getStageInfo(this.git)
     const relatedPackagesDir = this.contextAnalysisDiagram.getRelatedPackagesDir(files)
-    return this.contextAnalysisDiagram.getRelatedDir(cd =>
+    return this.contextAnalysisDiagram.getRelyMyDir(cd =>
       this.dirToAnalysisBlockFor(relatedPackagesDir, (source) => {
         cd(source)
       }),
@@ -47,7 +47,7 @@ class FileStore implements FileStoreApi {
   }
 
   async repositoryDiffFile(separator?: string) {
-    return this.contextAnalysisDiagram.getRelatedDir(cd =>
+    return this.contextAnalysisDiagram.getRelyMyDir(cd =>
       this.forRepositoryDiffPack((source) => {
         cd(source)
       }, separator),
@@ -55,7 +55,7 @@ class FileStore implements FileStoreApi {
   }
 
   async repositorySyncFile(separator?: string) {
-    return this.contextAnalysisDiagram.getRelatedDir(cd =>
+    return this.contextAnalysisDiagram.getRelyMyDir(cd =>
       this.forRepositorySyncPack((source) => {
         cd(source)
       }, separator),

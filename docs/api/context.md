@@ -65,7 +65,7 @@ interface ContextAnalysisDiagramApi {
   get allPackagesJSON(): IPackageJson<unknown>[] // 获取所有包的package.json
   initData(): Promise<this> // 初始化图表依赖
   // 获取依赖我的包目录
-  getRelatedDir(forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>): Promise<string[]>
+  getRelyMyDir(forCD: (cd: (source: AnalysisBlockItem) => void) => Promise<void>): Promise<string[]>
   // 通过文件路径获取包目录
   getRelatedPackagesDir(files: string[] | boolean | undefined): string[]
   // 拓扑排序
