@@ -49,6 +49,7 @@ export async function cliMain(argv: NodeJS.Process['argv'], version?: string): P
           _resolve(context)
 
           console.log('\n')
+          console.log('-----------complete-----------')
 
           console.log(startDateTimeText)
           const endDate = new Date()
