@@ -16,8 +16,6 @@ describe(cmd, () => {
     process.chdir(ORIGINAL_CWD)
   })
   test('default', async () => {
-    // await cliMain(['', '', 'run', 'test:bin-i'], originVersion)
-    // await cliMain(['', '', 'run', 'test:bin-i'], originVersion)
     const _path = await io.mkdtemp(prefix)
     process.chdir(_path)
     await cliMain(['', '', 'init'])
